@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const DepartmentSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String }
-});
+const Department = {
+  findAll() {
+    return db.prepare('SELECT * FROM departments').all();
+  }
+};
 
-module.exports = mongoose.model('Department', DepartmentSchema);
+module.exports = Department;

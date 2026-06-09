@@ -1,16 +1,11 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const AssociationSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  englishName: { type: String },
-  abbreviation: { type: String },
-  establishmentYear: { type: Number },
-  motto: { type: String },
-  slogan: { type: String },
-  description: { type: String },
-  memberCount: { type: Number },
-  starRating: { type: Number },
-  awards: [{ type: String }]
-});
+const Association = {
+  findOne() {
+    const row = db.prepare('SELECT * FROM association LIMIT 1').get();
+    if (row && row.awards) row.awards = JSON.parse(row.awards);
+    return row;
+  }
+};
 
-module.exports = mongoose.model('Association', AssociationSchema);
+module.exports = Association;

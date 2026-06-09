@@ -5,7 +5,7 @@ const Department = require('../models/Department');
 // 获取所有部门
 router.get('/', async (req, res) => {
   try {
-    const departments = await Department.find();
+    const departments = Department.findAll();
     res.json(departments);
   } catch (err) {
     res.status(500).json({ message: err.message });

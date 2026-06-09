@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const HonorSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  rank: { type: Number },
-  year: { type: Number },
-  description: { type: String }
-});
+const Honor = {
+  findAll() {
+    return db.prepare('SELECT * FROM honors ORDER BY year DESC').all();
+  }
+};
 
-module.exports = mongoose.model('Honor', HonorSchema);
+module.exports = Honor;

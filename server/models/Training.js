@@ -1,11 +1,9 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const TrainingSchema = new mongoose.Schema({
-  year: { type: String },
-  type: { type: String },
-  count: { type: Number },
-  participants: { type: Number },
-  description: { type: String }
-});
+const Training = {
+  findAll() {
+    return db.prepare('SELECT * FROM trainings ORDER BY year DESC').all();
+  }
+};
 
-module.exports = mongoose.model('Training', TrainingSchema);
+module.exports = Training;

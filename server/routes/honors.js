@@ -5,7 +5,7 @@ const Honor = require('../models/Honor');
 // 获取所有荣誉
 router.get('/', async (req, res) => {
   try {
-    const honors = await Honor.find().sort({ year: -1 });
+    const honors = Honor.findAll();
     res.json(honors);
   } catch (err) {
     res.status(500).json({ message: err.message });

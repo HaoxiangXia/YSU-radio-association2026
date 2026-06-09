@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
+const db = require('../config/database');
 
-const CompetitionSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  year: { type: Number },
-  participants: { type: Number },
-  description: { type: String },
-  tracks: [{ type: String }]
-});
+const Competition = {
+  findAll() {
+    const rows = db.prepare('SELECT * FROM competitions ORDER BY year DESC').all();
+    for (const row of rows) {
+      if (row.tracks) row.tracks = JSON.parse(row.tracks);
+    }
+    return rows;
+  }
+};
 
-module.exports = mongoose.model('Competition', CompetitionSchema);
+module.exports = Competition;
