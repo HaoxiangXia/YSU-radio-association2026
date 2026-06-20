@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>培训教学 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="page-container">
+    <h1 class="section-title">培训教学</h1>
+
+    <!-- 培训体系概述 -->
+    <div class="card mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">培训体系</h2>
+      <p class="text-gray-600 leading-relaxed mb-4">
+        协会建立了完善的培训体系，从基础入门到高级进阶，涵盖嵌入式开发、编程、机械设计等多个方向。通过系统的课程安排和实践项目，帮助成员快速成长。
+      </p>
+      
+      <!-- 培训统计 -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6" id="training-stats">
+        <!-- 统计内容由 JavaScript 动态生成 -->
+      </div>
+      
+      <!-- 技能标签 -->
+      <div class="flex flex-wrap gap-2" id="skill-tags">
+        <!-- 技能标签由 JavaScript 动态生成 -->
+      </div>
+    </div>
+
+    <!-- 培训时间线 -->
+    <div class="card mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">培训时间线</h2>
+      <div class="timeline" id="training-timeline">
+        <!-- 时间线内容由 JavaScript 动态生成 -->
+      </div>
+    </div>
+
+    <!-- 课程安排 -->
+    <div class="card mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">每周课程安排</h2>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 5rem;">周次</th>
+              <th>课程内容</th>
+            </tr>
+          </thead>
+          <tbody id="course-schedule">
+            <!-- 课程内容由 JavaScript 动态生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 往期培训 -->
+    <div class="card mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">往期培训</h2>
+      <div id="past-trainings">
+        <!-- 往期培训内容由 JavaScript 动态生成 -->
+      </div>
+    </div>
+
+    <!-- 报名号召 -->
+    <div class="card text-center p-8">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">加入我们</h2>
+      <p class="text-gray-600 mb-6">对技术充满热情？想要学习新技能？加入无线电爱好者协会，开启你的技术之旅！</p>
+      <a href="/html/registration.html" class="btn-solid">立即报名</a>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 渲染培训统计
+    function renderTrainingStats() {
+      const container = document.getElementById('training-stats');
+      if (!container) return;
+      
+      container.innerHTML = trainingStats.map(stat => `
+        <div class="stat-card">
+          <div class="stat-value">${stat.value}</div>
+          <div class="stat-label">${stat.label}</div>
+        </div>
+      `).join('');
+    }
+
+    // 渲染技能标签
+    function renderSkillTags() {
+      const container = document.getElementById('skill-tags');
+      if (!container) return;
+      
+      container.innerHTML = skillTags.map(tag => `
+        <span class="tag">${tag}</span>
+      `).join('');
+    }
+
+    // 渲染培训时间线
+    function renderTrainingTimeline() {
+      const container = document.getElementById('training-timeline');
+      if (!container) return;
+      
+      container.innerHTML = trainingTimeline.map(item => `
+        <div class="timeline-item">
+          <div class="timeline-date">${item.date}</div>
+          <div class="timeline-title">${item.title}</div>
+          <div class="timeline-desc">${item.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    // 渲染课程安排
+    function renderCourseSchedule() {
+      const tbody = document.getElementById('course-schedule');
+      if (!tbody) return;
+      
+      tbody.innerHTML = courseSchedule.map(item => `
+        <tr>
+          <td class="font-medium text-gray-800">${item.week}</td>
+          <td class="text-gray-600">${item.content}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 渲染往期培训
+    function renderPastTrainings() {
+      const container = document.getElementById('past-trainings');
+      if (!container) return;
+      
+      container.innerHTML = pastTrainings.map(training => `
+        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="font-bold text-gray-800">${training.title}</h3>
+            <span class="text-sm text-gray-500">${training.date}</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-2">${training.description}</p>
+          <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+            <span>📍 ${training.location}</span>
+            <span>👨‍🏫 ${training.instructor}</span>
+            <span>👥 ${training.target}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 页面加载后渲染
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTrainingStats();
+      renderSkillTags();
+      renderTrainingTimeline();
+      renderCourseSchedule();
+      renderPastTrainings();
+    });
+  </script>
+</body>
+</html>

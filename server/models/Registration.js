@@ -4,18 +4,18 @@ const Registration = {
   create(data) {
     const stmt = db.prepare(`
       INSERT INTO registrations (name, studentId, college, grade, phone, email, experience, expectation)
-      VALUES (@name, @studentId, @college, @grade, @phone, @email, @experience, @expectation)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    const info = stmt.run({
-      name: data.name,
-      studentId: data.studentId,
-      college: data.college,
-      grade: data.grade,
-      phone: data.phone,
-      email: data.email,
-      experience: data.experience,
-      expectation: data.expectation || null
-    });
+    const info = stmt.run(
+      data.name,
+      data.studentId,
+      data.college,
+      data.grade,
+      data.phone,
+      data.email,
+      data.experience,
+      data.expectation || null
+    );
     return { id: Number(info.lastInsertRowid), ...data };
   },
 

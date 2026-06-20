@@ -18,10 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // 配置静态文件服务
 app.use(express.static(path.join(__dirname, '../public')));
 
-// 配置根路径的路由
+// 配置根路径的路由，重定向到纯 HTML 版本
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.redirect('/html/index.html');
 });
+
 
 // 使用路由
 app.use('/api/competitions', competitionsRouter);

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>部门介绍 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="page-container">
+    <h1 class="section-title">部门介绍</h1>
+
+    <div id="departments-list">
+      <!-- 部门内容由 JavaScript 动态生成 -->
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 渲染部门列表
+    function renderDepartments() {
+      const container = document.getElementById('departments-list');
+      if (!container) return;
+      
+      container.innerHTML = departments.map((dept, index) => {
+        // 获取统计数据
+        const stat1Value = dept.stats.activities || dept.stats.projects || dept.stats.models || dept.stats.softwares || dept.stats.events;
+        const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
+        
+        return `
+          <div class="card mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 pb-3 border-b-2 border-blue-100">${dept.name}</h2>
+            
+            <div class="grid grid-cols-3 gap-4 mb-5 p-3 bg-blue-50/50 rounded-lg">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">${dept.stats.members}</div>
+                <div class="text-xs text-gray-500">部门成员</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">${stat1Value}</div>
+                <div class="text-xs text-gray-500">${dept.statLabel1}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">${stat2Value}</div>
+                <div class="text-xs text-gray-500">${dept.statLabel2}</div>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-5">
+              ${dept.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg mb-5 border-l-4 border-blue-400">
+              <h3 class="font-semibold mb-2 text-sm text-gray-700">部门简介</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">${dept.description}</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <h3 class="font-semibold mb-3 text-sm text-blue-600">主要职责</h3>
+                <ul class="space-y-2">
+                  ${dept.responsibilities.map(item => `
+                    <li class="text-sm text-gray-600 flex items-start gap-2">
+                      <span class="text-blue-400 mt-1">-</span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <h3 class="font-semibold mb-3 text-sm text-blue-600">部门特色</h3>
+                <ul class="space-y-2">
+                  ${dept.features.map(item => `
+                    <li class="text-sm text-gray-600 flex items-start gap-2">
+                      <span class="text-blue-400 mt-1">-</span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <h3 class="font-semibold mb-3 text-sm text-blue-600">学习内容</h3>
+                <ul class="space-y-2">
+                  ${dept.learn.map(item => `
+                    <li class="text-sm text-gray-600 flex items-start gap-2">
+                      <span class="text-blue-400 mt-1">-</span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 页面加载后渲染
+    document.addEventListener('DOMContentLoaded', renderDepartments);
+  </script>
+</body>
+</html>

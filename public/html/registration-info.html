@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报名信息管理 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+  <style>
+    .stats-card {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      padding: 1rem;
+      text-align: center;
+      border-top: 4px solid var(--color-primary);
+    }
+    .stats-card .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+    .stats-card .label {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .search-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .search-bar input,
+    .search-bar select {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      background: white;
+      color: var(--color-text);
+    }
+    .search-bar input:focus,
+    .search-bar select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .action-btn {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .action-btn.view {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--color-primary);
+    }
+    .action-btn.view:hover {
+      background: rgba(37, 99, 235, 0.2);
+    }
+    .action-btn.delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+    .action-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 1rem;
+      border-top: 1px solid #f3f4f6;
+    }
+    .pagination button {
+      padding: 0.375rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: white;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pagination button:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .pagination button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .pagination button.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+    .detail-label {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-bottom: 0.125rem;
+    }
+    .detail-value {
+      padding: 0.5rem;
+      background: #f9fafb;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="page-container">
+    <h1 class="section-title">报名信息管理</h1>
+
+    <!-- 统计卡片 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="stats-card">
+        <div class="value" id="stat-total">-</div>
+        <div class="label">总报名</div>
+      </div>
+      <div class="stats-card">
+        <div class="value" id="stat-today">-</div>
+        <div class="label">今日新增</div>
+      </div>
+      <div class="stats-card">
+        <div class="value" id="stat-colleges">-</div>
+        <div class="label">涉及学院</div>
+      </div>
+      <div class="stats-card">
+        <div class="value" id="stat-grades">-</div>
+        <div class="label">涉及年级</div>
+      </div>
+    </div>
+
+    <!-- 搜索栏 -->
+    <div class="card mb-6" style="padding: 1rem;">
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="搜索姓名、学号、学院...">
+        <select id="college-filter">
+          <option value="">所有学院</option>
+        </select>
+        <select id="grade-filter">
+          <option value="">所有年级</option>
+        </select>
+        <button class="btn-solid text-sm" style="padding: 0.5rem 0.75rem;" onclick="loadData()">刷新</button>
+        <button class="btn-solid text-sm" style="padding: 0.5rem 0.75rem;" onclick="exportExcel()">导出</button>
+      </div>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="padding: 1rem; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; background: #f9fafb;">
+        <span class="font-semibold text-sm text-gray-700">报名信息列表</span>
+        <span class="text-sm text-gray-400" id="total-count">共 0 条</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table" id="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>姓名</th>
+              <th>学号</th>
+              <th>学院</th>
+              <th>年级</th>
+              <th>联系电话</th>
+              <th>电子邮箱</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="data-body">
+            <tr><td colspan="8" class="p-8 text-center text-gray-400">暂无数据</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div id="detail-modal" class="modal-overlay">
+      <div class="modal" style="max-width: 32rem; text-align: left; max-height: 80vh; overflow-y: auto;">
+        <div style="padding: 1rem; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+          <h3 class="font-semibold text-blue-600">报名详情</h3>
+          <button onclick="closeDetail()" style="background: none; border: none; color: #9ca3af; font-size: 1.25rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="padding: 1rem;" id="detail-content">
+          <!-- 详情内容由 JavaScript 动态生成 -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 全局变量
+    let allData = [];
+    let currentPage = 1;
+    const pageSize = 10;
+
+    // 获取认证头
+    function getAuthHeaders() {
+      const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+      return { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+    }
+
+    // 加载数据
+    async function loadData() {
+      try {
+        const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+        if (!token) {
+          window.location.href = '/html/admin-login.html';
+          return;
+        }
+
+        const response = await fetch('/api/registration?limit=1000', { 
+          headers: getAuthHeaders() 
+        });
+        
+        if (response.status === 401) {
+          window.location.href = '/html/admin-login.html';
+          return;
+        }
+        
+        const data = await response.json();
+        allData = data.registrations || data;
+        currentPage = 1;
+        
+        updateFilters();
+        updateStats();
+        renderTable();
+      } catch (error) {
+        console.error('加载数据失败:', error);
+        allData = [];
+        renderTable();
+      }
+    }
+
+    // 更新筛选选项
+    function updateFilters() {
+      const collegeFilter = document.getElementById('college-filter');
+      const gradeFilter = document.getElementById('grade-filter');
+      
+      // 获取所有学院
+      const colleges = [...new Set(allData.map(d => d.college))].sort();
+      collegeFilter.innerHTML = '<option value="">所有学院</option>' + 
+        colleges.map(c => `<option value="${c}">${c}</option>`).join('');
+      
+      // 获取所有年级
+      const grades = [...new Set(allData.map(d => d.grade))].sort();
+      gradeFilter.innerHTML = '<option value="">所有年级</option>' + 
+        grades.map(g => `<option value="${g}">${g}</option>`).join('');
+    }
+
+    // 更新统计
+    function updateStats() {
+      const today = new Date().toISOString().slice(0, 10);
+      
+      document.getElementById('stat-total').textContent = allData.length;
+      document.getElementById('stat-today').textContent = allData.filter(d => d.createdAt?.startsWith(today)).length;
+      document.getElementById('stat-colleges').textContent = new Set(allData.map(d => d.college)).size;
+      document.getElementById('stat-grades').textContent = new Set(allData.map(d => d.grade)).size;
+    }
+
+    // 获取筛选后的数据
+    function getFilteredData() {
+      const searchQuery = document.getElementById('search-input').value.toLowerCase();
+      const collegeFilter = document.getElementById('college-filter').value;
+      const gradeFilter = document.getElementById('grade-filter').value;
+      
+      return allData.filter(d => {
+        const matchesSearch = !searchQuery || 
+          d.name.toLowerCase().includes(searchQuery) || 
+          d.studentId.includes(searchQuery) || 
+          d.college.toLowerCase().includes(searchQuery);
+        
+        const matchesCollege = !collegeFilter || d.college === collegeFilter;
+        const matchesGrade = !gradeFilter || d.grade === gradeFilter;
+        
+        return matchesSearch && matchesCollege && matchesGrade;
+      });
+    }
+
+    // 渲染表格
+    function renderTable() {
+      const filteredData = getFilteredData();
+      const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
+      const startIndex = (currentPage - 1) * pageSize;
+      const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
+      
+      // 更新总数
+      document.getElementById('total-count').textContent = `共 ${filteredData.length} 条`;
+      
+      // 渲染表格行
+      const tbody = document.getElementById('data-body');
+      if (paginatedData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-400">暂无数据</td></tr>';
+      } else {
+        tbody.innerHTML = paginatedData.map((item, i) => `
+          <tr>
+            <td class="text-sm text-gray-400">${startIndex + i + 1}</td>
+            <td class="font-medium text-sm">${item.name}</td>
+            <td class="text-sm text-gray-600">${item.studentId}</td>
+            <td class="text-sm text-gray-600">${item.college}</td>
+            <td class="text-sm text-gray-600">${item.grade}</td>
+            <td class="text-sm text-gray-600">${item.phone}</td>
+            <td class="text-sm text-gray-600">${item.email}</td>
+            <td>
+              <div style="display: flex; gap: 0.25rem;">
+                <button class="action-btn view" onclick="viewDetail('${item.studentId}')">详情</button>
+                <button class="action-btn delete" onclick="deleteItem('${item.studentId}')">删除</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+      
+      // 渲染分页
+      renderPagination(totalPages);
+    }
+
+    // 渲染分页
+    function renderPagination(totalPages) {
+      const pagination = document.getElementById('pagination');
+      if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+      }
+      
+      let html = '';
+      
+      // 上一页按钮
+      html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">上一页</button>`;
+      
+      // 页码按钮
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, currentPage + 2);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+      }
+      
+      // 下一页按钮
+      html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">下一页</button>`;
+      
+      pagination.innerHTML = html;
+    }
+
+    // 跳转到指定页
+    function goToPage(page) {
+      currentPage = page;
+      renderTable();
+    }
+
+    // 查看详情
+    function viewDetail(studentId) {
+      const item = allData.find(d => d.studentId === studentId);
+      if (!item) return;
+      
+      const detailLabels = {
+        name: '姓名',
+        studentId: '学号',
+        college: '学院',
+        grade: '年级',
+        phone: '联系电话',
+        email: '电子邮箱',
+        experience: '自我介绍',
+        expectation: '加入期望'
+      };
+      
+      const content = document.getElementById('detail-content');
+      content.innerHTML = Object.entries(detailLabels).map(([key, label]) => `
+        <div class="detail-label">${label}</div>
+        <div class="detail-value">${item[key] || '-'}</div>
+      `).join('');
+      
+      document.getElementById('detail-modal').classList.add('open');
+    }
+
+    // 关闭详情
+    function closeDetail() {
+      document.getElementById('detail-modal').classList.remove('open');
+    }
+
+    // 删除项目
+    async function deleteItem(studentId) {
+      const item = allData.find(d => d.studentId === studentId);
+      if (!item) return;
+      
+      if (!confirm(`确定删除 ${item.name} 的报名信息？`)) return;
+      
+      try {
+        await fetch(`/api/registration/${studentId}`, { 
+          method: 'DELETE', 
+          headers: getAuthHeaders() 
+        });
+        loadData();
+      } catch (error) {
+        alert('删除失败');
+      }
+    }
+
+    // 导出 Excel
+    function exportExcel() {
+      const filteredData = getFilteredData();
+      const headers = ['姓名', '学号', '学院', '年级', '联系电话', '电子邮箱'];
+      const rows = filteredData.map(d => [d.name, d.studentId, d.college, d.grade, d.phone, d.email]);
+      const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = '报名信息.csv';
+      link.click();
+    }
+
+    // 页面加载后初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 检查登录状态
+      const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+      if (!token) {
+        window.location.href = '/html/admin-login.html';
+        return;
+      }
+      
+      // 绑定搜索事件
+      document.getElementById('search-input').addEventListener('input', () => {
+        currentPage = 1;
+        renderTable();
+      });
+      
+      document.getElementById('college-filter').addEventListener('change', () => {
+        currentPage = 1;
+        renderTable();
+      });
+      
+      document.getElementById('grade-filter').addEventListener('change', () => {
+        currentPage = 1;
+        renderTable();
+      });
+      
+      // 加载数据
+      loadData();
+    });
+  </script>
+</body>
+</html>

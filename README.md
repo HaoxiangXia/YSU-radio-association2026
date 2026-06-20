@@ -2,9 +2,9 @@
 
 > 燕山大学无线电爱好者协会（无协）官方信息展示与招新管理系统
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Bun](https://img.shields.io/badge/Bun-1.3+-000000?style=flat&logo=bun&logoColor=white)](https://bun.sh/)
 [![Express](https://img.shields.io/badge/Express-4.18-000000?style=flat&logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat&logo=sqlite&logoColor=white)](https://sqlite.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
@@ -28,28 +28,29 @@
 ┌──────────────────────────────────────────────┐
 │                   前端 (Frontend)              │
 │         纯 HTML / CSS / JavaScript            │
-│   index.html | departments.html | ...         │
+│   页面位于 public/html/ 目录下                │
 └──────────────────┬───────────────────────────┘
                    │ HTTP / REST API
 ┌──────────────────▼───────────────────────────┐
 │               后端 (Backend)                   │
-│            Node.js + Express 4.18             │
+│            Bun + Express 4.18                 │
 │  routes/  models/  config/  scripts/          │
 └──────────────────┬───────────────────────────┘
-                   │ Mongoose ODM
+                   │ bun:sqlite
 ┌──────────────────▼───────────────────────────┐
 │             数据库 (Database)                  │
-│               MongoDB 8.0                     │
+│               SQLite 3                        │
+│         server/data/database.sqlite           │
 └──────────────────────────────────────────────┘
 ```
 
 | 层级 | 技术选型 |
 |------|----------|
 | 前端 | HTML5 + CSS3 + 原生 JavaScript |
-| 后端 | Node.js + Express 4.18 |
-| 数据库 | MongoDB 8.0（Mongoose ODM） |
+| 后端 | Bun + Express 4.18 |
+| 数据库 | SQLite 3（bun:sqlite） |
 | 认证 | JWT（JSON Web Token）+ bcrypt |
-| 导出 | xlsx（Excel 读写） |
+| 导出 | CSV（前端生成并下载） |
 
 ---
 
@@ -68,54 +69,61 @@
 
 ### 后台管理（管理员）
 
-- 🔐 **管理员登录** — JWT 认证，支持"记住我"（7天免登录）
-- 📋 **报名管理** — 查看所有报名信息，支持分页、搜索、排序、筛选
-- 📊 **数据导出** — 将 Excel 录取名单导出为 JSON 供前端查询
+- 🔐 **管理员登录** — JWT 认证，支持"记住我"
+- 📋 **报名管理** — 查看所有报名信息，支持分页、搜索、筛选
+- 📊 **数据导出** — 将报名信息导出为 CSV
 
 ---
 
 ## 📁 项目结构
 
 ```
-radio---association-master/
+radio-association/
 ├── package.json                  # 项目配置与依赖
-├── .env                          # 环境变量（MongoDB URI、JWT密钥等）
+├── .env                          # 环境变量（端口号、JWT密钥等）
 ├── server/                       # 后端服务
 │   ├── app.js                    # Express 应用入口
 │   ├── initDB.js                 # 数据库初始化脚本
 │   ├── config/
-│   │   └── db.js                 # MongoDB 连接配置
-│   ├── models/                   # Mongoose 数据模型
+│   │   └── database.js           # SQLite 连接配置
+│   ├── models/                   # 数据模型
 │   │   ├── Association.js        # 协会信息模型
-│   │   ├── Department.js         # 部门模型
 │   │   ├── Competition.js        # 竞赛模型
+│   │   ├── Department.js         # 部门模型
 │   │   ├── Honor.js              # 荣誉模型
-│   │   ├── Training.js           # 培训模型
-│   │   └── Registration.js       # 报名信息模型
-│   └── routes/                   # API 路由
-│       ├── admin.js              # 管理员认证路由
-│       ├── association.js        # 协会信息路由
-│       ├── competitions.js       # 竞赛路由
-│       ├── departments.js        # 部门路由
-│       ├── honors.js             # 荣誉路由
-│       ├── registration.js       # 报名路由
-│       └── trainings.js          # 培训路由
+│   │   ├── Registration.js       # 报名信息模型
+│   │   └── Training.js           # 培训模型
+│   ├── routes/                   # API 路由
+│   │   ├── admin.js              # 管理员认证路由
+│   │   ├── association.js        # 协会信息路由
+│   │   ├── competitions.js       # 竞赛路由
+│   │   ├── departments.js        # 部门路由
+│   │   ├── honors.js             # 荣誉路由
+│   │   ├── registration.js       # 报名路由
+│   │   └── trainings.js          # 培训路由
+│   └── data/                     # SQLite 数据库目录
+│       └── database.sqlite
 ├── public/                       # 前端静态资源
-│   ├── index.html                # 首页
-│   ├── departments.html          # 部门介绍
-│   ├── competition-activities.html # 竞赛活动
-│   ├── trainings.html            # 培训记录
-│   ├── honors.html               # 荣誉墙
-│   ├── recreational-activities.html # 社团活动
-│   ├── registration.html         # 在线报名
-│   ├── registration-info.html    # 报名信息查询
-│   ├── admission.html            # 录取查询
-│   ├── admin-login.html          # 管理员登录
-│   ├── activities.html           # 活动详情
-│   ├── checkTrainings.js         # 培训数据查询脚本
-│   ├── data/
-│   │   └── admissions.json       # 录取名单（由导出脚本生成）
-│   └── image/                    # 图片资源
+│   ├── html/                     # 纯 HTML 页面
+│   │   ├── index.html            # 首页
+│   │   ├── departments.html      # 部门介绍
+│   │   ├── activities.html       # 协会活动
+│   │   ├── competition-activities.html # 竞赛活动
+│   │   ├── recreational-activities.html # 文娱活动
+│   │   ├── honors.html           # 荣誉墙
+│   │   ├── trainings.html        # 培训记录
+│   │   ├── registration.html     # 在线报名
+│   │   ├── registration-info.html # 报名管理（需登录）
+│   │   ├── admission.html        # 录取查询
+│   │   ├── admin-login.html      # 管理员登录
+│   │   ├── styles.css            # 公共样式
+│   │   ├── common.js             # 公共脚本（导航、页脚、交互）
+│   │   └── data.js               # 静态数据
+│   ├── images/                   # 图片资源（会徽、Hero背景等）
+│   ├── image/                    # 图片与视频资源
+│   └── favicon.ico               # 网站图标
+├── backup/                       # 备份目录
+│   └── vue-source/               # 原 Vue 源码备份
 └── scripts/
     └── export-admissions.js      # Excel → JSON 导出工具
 ```
@@ -126,14 +134,13 @@ radio---association-master/
 
 ### 环境要求
 
-- **Node.js** >= 18.x
-- **MongoDB** >= 6.x（本地或远程实例）
+- **Bun** >= 1.3.x
 
 ### 1. 克隆项目
 
 ```bash
 git clone <repository-url>
-cd radio---association-master
+cd radio-association
 ```
 
 ### 2. 安装依赖
@@ -148,14 +155,13 @@ bun install
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/radio-association
 JWT_SECRET=your-secret-key-change-in-production
 ```
 
 ### 4. 初始化数据库
 
 ```bash
-node server/initDB.js
+bun server/initDB.js
 ```
 
 执行成功后会输出 `Database initialized successfully!`，初始化协会、部门、竞赛、荣誉、培训等基础数据。
@@ -163,19 +169,15 @@ node server/initDB.js
 ### 5. 启动服务
 
 ```bash
-# 开发模式（热重载）
-bun run dev
-
-# 生产模式
-bun start
+bun server/app.js
 ```
 
-服务默认运行在 `http://localhost:5000`
+服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
 ### 6. 导出录取名单（可选）
 
 ```bash
-bun run export:admissions
+bun scripts/export-admissions.js
 ```
 
 该命令读取 `工作簿1.xlsx` 中的录取数据，生成 `public/data/admissions.json` 供前端录取查询使用。
@@ -204,6 +206,7 @@ bun run export:admissions
 | GET | `/api/admin/verify` | 验证 Token 有效性 |
 | GET | `/api/admin/profile` | 获取管理员信息 |
 | GET | `/api/registration` | 获取报名列表（分页/搜索/排序） |
+| DELETE | `/api/registration/:id` | 删除指定报名记录 |
 
 ---
 
@@ -221,7 +224,7 @@ bun run export:admissions
 | email | String | ✅ | 邮箱 |
 | experience | String | ✅ | 相关经历 |
 | expectation | String | ❌ | 期望方向 |
-| createdAt | Date | 自动 | 报名时间 |
+| createdAt | DateTime | 自动 | 报名时间 |
 
 ---
 
@@ -229,9 +232,9 @@ bun run export:admissions
 
 | 脚本 | 命令 | 说明 |
 |------|------|------|
-| `start` | `npm start` | 启动生产服务器 |
-| `dev` | `npm run dev` | 启动开发服务器（nodemon 热重载） |
-| `export:admissions` | `npm run export:admissions` | 将 Excel 录取名单导出为 JSON |
+| `start` | `bun server/app.js` | 启动生产服务器 |
+| `init` | `bun server/initDB.js` | 初始化 SQLite 数据库 |
+| `export:admissions` | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 
 ---
 
@@ -239,7 +242,6 @@ bun run export:admissions
 
 - 管理员密码使用 **bcrypt** 加密存储
 - API 认证使用 **JWT** 令牌机制
-- 管理员登录支持过期时间控制（24h / 7天）
 - 报名管理接口需要 Bearer Token 认证
 - 生产环境请务必修改 `.env` 中的 `JWT_SECRET` 和默认管理员密码
 

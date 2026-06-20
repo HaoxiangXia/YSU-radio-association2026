@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>竞赛活动 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="page-container">
+    <a href="/html/activities.html" class="back-link">← 返回活动</a>
+    <h1 class="section-title">竞赛活动</h1>
+
+    <div id="competitions-list">
+      <!-- 竞赛内容由 JavaScript 动态生成 -->
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 渲染竞赛列表
+    function renderCompetitions() {
+      const container = document.getElementById('competitions-list');
+      if (!container) return;
+      
+      container.innerHTML = competitions.map(comp => `
+        <div class="card mb-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">${comp.name}</h2>
+              <div class="text-sm text-gray-500 mt-1">${comp.date}</div>
+            </div>
+            <span class="badge">${comp.year}</span>
+          </div>
+          
+          <p class="text-gray-600 text-sm leading-relaxed mb-4">${comp.description}</p>
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            ${comp.tracks.map(track => `<span class="tag">${track}</span>`).join('')}
+          </div>
+          
+          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+            <h3 class="font-semibold mb-2 text-sm text-gray-700">参赛人数</h3>
+            <p class="text-blue-600 font-bold">${comp.participants} 人</p>
+          </div>
+          
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2 text-sm text-gray-700">活动亮点</h3>
+            <ul class="space-y-2">
+              ${comp.highlights.map(item => `
+                <li class="text-sm text-gray-600 flex items-start gap-2">
+                  <span class="text-blue-400 mt-1">-</span>${item}
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 页面加载后渲染
+    document.addEventListener('DOMContentLoaded', renderCompetitions);
+  </script>
+</body>
+</html>

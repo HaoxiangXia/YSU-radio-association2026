@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>录取查询 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="page-container" style="max-width: 40rem;">
+    <h1 class="section-title">录取查询</h1>
+
+    <div class="card mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">查询录取结果</h2>
+      <p class="text-gray-600 text-sm mb-4">请输入你的学号查询录取结果</p>
+      
+      <div class="flex gap-4">
+        <input type="text" id="student-id-input" class="form-input" placeholder="请输入12位学号" maxlength="12">
+        <button class="btn-solid" onclick="checkAdmission()">查询</button>
+      </div>
+      
+      <div id="query-result" class="mt-4" style="display: none;">
+        <!-- 查询结果由 JavaScript 动态生成 -->
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-bold text-gray-800 mb-3">查询说明</h3>
+      <ul class="space-y-2 text-sm text-gray-600">
+        <li class="flex items-start gap-2">
+          <span class="text-blue-400 mt-1">-</span>
+          请输入完整的12位学号进行查询
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-400 mt-1">-</span>
+          查询结果仅供参考，最终录取结果以协会通知为准
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-400 mt-1">-</span>
+          如有疑问，请联系协会负责人
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 录取数据（模拟）
+    const admissions = new Map();
+    
+    // 加载录取数据
+    async function loadAdmissions() {
+      try {
+        const response = await fetch('/data/admissions.json');
+        if (response.ok) {
+          const data = await response.json();
+          data.forEach(item => {
+            admissions.set(item.studentId, item);
+          });
+        }
+      } catch (error) {
+        console.log('加载录取数据失败，使用模拟数据');
+        // 模拟数据
+        admissions.set('202400010001', { name: '张三', department: '嵌入式部', status: '已录取' });
+        admissions.set('202400010002', { name: '李四', department: '计算机部', status: '已录取' });
+        admissions.set('202400010003', { name: '王五', department: '机械部', status: '待定' });
+      }
+    }
+
+    // 查询录取结果
+    function checkAdmission() {
+      const input = document.getElementById('student-id-input');
+      const resultDiv = document.getElementById('query-result');
+      const studentId = input.value.trim();
+      
+      // 验证学号格式
+      if (!/^\d{12}$/.test(studentId)) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-red-600 font-medium">请输入正确的12位学号</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // 查询结果
+      const admission = admissions.get(studentId);
+      
+      resultDiv.style.display = 'block';
+      
+      if (admission) {
+        const statusColor = admission.status === '已录取' ? 'text-green-600' : 'text-yellow-600';
+        const statusBg = admission.status === '已录取' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200';
+        
+        resultDiv.innerHTML = `
+          <div class="${statusBg} border rounded-lg p-4">
+            <div class="text-center">
+              <div class="text-3xl mb-2">${admission.status === '已录取' ? '🎉' : '⏳'}</div>
+              <h3 class="font-bold text-gray-800 mb-2">${admission.name}同学</h3>
+              <p class="${statusColor} font-medium mb-2">${admission.status}</p>
+              ${admission.department ? `<p class="text-gray-600 text-sm">录取部门：${admission.department}</p>` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div class="text-center">
+              <div class="text-3xl mb-2">😢</div>
+              <h3 class="font-bold text-gray-800 mb-2">未找到录取信息</h3>
+              <p class="text-gray-600 text-sm">请检查学号是否正确，或联系协会负责人确认</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 页面加载后初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAdmissions();
+      
+      // 回车查询
+      const input = document.getElementById('student-id-input');
+      if (input) {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            checkAdmission();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
