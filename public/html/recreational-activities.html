@@ -14,7 +14,7 @@
     <a href="/html/activities.html" class="back-link">← 返回活动</a>
     <h1 class="section-title">文娱活动</h1>
 
-    <div id="recreational-list">
+    <div id="recreational-list" class="content-stack">
       <!-- 文娱活动内容由 JavaScript 动态生成 -->
     </div>
   </main>
@@ -36,22 +36,22 @@
       if (!container) return;
       
       container.innerHTML = recreationalActivities.map(activity => `
-        <div class="card mb-6">
+        <div class="card card-section">
           <div class="flex items-start justify-between mb-4">
             <div>
-              <h2 class="text-xl font-bold text-gray-800">${activity.name}</h2>
+              <h2 class="card-title mb-0">${activity.name}</h2>
               <div class="text-sm text-gray-500 mt-1">${activity.date}</div>
             </div>
           </div>
           
           <p class="text-gray-600 text-sm leading-relaxed mb-4">${activity.description}</p>
           
-          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+          <div class="info-panel mb-4">
             <h3 class="font-semibold mb-2 text-sm text-gray-700">参与人员</h3>
             <p class="text-gray-600 text-sm">${activity.participants}</p>
           </div>
           
-          <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="info-panel">
             <h3 class="font-semibold mb-2 text-sm text-gray-700">活动成果</h3>
             <p class="text-gray-600 text-sm">${activity.achievements}</p>
           </div>

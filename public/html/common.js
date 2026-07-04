@@ -8,16 +8,23 @@ function initNav() {
   if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', () => {
       mobileMenu.classList.toggle('open');
-      menuBtn.textContent = mobileMenu.classList.contains('open') ? '关闭' : '菜单';
+      const isOpen = mobileMenu.classList.contains('open');
+      menuBtn.textContent = isOpen ? '关闭' : '菜单';
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
     });
   }
   
   // 高亮当前页面
   const currentPath = window.location.pathname;
+  const parentPageMap = {
+    '/html/competition-activities.html': '/html/activities.html',
+    '/html/recreational-activities.html': '/html/activities.html',
+  };
+  const activePath = parentPageMap[currentPath] || currentPath;
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-menu a');
   navLinks.forEach(link => {
     const href = link.getAttribute('href');
-    if (href === currentPath || (href === '/html/index.html' && (currentPath === '/' || currentPath === '/html/'))) {
+    if (href === activePath || (href === '/html/index.html' && (currentPath === '/' || currentPath === '/html/'))) {
       link.classList.add('active');
     }
   });
@@ -79,9 +86,9 @@ function getNavHTML() {
           <a href="/html/registration.html">招新报名</a>
           <a href="/html/admission.html">录取查询</a>
         </div>
-        <button class="menu-btn">菜单</button>
+        <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-navigation">菜单</button>
       </div>
-      <div class="mobile-menu">
+      <div class="mobile-menu" id="mobile-navigation">
         <a href="/html/index.html">首页</a>
         <a href="/html/departments.html">部门介绍</a>
         <a href="/html/activities.html">协会活动</a>
@@ -103,11 +110,11 @@ function getFooterHTML() {
           <div>
             <h4>无线电爱好者协会</h4>
             <p>燕山大学技术实践类社团，致力于培养和传播科学技术的热情。</p>
-            <a href="/html/admin-login.html" style="display: inline-block; margin-top: 0.75rem; font-size: 0.75rem; color: #9ca3af;">管理员入口</a>
+            <a href="/html/admin-login.html" class="footer-admin-link">管理员入口</a>
           </div>
           <div>
             <h4>快速链接</h4>
-            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+            <div class="footer-links">
               <a href="/html/departments.html">部门介绍</a>
               <a href="/html/activities.html">协会活动</a>
               <a href="/html/honors.html">荣誉成就</a>
@@ -119,7 +126,7 @@ function getFooterHTML() {
             <h4>联系我们</h4>
             <p>联系人：郭思源</p>
             <p>电话：15371530788</p>
-            <p style="margin-top: 0.5rem;">燕山大学 · 无线电爱好者协会</p>
+            <p class="footer-contact-meta">燕山大学 · 无线电爱好者协会</p>
           </div>
         </div>
         <div class="footer-bottom">

@@ -14,8 +14,8 @@
     <h1 class="section-title">培训教学</h1>
 
     <!-- 培训体系概述 -->
-    <div class="card mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">培训体系</h2>
+    <div class="card card-section mb-6">
+      <h2 class="card-title">培训体系</h2>
       <p class="text-gray-600 leading-relaxed mb-4">
         协会建立了完善的培训体系，从基础入门到高级进阶，涵盖嵌入式开发、编程、机械设计等多个方向。通过系统的课程安排和实践项目，帮助成员快速成长。
       </p>
@@ -32,16 +32,16 @@
     </div>
 
     <!-- 培训时间线 -->
-    <div class="card mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">培训时间线</h2>
+    <div class="card card-section mb-6">
+      <h2 class="card-title">培训时间线</h2>
       <div class="timeline" id="training-timeline">
         <!-- 时间线内容由 JavaScript 动态生成 -->
       </div>
     </div>
 
     <!-- 课程安排 -->
-    <div class="card mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">每周课程安排</h2>
+    <div class="card card-section mb-6">
+      <h2 class="card-title">每周课程安排</h2>
       <div class="overflow-x-auto">
         <table class="data-table">
           <thead>
@@ -58,16 +58,16 @@
     </div>
 
     <!-- 往期培训 -->
-    <div class="card mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">往期培训</h2>
+    <div class="card card-section mb-6">
+      <h2 class="card-title">往期培训</h2>
       <div id="past-trainings">
         <!-- 往期培训内容由 JavaScript 动态生成 -->
       </div>
     </div>
 
     <!-- 报名号召 -->
-    <div class="card text-center p-8">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">加入我们</h2>
+    <div class="card card-section cta-card text-center p-8">
+      <h2 class="card-title">加入我们</h2>
       <p class="text-gray-600 mb-6">对技术充满热情？想要学习新技能？加入无线电爱好者协会，开启你的技术之旅！</p>
       <a href="/html/registration.html" class="btn-solid">立即报名</a>
     </div>
@@ -140,7 +140,7 @@
       if (!container) return;
       
       container.innerHTML = pastTrainings.map(training => `
-        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+        <div class="info-panel mb-4">
           <div class="flex items-start justify-between mb-2">
             <h3 class="font-bold text-gray-800">${training.title}</h3>
             <span class="text-sm text-gray-500">${training.date}</span>

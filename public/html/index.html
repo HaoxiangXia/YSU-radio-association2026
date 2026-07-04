@@ -12,16 +12,26 @@
 
   <!-- Hero 区域 -->
   <header class="hero">
-    <div class="hero-bg">
-      <img src="/images/hero-bg.jpg" alt="燕山大学校园">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="/images/hero-bg.jpg" alt="">
       <div class="hero-overlay"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-signal">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="hero-wave"></div>
     </div>
-    <div class="hero-content">
-      <h1>无线电爱好者协会</h1>
-      <p>燕山大学技术实践类社团 · 陪伴燕大37载</p>
-      <div class="hero-buttons">
-        <a href="/html/departments.html" class="btn-primary">了解更多</a>
-        <a href="/html/registration.html" class="btn-primary">立即报名</a>
+    <div class="hero-content container">
+      <div class="hero-copy">
+        <div class="hero-eyebrow"><span></span>YSU RADIO ASSOCIATION</div>
+        <h1>燕山大学无线电爱好者协会</h1>
+        <p>连接无线电技术、电子实践与工程创新</p>
+        <div class="hero-buttons">
+          <a href="#about-association" class="btn-primary hero-btn-primary">了解协会</a>
+          <a href="/html/registration.html" class="btn-primary hero-btn-secondary">加入我们</a>
+        </div>
       </div>
     </div>
   </header>
@@ -29,7 +39,7 @@
   <!-- 主要内容 -->
   <main>
     <!-- 协会介绍 + 侧边栏 -->
-    <section class="max-w-6xl mx-auto px-4 py-10">
+    <section id="about-association" class="home-about-section max-w-6xl mx-auto px-4 py-10">
       <div class="grid md:grid-cols-3 gap-6">
         <div class="md:col-span-2">
           <div class="card">
@@ -48,7 +58,7 @@
             </p>
             <!-- 视频区域 -->
             <div class="mt-6 rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
-              <video controls class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
+              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
                 <source src="/image/招新视频.mp4" type="video/mp4">
                 <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
               </video>
@@ -94,10 +104,25 @@
     </section>
 
     <!-- 最新动态 -->
-    <section class="max-w-6xl mx-auto px-4 pb-10">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="section-title mb-0 border-none">最新动态</h2>
-        <a href="/html/activities.html" class="text-sm text-blue-600 hover:underline">查看更多</a>
+    <section class="radio-section radio-section-grid max-w-6xl mx-auto px-4 pb-10">
+      <div class="themed-section-header flex items-center justify-between mb-6">
+        <div class="themed-section-title">
+          <div class="themed-section-title-row">
+            <h2 class="section-title mb-0 border-none">最新动态</h2>
+            <span class="mini-spectrum" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <svg class="section-wave" viewBox="0 0 108 12" aria-hidden="true" focusable="false">
+            <path class="section-wave-baseline" d="M1 6H107"></path>
+            <path d="M1 6H18L22 3L27 9L32 2L38 10L43 6H58L63 4L68 8L73 3L79 9L85 6H107"></path>
+          </svg>
+        </div>
+        <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
       </div>
       <div class="space-y-4" id="recent-events">
         <!-- 动态内容由 JavaScript 动态生成 -->
@@ -105,12 +130,21 @@
     </section>
 
     <!-- 荣誉成就 -->
-    <section class="max-w-6xl mx-auto px-4 pb-12">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="section-title mb-0 border-none">荣誉成就</h2>
-        <a href="/html/honors.html" class="text-sm text-blue-600 hover:underline">查看更多</a>
+    <section class="radio-section max-w-6xl mx-auto px-4 pb-12">
+      <div class="themed-section-header flex items-center justify-between mb-6">
+        <div class="themed-section-title">
+          <div class="themed-section-title-row">
+            <h2 class="section-title mb-0 border-none">荣誉成就</h2>
+            <span class="mini-radar" aria-hidden="true"></span>
+          </div>
+          <svg class="section-wave" viewBox="0 0 108 12" aria-hidden="true" focusable="false">
+            <path class="section-wave-baseline" d="M1 6H107"></path>
+            <path d="M1 6H18L22 3L27 9L32 2L38 10L43 6H58L63 4L68 8L73 3L79 9L85 6H107"></path>
+          </svg>
+        </div>
+        <a href="/html/honors.html" class="more-link text-sm text-blue-600">查看更多</a>
       </div>
-      <div class="card overflow-hidden">
+      <div class="card home-content-card overflow-hidden">
         <table class="data-table">
           <thead>
             <tr>
@@ -144,7 +178,7 @@
       if (!container) return;
       
       container.innerHTML = recentEvents.map(event => `
-        <a href="/html/activities.html" class="card group" style="display: block; text-decoration: none; color: inherit;">
+        <a href="/html/activities.html" class="card group home-content-card recent-event-card signal-card" style="display: block; text-decoration: none; color: inherit;">
           <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
           <div class="text-sm text-gray-400 mb-2">${event.date}</div>
           <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>

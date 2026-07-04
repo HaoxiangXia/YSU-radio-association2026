@@ -10,65 +10,65 @@
 <body>
   <div id="nav-placeholder"></div>
 
-  <main class="page-container" style="max-width: 40rem;">
+  <main class="page-container page-container--narrow">
     <h1 class="section-title">报名信息</h1>
 
-    <div class="card mb-6 border-t-4 border-blue-600">
+    <div class="card card-section notice-card mb-6">
       <h3 class="font-bold mb-2 text-gray-800">报名须知</h3>
       <p class="text-gray-500 text-sm">请填写以下信息完成报名，我们会尽快与您联系确认相关事宜</p>
       <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
     </div>
 
-    <form id="registration-form" class="card space-y-4">
+    <form id="registration-form" class="card form-card space-y-4">
       <div>
-        <label class="form-label">姓名 <span class="text-red-500">*</span></label>
-        <input type="text" name="name" class="form-input" placeholder="请输入姓名" required>
+        <label for="registration-name" class="form-label">姓名 <span class="text-red-500">*</span></label>
+        <input type="text" id="registration-name" name="name" class="form-input" placeholder="请输入姓名" aria-describedby="error-name" required>
         <div class="form-error" id="error-name"></div>
       </div>
 
       <div>
-        <label class="form-label">学号 <span class="text-red-500">*</span></label>
-        <input type="text" name="studentId" class="form-input" placeholder="请输入学号" required>
+        <label for="registration-student-id" class="form-label">学号 <span class="text-red-500">*</span></label>
+        <input type="text" id="registration-student-id" name="studentId" class="form-input" placeholder="请输入学号" aria-describedby="error-studentId" required>
         <div class="form-error" id="error-studentId"></div>
       </div>
 
       <div>
-        <label class="form-label">学院 <span class="text-red-500">*</span></label>
-        <select name="college" class="form-input" required>
+        <label for="registration-college" class="form-label">学院 <span class="text-red-500">*</span></label>
+        <select id="registration-college" name="college" class="form-input" aria-describedby="error-college" required>
           <option value="">请选择学院</option>
         </select>
         <div class="form-error" id="error-college"></div>
       </div>
 
       <div>
-        <label class="form-label">年级 <span class="text-red-500">*</span></label>
-        <select name="grade" class="form-input" required>
+        <label for="registration-grade" class="form-label">年级 <span class="text-red-500">*</span></label>
+        <select id="registration-grade" name="grade" class="form-input" aria-describedby="error-grade" required>
           <option value="">请选择年级</option>
         </select>
         <div class="form-error" id="error-grade"></div>
       </div>
 
       <div>
-        <label class="form-label">手机号码 <span class="text-red-500">*</span></label>
-        <input type="tel" name="phone" class="form-input" placeholder="请输入手机号码" required>
+        <label for="registration-phone" class="form-label">手机号码 <span class="text-red-500">*</span></label>
+        <input type="tel" id="registration-phone" name="phone" class="form-input" placeholder="请输入手机号码" aria-describedby="error-phone" required>
         <div class="form-error" id="error-phone"></div>
       </div>
 
       <div>
-        <label class="form-label">电子邮箱 <span class="text-red-500">*</span></label>
-        <input type="email" name="email" class="form-input" placeholder="请输入电子邮箱" required>
+        <label for="registration-email" class="form-label">电子邮箱 <span class="text-red-500">*</span></label>
+        <input type="email" id="registration-email" name="email" class="form-input" placeholder="请输入电子邮箱" aria-describedby="error-email" required>
         <div class="form-error" id="error-email"></div>
       </div>
 
       <div>
-        <label class="form-label">自我介绍 <span class="text-red-500">*</span></label>
-        <textarea name="experience" class="form-input" rows="4" placeholder="请简单介绍自己，包括技术背景、兴趣爱好等（至少10个字符）" required></textarea>
+        <label for="registration-experience" class="form-label">自我介绍 <span class="text-red-500">*</span></label>
+        <textarea id="registration-experience" name="experience" class="form-input" rows="4" placeholder="请简单介绍自己，包括技术背景、兴趣爱好等（至少10个字符）" aria-describedby="error-experience" required></textarea>
         <div class="form-error" id="error-experience"></div>
       </div>
 
       <div>
-        <label class="form-label">加入期望</label>
-        <textarea name="expectation" class="form-input" rows="4" placeholder="请描述你加入协会的期望和目标"></textarea>
+        <label for="registration-expectation" class="form-label">加入期望</label>
+        <textarea id="registration-expectation" name="expectation" class="form-input" rows="4" placeholder="请描述你加入协会的期望和目标"></textarea>
       </div>
 
       <div class="pt-4">
@@ -77,12 +77,12 @@
     </form>
 
     <!-- 成功提示 -->
-    <div id="success-modal" class="modal-overlay">
+    <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
       <div class="modal">
         <div class="text-4xl mb-4">🎉</div>
-        <h3>报名成功！</h3>
+        <h3 id="success-title">报名成功！</h3>
         <p>感谢你的报名，我们会尽快与你联系确认相关事宜。</p>
-        <button class="btn-solid" onclick="closeSuccessModal()">确定</button>
+        <button type="button" class="btn-solid" onclick="closeSuccessModal()">确定</button>
       </div>
     </div>
   </main>

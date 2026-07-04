@@ -10,16 +10,16 @@
 <body>
   <div id="nav-placeholder"></div>
 
-  <main class="page-container" style="max-width: 40rem;">
+  <main class="page-container page-container--narrow">
     <h1 class="section-title">录取查询</h1>
 
-    <div class="card mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">查询录取结果</h2>
+    <div class="card card-section mb-6">
+      <h2 class="card-title">查询录取结果</h2>
       <p class="text-gray-600 text-sm mb-4">请输入你的学号查询录取结果</p>
       
-      <div class="flex gap-4">
-        <input type="text" id="student-id-input" class="form-input" placeholder="请输入12位学号" maxlength="12">
-        <button class="btn-solid" onclick="checkAdmission()">查询</button>
+      <div class="query-form">
+        <input type="text" id="student-id-input" class="form-input" placeholder="请输入12位学号" aria-label="学号" maxlength="12">
+        <button type="button" class="btn-solid" onclick="checkAdmission()">查询</button>
       </div>
       
       <div id="query-result" class="mt-4" style="display: none;">
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card card-section">
       <h3 class="font-bold text-gray-800 mb-3">查询说明</h3>
       <ul class="space-y-2 text-sm text-gray-600">
         <li class="flex items-start gap-2">

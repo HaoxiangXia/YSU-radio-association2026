@@ -14,7 +14,7 @@
     <a href="/html/activities.html" class="back-link">← 返回活动</a>
     <h1 class="section-title">竞赛活动</h1>
 
-    <div id="competitions-list">
+    <div id="competitions-list" class="content-stack">
       <!-- 竞赛内容由 JavaScript 动态生成 -->
     </div>
   </main>
@@ -36,10 +36,10 @@
       if (!container) return;
       
       container.innerHTML = competitions.map(comp => `
-        <div class="card mb-6">
+        <div class="card card-section">
           <div class="flex items-start justify-between mb-4">
             <div>
-              <h2 class="text-xl font-bold text-gray-800">${comp.name}</h2>
+              <h2 class="card-title mb-0">${comp.name}</h2>
               <div class="text-sm text-gray-500 mt-1">${comp.date}</div>
             </div>
             <span class="badge">${comp.year}</span>
@@ -51,12 +51,12 @@
             ${comp.tracks.map(track => `<span class="tag">${track}</span>`).join('')}
           </div>
           
-          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+          <div class="info-panel mb-4">
             <h3 class="font-semibold mb-2 text-sm text-gray-700">参赛人数</h3>
             <p class="text-blue-600 font-bold">${comp.participants} 人</p>
           </div>
           
-          <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="info-panel">
             <h3 class="font-semibold mb-2 text-sm text-gray-700">活动亮点</h3>
             <ul class="space-y-2">
               ${comp.highlights.map(item => `
