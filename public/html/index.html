@@ -7,7 +7,7 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
 </head>
-<body>
+<body class="home-page">
   <div id="nav-placeholder"></div>
 
   <!-- Hero 区域 -->
@@ -15,22 +15,27 @@
     <div class="hero-bg" aria-hidden="true">
       <img src="/images/hero-bg.jpg" alt="">
       <div class="hero-overlay"></div>
-      <div class="hero-grid"></div>
-      <div class="hero-signal">
-        <span></span>
-        <span></span>
-        <span></span>
+      <canvas id="home-hero-canvas" class="home-hero-canvas"></canvas>
+      <div class="home-hero-aurora">
+        <span class="home-hero-aurora-primary"></span>
+        <span class="home-hero-aurora-secondary"></span>
+        <span class="home-hero-aurora-accent"></span>
       </div>
-      <div class="hero-wave"></div>
+      <div class="home-hero-mesh"></div>
+      <div class="home-hero-grain"></div>
     </div>
     <div class="hero-content container">
-      <div class="hero-copy">
-        <div class="hero-eyebrow"><span></span>YSU RADIO ASSOCIATION</div>
+      <div class="hero-copy home-hero-copy">
+        <div class="hero-eyebrow">YSU RADIO ASSOCIATION</div>
         <h1>燕山大学无线电爱好者协会</h1>
         <p>连接无线电技术、电子实践与工程创新</p>
         <div class="hero-buttons">
           <a href="#about-association" class="btn-primary hero-btn-primary">了解协会</a>
           <a href="/html/registration.html" class="btn-primary hero-btn-secondary">加入我们</a>
+        </div>
+        <div class="home-hero-scroll-cue" aria-hidden="true">
+          <span></span>
+          SCROLL TO EXPLORE
         </div>
       </div>
     </div>
@@ -40,7 +45,7 @@
   <main>
     <!-- 协会介绍 + 侧边栏 -->
     <section id="about-association" class="home-about-section max-w-6xl mx-auto px-4 py-10">
-      <div class="grid md:grid-cols-3 gap-6">
+      <div class="grid md:grid-cols-3 gap-6 home-reveal">
         <div class="md:col-span-2">
           <div class="card">
             <p class="text-gray-600 leading-relaxed mb-4">
@@ -104,59 +109,34 @@
     </section>
 
     <!-- 最新动态 -->
-    <section class="radio-section radio-section-grid max-w-6xl mx-auto px-4 pb-10">
-      <div class="themed-section-header flex items-center justify-between mb-6">
-        <div class="themed-section-title">
-          <div class="themed-section-title-row">
-            <h2 class="section-title mb-0 border-none">最新动态</h2>
-            <span class="mini-spectrum" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
+    <section class="home-news-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <span class="home-section-index">01 / LATEST</span>
+            <h2>最新动态</h2>
           </div>
-          <svg class="section-wave" viewBox="0 0 108 12" aria-hidden="true" focusable="false">
-            <path class="section-wave-baseline" d="M1 6H107"></path>
-            <path d="M1 6H18L22 3L27 9L32 2L38 10L43 6H58L63 4L68 8L73 3L79 9L85 6H107"></path>
-          </svg>
+          <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
         </div>
-        <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
-      </div>
-      <div class="space-y-4" id="recent-events">
-        <!-- 动态内容由 JavaScript 动态生成 -->
+        <div class="home-news-grid" id="recent-events">
+          <!-- 动态内容由 JavaScript 动态生成 -->
+        </div>
       </div>
     </section>
 
     <!-- 荣誉成就 -->
-    <section class="radio-section max-w-6xl mx-auto px-4 pb-12">
-      <div class="themed-section-header flex items-center justify-between mb-6">
-        <div class="themed-section-title">
-          <div class="themed-section-title-row">
-            <h2 class="section-title mb-0 border-none">荣誉成就</h2>
-            <span class="mini-radar" aria-hidden="true"></span>
+    <section class="home-honors-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <span class="home-section-index">02 / HONORS</span>
+            <h2>荣誉成就</h2>
           </div>
-          <svg class="section-wave" viewBox="0 0 108 12" aria-hidden="true" focusable="false">
-            <path class="section-wave-baseline" d="M1 6H107"></path>
-            <path d="M1 6H18L22 3L27 9L32 2L38 10L43 6H58L63 4L68 8L73 3L79 9L85 6H107"></path>
-          </svg>
+          <a href="/html/honors.html" class="more-link">查看更多</a>
         </div>
-        <a href="/html/honors.html" class="more-link text-sm text-blue-600">查看更多</a>
-      </div>
-      <div class="card home-content-card overflow-hidden">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="text-left">荣誉名称</th>
-              <th class="text-left" style="width: 7rem;">年份</th>
-              <th class="text-left hidden md:table-cell">颁发机构</th>
-            </tr>
-          </thead>
-          <tbody id="honors-table">
-            <!-- 荣誉内容由 JavaScript 动态生成 -->
-          </tbody>
-        </table>
+        <div class="home-honor-grid" id="honors-grid">
+          <!-- 荣誉内容由 JavaScript 动态生成 -->
+        </div>
       </div>
     </section>
   </main>
@@ -178,36 +158,45 @@
       if (!container) return;
       
       container.innerHTML = recentEvents.map(event => `
-        <a href="/html/activities.html" class="card group home-content-card recent-event-card signal-card" style="display: block; text-decoration: none; color: inherit;">
+        <a href="/html/activities.html" class="card group home-content-card recent-event-card home-reveal-item">
+          <div class="home-card-meta">
+            <span class="home-card-kicker">ASSOCIATION UPDATE</span>
+            <span class="home-card-date">${event.date}</span>
+          </div>
           <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
-          <div class="text-sm text-gray-400 mb-2">${event.date}</div>
           <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>
+          <span class="home-card-link-cue">READ UPDATE <i aria-hidden="true">→</i></span>
         </a>
       `).join('');
     }
 
-    // 渲染荣誉表格
-    function renderHonorsTable() {
-      const tbody = document.getElementById('honors-table');
-      if (!tbody) return;
+    // 渲染荣誉卡片
+    function renderHonorCards() {
+      const container = document.getElementById('honors-grid');
+      if (!container) return;
       
-      tbody.innerHTML = topHonors.map(honor => `
-        <tr>
-          <td class="py-3">
-            <span class="font-medium">${honor.title}</span>
-            ${honor.rank ? `<span class="badge badge-red" style="margin-left: 0.5rem;">TOP${honor.rank}</span>` : ''}
-          </td>
-          <td class="py-3 text-gray-500 text-sm">${honor.year}</td>
-          <td class="py-3 text-gray-500 text-sm hidden md:table-cell">${honor.description}</td>
-        </tr>
+      container.innerHTML = topHonors.map(honor => `
+        <article class="home-honor-card home-reveal-item">
+          <div class="home-honor-card-head">
+            <span class="home-honor-kicker">HONOR / ${honor.year}</span>
+            ${honor.rank ? `<span class="home-honor-rank">TOP ${honor.rank}</span>` : ''}
+          </div>
+          <h3>${honor.title}</h3>
+          <p>${honor.description}</p>
+          <div class="home-honor-card-foot">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
       `).join('');
     }
 
     // 页面加载后渲染
     document.addEventListener('DOMContentLoaded', () => {
       renderRecentEvents();
-      renderHonorsTable();
+      renderHonorCards();
     });
   </script>
+  <script src="/html/home-effects.js"></script>
 </body>
 </html>
