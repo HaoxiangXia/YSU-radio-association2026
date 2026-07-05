@@ -41,22 +41,6 @@
   z-index: -1;
 }
 
-.hero-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 46%;
-  filter: saturate(0.82) contrast(1.04);
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(4, 18, 43, 0.92) 0%, rgba(8, 39, 84, 0.8) 54%, rgba(7, 32, 70, 0.68) 100%),
-    linear-gradient(180deg, rgba(30, 91, 174, 0.08), rgba(2, 12, 29, 0.32));
-}
-
 .hero-content {
   position: relative;
   display: flex;
@@ -340,111 +324,41 @@
 
 /* 首页第五轮：抽象光场与高级交互（仅限首页作用域） */
 .home-page {
-  --home-electric-blue: #72a7ff;
-  --home-cyan: #65e4ff;
-  --home-violet: #8b7cff;
-  --home-magenta: #cf75ff;
-  --home-panel-deep: #030816;
-  --home-surface-blue: #f1f5ff;
-  --home-line-blue: rgba(114, 167, 255, 0.26);
+  --home-electric-blue: #2563eb;
+  --home-cyan: #0891b2;
+  --home-panel-light: #dceafb;
+  --home-surface-blue: #f1f6fd;
+  --home-line-blue: rgba(37, 99, 235, 0.2);
+  background: #f5f8fc;
 }
 
 .home-page .hero {
   height: clamp(560px, 72vh, 680px);
   min-height: 560px;
-  background: var(--home-panel-deep);
-}
-
-.home-page .hero-bg img {
-  opacity: 0.32;
-  transform: scale(1.035);
-  filter: saturate(0.72) contrast(1.12);
-}
-
-.home-page .hero-overlay {
-  background:
-    linear-gradient(90deg, rgba(2, 7, 20, 0.96) 0%, rgba(4, 12, 31, 0.88) 48%, rgba(4, 12, 32, 0.7) 100%),
-    linear-gradient(180deg, rgba(6, 10, 28, 0.42), rgba(2, 6, 18, 0.74));
-  z-index: 1;
+  background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
 }
 
 .home-page .home-hero-canvas {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 2;
   width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
-.home-page .home-hero-aurora {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.home-page .home-hero-aurora span {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  will-change: transform, opacity;
-}
-
-.home-page .home-hero-aurora-primary {
-  top: -42%;
-  right: -5%;
-  width: min(72vw, 940px);
-  aspect-ratio: 1;
-  opacity: 0.72;
-  background: radial-gradient(circle, rgba(66, 153, 255, 0.34) 0, rgba(70, 84, 255, 0.17) 34%, transparent 68%);
-  animation: home-aurora-primary 15s ease-in-out infinite alternate;
-}
-
-.home-page .home-hero-aurora-secondary {
-  right: 22%;
-  bottom: -66%;
-  width: min(66vw, 820px);
-  aspect-ratio: 1;
-  opacity: 0.54;
-  background: radial-gradient(circle, rgba(207, 117, 255, 0.24) 0, rgba(116, 82, 255, 0.12) 38%, transparent 70%);
-  animation: home-aurora-secondary 18s ease-in-out infinite alternate;
-}
-
-.home-page .home-hero-aurora-accent {
-  top: 20%;
-  right: 20%;
-  width: min(32vw, 430px);
-  aspect-ratio: 1;
-  opacity: 0.38;
-  background: radial-gradient(circle, rgba(101, 228, 255, 0.25) 0, rgba(101, 228, 255, 0.06) 42%, transparent 72%);
-  animation: home-aurora-accent 12s ease-in-out infinite alternate;
-}
-
 .home-page .home-hero-mesh {
   position: absolute;
   inset: 0;
-  z-index: 3;
-  opacity: 0.28;
+  z-index: 1;
+  opacity: 0.42;
   background-image:
-    linear-gradient(rgba(146, 190, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(146, 190, 255, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(30, 78, 121, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 78, 121, 0.13) 1px, transparent 1px);
   background-position: center;
   background-size: 52px 52px;
-  -webkit-mask-image: radial-gradient(circle at 68% 48%, #000 0, rgba(0, 0, 0, 0.72) 38%, transparent 76%);
-  mask-image: radial-gradient(circle at 68% 48%, #000 0, rgba(0, 0, 0, 0.72) 38%, transparent 76%);
-}
-
-.home-page .home-hero-grain {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  opacity: 0.18;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.5) 0.45px, transparent 0.7px);
-  background-size: 5px 5px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, #000);
-  mask-image: linear-gradient(90deg, transparent, #000 45%, #000);
+  -webkit-mask-image: linear-gradient(90deg, transparent 4%, rgba(0, 0, 0, 0.22) 34%, #000 58%, #000);
+  mask-image: linear-gradient(90deg, transparent 4%, rgba(0, 0, 0, 0.22) 34%, #000 58%, #000);
   pointer-events: none;
 }
 
@@ -466,7 +380,7 @@
 .home-page .hero-eyebrow {
   gap: 0;
   margin-bottom: 1rem;
-  color: rgba(205, 225, 255, 0.84);
+  color: #315d88;
   font-size: 0.72rem;
   letter-spacing: 0.2em;
 }
@@ -476,8 +390,7 @@
   width: 2.6rem;
   height: 1px;
   margin-right: 0.8rem;
-  background: linear-gradient(90deg, var(--home-cyan), var(--home-violet));
-  box-shadow: 0 0 12px rgba(101, 228, 255, 0.55);
+  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
 }
 
 .home-page .hero-eyebrow span {
@@ -492,16 +405,17 @@
   line-height: 1.05;
   letter-spacing: -0.025em;
   text-wrap: balance;
-  text-shadow: 0 14px 44px rgba(1, 5, 16, 0.55);
+  color: #10233f;
+  text-shadow: none;
 }
 
 .home-page .hero-content p {
   max-width: 42rem;
   margin-bottom: 2rem;
-  color: rgba(229, 238, 255, 0.78);
+  color: #52657d;
   font-size: clamp(1.05rem, 1.5vw, 1.24rem);
   letter-spacing: 0.03em;
-  text-shadow: 0 4px 18px rgba(1, 6, 18, 0.42);
+  text-shadow: none;
 }
 
 .home-page .hero-buttons {
@@ -522,18 +436,18 @@
 }
 
 .home-page .hero .hero-btn-primary {
-  border-color: rgba(255, 255, 255, 0.88);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow:
-    0 12px 34px rgba(3, 9, 24, 0.3),
-    0 0 0 rgba(101, 228, 255, 0);
+  color: #ffffff;
+  border-color: #2563eb;
+  background: #2563eb;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.2);
 }
 
 .home-page .hero .hero-btn-secondary {
-  border-color: rgba(174, 207, 255, 0.38);
-  background: rgba(16, 31, 66, 0.48);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  color: #1e4f91;
+  border-color: rgba(30, 79, 145, 0.32);
+  background: rgba(255, 255, 255, 0.66);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 .home-page .home-hero-scroll-cue {
@@ -542,7 +456,7 @@
   align-items: center;
   gap: 0.7rem;
   margin-top: 3.2rem;
-  color: rgba(192, 211, 242, 0.48);
+  color: rgba(49, 93, 136, 0.68);
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -552,7 +466,7 @@
   width: 2.8rem;
   height: 1px;
   overflow: hidden;
-  background: rgba(184, 211, 255, 0.2);
+  background: rgba(30, 79, 145, 0.18);
 }
 
 .home-page .home-hero-scroll-cue span::after {
@@ -560,7 +474,7 @@
   display: block;
   width: 50%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, var(--home-cyan));
+  background: linear-gradient(90deg, transparent, var(--home-electric-blue));
   transform: translateX(-100%);
   animation: home-scroll-cue 2.8s ease-in-out infinite;
 }
@@ -1141,18 +1055,17 @@
 @media (hover: hover) {
   .home-page .hero .hero-btn-primary:hover {
     transform: translateY(-2px);
-    border-color: #ffffff;
-    background: #ffffff;
-    box-shadow:
-      0 16px 38px rgba(3, 9, 24, 0.35),
-      0 0 28px rgba(101, 228, 255, 0.2);
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.26);
   }
 
   .home-page .hero .hero-btn-secondary:hover {
     transform: translateY(-2px);
-    border-color: rgba(158, 216, 255, 0.72);
-    background: rgba(29, 55, 107, 0.62);
-    box-shadow: 0 12px 32px rgba(4, 12, 30, 0.3);
+    color: #173f73;
+    border-color: rgba(30, 79, 145, 0.5);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 12px 26px rgba(41, 76, 112, 0.13);
   }
 
   .home-page .recent-event-card:hover {
@@ -1209,18 +1122,15 @@
     font-size: clamp(2.55rem, 8vw, 3.45rem);
   }
 
-  .home-page .home-hero-aurora span,
   .home-page .home-hero-scroll-cue span::after {
     animation: none;
   }
 
   .home-page .home-hero-mesh {
-    opacity: 0.2;
+    opacity: 0.3;
     background-size: 44px 44px;
-  }
-
-  .home-page .home-hero-grain {
-    opacity: 0.1;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .home-page.home-effects-ready .home-reveal,
@@ -1295,16 +1205,8 @@
   <!-- Hero 区域 -->
   <header class="hero">
     <div class="hero-bg" aria-hidden="true">
-      <img src="/images/hero-bg.jpg" alt="">
-      <div class="hero-overlay"></div>
       <canvas id="home-hero-canvas" class="home-hero-canvas"></canvas>
-      <div class="home-hero-aurora">
-        <span class="home-hero-aurora-primary"></span>
-        <span class="home-hero-aurora-secondary"></span>
-        <span class="home-hero-aurora-accent"></span>
-      </div>
       <div class="home-hero-mesh"></div>
-      <div class="home-hero-grain"></div>
     </div>
     <div class="hero-content container">
       <div class="hero-copy home-hero-copy">
@@ -1317,7 +1219,7 @@
         </div>
         <div class="home-hero-scroll-cue" aria-hidden="true">
           <span></span>
-          SCROLL TO EXPLORE
+          向下浏览
         </div>
       </div>
     </div>

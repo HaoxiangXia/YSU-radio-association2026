@@ -83,23 +83,30 @@
     };
 
     const particleCount = (viewportWidth) => {
-      if (viewportWidth <= 480) return 16;
-      if (viewportWidth <= 640) return 22;
-      if (viewportWidth <= 800) return 30;
-      if (viewportWidth <= 1100) return 46;
-      return Math.min(68, Math.round(viewportWidth / 22));
+      if (viewportWidth <= 480) return 12;
+      if (viewportWidth <= 640) return 16;
+      if (viewportWidth <= 800) return 18;
+      if (viewportWidth <= 1100) return 30;
+      return Math.min(42, Math.round(viewportWidth / 34));
     };
 
-    const createParticle = () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      velocityX: (Math.random() - 0.5) * 0.11,
-      velocityY: (Math.random() - 0.5) * 0.08,
-      radius: 0.55 + Math.random() * 1.25,
-      opacity: 0.2 + Math.random() * 0.48,
-      depth: 0.35 + Math.random() * 0.9,
-      violet: Math.random() > 0.72,
-    });
+    const createParticle = () => {
+      const desktopStart = width * 0.38;
+
+      return {
+        x: width > 800
+          ? desktopStart + Math.random() * (width - desktopStart)
+          : Math.random() * width,
+        y: Math.random() * height,
+        velocityX: (Math.random() - 0.5) * 0.1,
+        velocityY: (Math.random() - 0.5) * 0.075,
+        radius: 0.7 + Math.random() * 0.7,
+        opacity: 0.28 + Math.random() * 0.2,
+        depth: 0.35 + Math.random() * 0.9,
+        accent: Math.random() > 0.78,
+        anchor: Math.random() > 0.88,
+      };
+    };
 
     const resizeCanvas = () => {
       const bounds = hero.getBoundingClientRect();
@@ -112,7 +119,7 @@
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
       drawConnections = width > 800;
-      connectionDistance = width >= 1200 ? 132 : 112;
+      connectionDistance = width >= 1200 ? 128 : 110;
       particles = Array.from({ length: particleCount(width) }, createParticle);
       canvas.dataset.particleCount = String(particles.length);
       canvas.dataset.connections = drawConnections ? 'enabled' : 'disabled';
@@ -140,7 +147,7 @@
 
     const drawFrame = () => {
       context.clearRect(0, 0, width, height);
-      context.globalCompositeOperation = 'lighter';
+      context.globalCompositeOperation = 'source-over';
 
       pointer.currentX += (pointer.targetX - pointer.currentX) * 0.035;
       pointer.currentY += (pointer.targetY - pointer.currentY) * 0.035;
@@ -154,15 +161,23 @@
         if (particle.y < -8) particle.y = height + 8;
         if (particle.y > height + 8) particle.y = -8;
 
-        particle.drawX = particle.x + pointer.currentX * 14 * particle.depth;
-        particle.drawY = particle.y + pointer.currentY * 10 * particle.depth;
+        particle.drawX = particle.x + pointer.currentX * 5 * particle.depth;
+        particle.drawY = particle.y + pointer.currentY * 4 * particle.depth;
 
         context.beginPath();
         context.arc(particle.drawX, particle.drawY, particle.radius, 0, Math.PI * 2);
-        context.fillStyle = particle.violet
-          ? `rgba(190, 145, 255, ${particle.opacity})`
-          : `rgba(129, 203, 255, ${particle.opacity})`;
+        context.fillStyle = particle.accent
+          ? `rgba(8, 145, 178, ${particle.opacity})`
+          : `rgba(30, 78, 121, ${particle.opacity})`;
         context.fill();
+
+        if (particle.anchor) {
+          context.beginPath();
+          context.arc(particle.drawX, particle.drawY, particle.radius + 2.2, 0, Math.PI * 2);
+          context.strokeStyle = 'rgba(14, 116, 144, 0.34)';
+          context.lineWidth = 0.8;
+          context.stroke();
+        }
       });
 
       if (drawConnections) {
@@ -177,18 +192,16 @@
 
             if (distance >= connectionDistance) continue;
 
-            const opacity = (1 - distance / connectionDistance) * 0.12;
+            const opacity = (1 - distance / connectionDistance) * 0.14;
             context.beginPath();
             context.moveTo(particle.drawX, particle.drawY);
             context.lineTo(nextParticle.drawX, nextParticle.drawY);
-            context.strokeStyle = `rgba(126, 182, 255, ${opacity})`;
-            context.lineWidth = 0.7;
+            context.strokeStyle = `rgba(37, 99, 235, ${opacity})`;
+            context.lineWidth = 0.8;
             context.stroke();
           }
         }
       }
-
-      context.globalCompositeOperation = 'source-over';
     };
 
     const tick = () => {

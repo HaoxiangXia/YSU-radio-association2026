@@ -1668,7 +1668,6 @@ textarea.form-input {
     animation: none !important;
   }
 
-  .home-page .home-hero-aurora span,
   .home-page .home-hero-scroll-cue span::after {
     animation: none !important;
   }
@@ -1691,13 +1690,13 @@ textarea.form-input {
   --site-muted: #5c6b83;
   --site-blue: #2563eb;
   --site-cyan: #06b6d4;
-  --site-violet: #7c3aed;
+  --site-violet: #60a5fa;
   --site-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
   --site-shadow-hover: 0 24px 60px rgba(30, 64, 175, 0.14);
   background:
     radial-gradient(circle at 8% 18%, rgba(59, 130, 246, 0.08), transparent 24rem),
-    radial-gradient(circle at 94% 42%, rgba(124, 58, 237, 0.06), transparent 26rem),
-    #f4f7fb;
+    radial-gradient(circle at 94% 42%, rgba(8, 145, 178, 0.05), transparent 26rem),
+    #f5f8fc;
   color: var(--site-ink);
 }
 
@@ -1721,69 +1720,69 @@ textarea.form-input {
 /* 首页和内页共用的高级导航外观，链接结构保持不变 */
 .home-page .nav,
 .site-page .nav {
-  background: rgba(7, 15, 34, 0.88);
-  border-bottom-color: rgba(148, 163, 184, 0.16);
-  box-shadow: 0 12px 36px rgba(2, 8, 23, 0.16);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  backdrop-filter: blur(18px) saturate(140%);
+  background: rgba(245, 250, 255, 0.96);
+  border-bottom-color: rgba(30, 78, 121, 0.18);
+  box-shadow: 0 4px 14px rgba(41, 76, 112, 0.06);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .home-page .nav-logo,
 .site-page .nav-logo {
-  color: #f8fafc;
+  color: #10233f;
 }
 
 .home-page .nav-logo:hover,
 .site-page .nav-logo:hover {
-  color: #ffffff;
+  color: #1d4ed8;
 }
 
 .home-page .nav-logo img,
 .site-page .nav-logo img {
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: #2563eb;
   border-radius: 8px;
-  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
 }
 
 .home-page .nav-links a,
 .site-page .nav-links a {
   position: relative;
-  color: rgba(226, 232, 240, 0.78);
+  color: #52657d;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 7px;
 }
 
 .home-page .nav-links a:hover,
 .site-page .nav-links a:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(148, 163, 184, 0.16);
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.58);
+  border-color: rgba(37, 99, 235, 0.12);
 }
 
 .home-page .nav-links a.active,
 .site-page .nav-links a.active {
-  color: #ffffff;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(124, 58, 237, 0.22));
-  border-color: rgba(96, 165, 250, 0.3);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.58);
+  border-color: transparent;
+  box-shadow: inset 0 -2px 0 #2563eb;
 }
 
 .home-page .menu-btn,
 .site-page .menu-btn {
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #294866;
+  border: 1px solid rgba(37, 99, 235, 0.18);
   border-radius: 9px;
 }
 
 .home-page .mobile-menu,
 .site-page .mobile-menu {
-  border-top-color: rgba(148, 163, 184, 0.14);
-  background: rgba(7, 15, 34, 0.96);
+  border-top-color: rgba(37, 99, 235, 0.12);
+  background: rgba(248, 251, 255, 0.98);
 }
 
 .home-page .mobile-menu a,
 .site-page .mobile-menu a {
-  color: rgba(226, 232, 240, 0.82);
+  color: #52657d;
   border: 1px solid transparent;
 }
 
@@ -1791,9 +1790,9 @@ textarea.form-input {
 .site-page .mobile-menu a:hover,
 .home-page .mobile-menu a.active,
 .site-page .mobile-menu a.active {
-  color: #ffffff;
-  background: rgba(59, 130, 246, 0.14);
-  border-color: rgba(96, 165, 250, 0.2);
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.72);
+  border-color: rgba(37, 99, 235, 0.18);
 }
 
 /* 内页统一 Page Hero */
@@ -1802,11 +1801,8 @@ textarea.form-input {
   min-height: 18rem;
   overflow: hidden;
   isolation: isolate;
-  color: #ffffff;
-  background:
-    radial-gradient(circle at 78% 18%, rgba(59, 130, 246, 0.34), transparent 26rem),
-    radial-gradient(circle at 20% 110%, rgba(124, 58, 237, 0.25), transparent 24rem),
-    linear-gradient(125deg, #07152f 0%, #0d2450 54%, #151c3f 100%);
+  color: #10233f;
+  background: linear-gradient(125deg, #edf6ff 0%, #e5f1fc 54%, #dcecff 100%);
 }
 
 .site-page .subpage-hero::before {
@@ -1815,27 +1811,28 @@ textarea.form-input {
   inset: 0;
   z-index: -2;
   background-image:
-    linear-gradient(rgba(148, 163, 184, 0.085) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.085) 1px, transparent 1px);
+    linear-gradient(rgba(30, 78, 121, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 78, 121, 0.1) 1px, transparent 1px);
   background-size: 44px 44px;
-  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.72), transparent 88%);
-  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.72), transparent 88%);
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18) 72%, transparent);
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18) 72%, transparent);
 }
 
 .site-page .subpage-hero::after {
   content: '';
   position: absolute;
   z-index: -1;
-  top: -48%;
-  right: -8%;
+  top: -52%;
+  right: -6%;
   width: min(38rem, 58vw);
   aspect-ratio: 1;
-  border: 1px solid rgba(125, 211, 252, 0.14);
+  border: 1px solid rgba(30, 79, 145, 0.2);
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 38% 42%, rgba(56, 189, 248, 0.2), transparent 18%),
-    radial-gradient(circle, transparent 48%, rgba(99, 102, 241, 0.11) 49%, transparent 51%);
-  opacity: 0.82;
+  background: transparent;
+  box-shadow:
+    0 0 0 3.25rem rgba(37, 99, 235, 0.025),
+    0 0 0 7rem rgba(37, 99, 235, 0.02);
+  opacity: 0.74;
   animation: site-hero-orbit 16s ease-in-out infinite alternate;
 }
 
@@ -1853,39 +1850,21 @@ textarea.form-input {
   padding-bottom: 3.75rem;
 }
 
-.site-page .subpage-hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: 0.85rem;
-  color: #7dd3fc;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-}
-
-.site-page .subpage-hero__eyebrow::before {
-  content: '';
-  width: 2.1rem;
-  height: 1px;
-  background: linear-gradient(90deg, #38bdf8, rgba(56, 189, 248, 0.1));
-}
-
 .site-page .subpage-hero h1 {
   max-width: 48rem;
   margin: 0;
-  color: #ffffff;
+  color: #10233f;
   font-size: clamp(2.45rem, 5vw, 4.25rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.035em;
-  text-shadow: 0 12px 32px rgba(2, 8, 23, 0.3);
+  text-shadow: none;
 }
 
 .site-page .subpage-hero p {
   max-width: 42rem;
   margin-top: 1rem;
-  color: rgba(226, 232, 240, 0.78);
+  color: #52657d;
   font-size: clamp(0.98rem, 1.6vw, 1.1rem);
   line-height: 1.8;
 }
@@ -2082,36 +2061,46 @@ textarea.form-input {
 .home-page .footer,
 .site-page .footer {
   margin-top: 0;
-  border-top-color: rgba(148, 163, 184, 0.12);
-  background:
-    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.14), transparent 22rem),
-    #071022;
+  border-top-color: rgba(30, 78, 121, 0.24);
+  background: linear-gradient(180deg, #e7f1fa 0%, #dce9f5 100%);
+}
+
+.home-page .footer .container,
+.site-page .footer .container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.home-page .footer-grid,
+.site-page .footer-grid {
+  gap: 1.5rem;
 }
 
 .home-page .footer h4,
 .site-page .footer h4 {
-  color: #f8fafc;
+  color: #10233f;
 }
 
 .home-page .footer p,
 .home-page .footer a,
 .site-page .footer p,
 .site-page .footer a {
-  color: rgba(203, 213, 225, 0.72);
+  color: #52657d;
 }
 
 .home-page .footer a:hover,
 .site-page .footer a:hover {
-  color: #7dd3fc;
+  color: #1d4ed8;
 }
 
 .home-page .footer-bottom,
 .site-page .footer-bottom {
-  border-top-color: rgba(148, 163, 184, 0.12);
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top-color: rgba(30, 79, 145, 0.14);
 }
 
 /* 只使用 transform 与 opacity 的轻量页面进入效果 */
-.site-page .subpage-hero__eyebrow,
 .site-page .subpage-hero h1,
 .site-page .subpage-hero p,
 .site-page .subpage-content > * {
@@ -2172,19 +2161,19 @@ textarea.form-input {
 @keyframes site-hero-orbit {
   from {
     opacity: 0.62;
-    transform: translate3d(-2%, 0, 0) scale(0.96);
+    transform: translate3d(-5px, 0, 0);
   }
 
   to {
-    opacity: 0.88;
-    transform: translate3d(3%, 4%, 0) scale(1.05);
+    opacity: 0.82;
+    transform: translate3d(5px, 8px, 0);
   }
 }
 
 @media (max-width: 900px) {
   .home-page .nav,
   .site-page .nav {
-    background: rgba(7, 15, 34, 0.96);
+    background: rgba(248, 251, 255, 0.98);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -2228,7 +2217,6 @@ textarea.form-input {
   }
 
   .site-page .subpage-content > *,
-  .site-page .subpage-hero__eyebrow,
   .site-page .subpage-hero h1,
   .site-page .subpage-hero p {
     animation: none;
@@ -2250,11 +2238,6 @@ textarea.form-input {
   .site-page .subpage-hero__inner {
     padding-top: 2.5rem;
     padding-bottom: 2.65rem;
-  }
-
-  .site-page .subpage-hero__eyebrow {
-    margin-bottom: 0.65rem;
-    font-size: 0.65rem;
   }
 
   .site-page .subpage-hero h1 {
@@ -2328,7 +2311,6 @@ textarea.form-input {
 
 @media (prefers-reduced-motion: reduce) {
   .site-page .subpage-hero::after,
-  .site-page .subpage-hero__eyebrow,
   .site-page .subpage-hero h1,
   .site-page .subpage-hero p,
   .site-page .subpage-content > * {
