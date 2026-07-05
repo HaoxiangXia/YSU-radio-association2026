@@ -6,6 +6,217 @@
   <title>协会活动 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
+  <style>
+.card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  color: inherit;
+}
+
+.activity-card {
+  min-height: 14rem;
+  overflow: hidden;
+  padding: 0;
+}
+
+.activity-card > div {
+  height: 100%;
+}
+
+.site-page .activity-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 18rem;
+}
+
+.site-page .activity-card::after {
+  content: '';
+  position: absolute;
+  right: -4rem;
+  bottom: -5rem;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.13), transparent 67%);
+  pointer-events: none;
+}
+
+/* 活动入口：编辑式导航卡，移除 Emoji 原型感 */
+.site-page.activity-page .activity-hub-grid {
+  align-items: stretch;
+}
+
+.site-page.activity-page .activity-gateway {
+  position: relative;
+  display: flex;
+  min-height: 25rem;
+  overflow: hidden;
+  border-color: rgba(96, 165, 250, 0.2);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(96, 165, 250, 0.2), transparent 17rem),
+    linear-gradient(145deg, #ffffff, #f5f8ff);
+  color: var(--site-ink);
+  text-decoration: none;
+}
+
+.site-page.activity-page .activity-gateway--community {
+  --page-accent: #6d4de0;
+  --page-accent-soft: rgba(109, 77, 224, 0.1);
+  border-color: rgba(109, 77, 224, 0.18);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(139, 92, 246, 0.17), transparent 17rem),
+    linear-gradient(145deg, #ffffff, #f8f6ff);
+}
+
+.site-page.activity-page .activity-gateway::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7.5rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--page-accent), #67e8f9);
+}
+
+.site-page.activity-page .activity-gateway__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  max-width: 72%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+.site-page.activity-page .activity-gateway__index {
+  margin-bottom: auto;
+  color: var(--page-accent);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+}
+
+.site-page.activity-page .activity-gateway h2 {
+  margin: 5.25rem 0 0.85rem;
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  letter-spacing: -0.025em;
+}
+
+.site-page.activity-page .activity-gateway p {
+  max-width: 28rem;
+  color: var(--site-muted);
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.site-page.activity-page .activity-gateway .more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 2rem;
+  color: var(--page-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.site-page.activity-page .activity-gateway .more-link::after {
+  content: '→';
+  transition: transform 200ms ease;
+}
+
+.site-page.activity-page .activity-gateway__visual {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48%;
+  height: 100%;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.site-page.activity-page .activity-gateway__visual::before {
+  content: '';
+  position: absolute;
+  inset: 12% -34% 12% 8%;
+  border: 1px solid var(--page-accent-soft);
+  border-radius: 50%;
+}
+
+.site-page.activity-page .activity-gateway__visual span {
+  position: absolute;
+  border: 1px solid var(--page-accent-soft);
+  background: var(--page-accent-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span {
+  width: 4.25rem;
+  aspect-ratio: 1;
+  border-radius: 13px;
+  transform: rotate(18deg);
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(1) {
+  top: 18%;
+  right: 18%;
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(2) {
+  top: 44%;
+  right: 40%;
+  width: 2.8rem;
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(3) {
+  right: 8%;
+  bottom: 14%;
+  width: 6rem;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span {
+  border-radius: 50%;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(1) {
+  top: 17%;
+  right: 15%;
+  width: 7rem;
+  aspect-ratio: 1;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(2) {
+  top: 48%;
+  right: 42%;
+  width: 2.25rem;
+  aspect-ratio: 1;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(3) {
+  right: 8%;
+  bottom: 11%;
+  width: 3.75rem;
+  aspect-ratio: 1;
+}
+
+@media (hover: hover) {
+  .site-page.activity-page .activity-gateway:hover .more-link::after {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-page.activity-page .activity-gateway .more-link::after {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+  </style>
 </head>
 <body class="site-page sub-page activity-page">
   <div id="nav-placeholder"></div>

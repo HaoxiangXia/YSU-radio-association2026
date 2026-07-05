@@ -6,6 +6,160 @@
   <title>荣誉成就 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
+  <style>
+/* 高亮行 */
+.highlight-row {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.highlight-row td {
+  font-weight: 500;
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.site-page .highlight-row {
+  background: linear-gradient(90deg, rgba(219, 234, 254, 0.75), rgba(238, 242, 255, 0.5));
+}
+
+.site-page.honor-page {
+  --page-accent: #b7791f;
+  --page-accent-soft: rgba(217, 119, 6, 0.1);
+}
+
+/* 荣誉页：正式记录卡、榜单和统计分区 */
+.site-page.honor-page .honor-feature-grid {
+  align-items: stretch;
+}
+
+.site-page.honor-page .honor-feature-card {
+  position: relative;
+  display: flex;
+  min-height: 17rem;
+  overflow: hidden;
+  flex-direction: column;
+  border-color: rgba(59, 130, 246, 0.17);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.15), transparent 12rem),
+    linear-gradient(145deg, #ffffff, #f8faff);
+}
+
+.site-page.honor-page .honor-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.35rem;
+  width: 5.5rem;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #67e8f9);
+}
+
+.site-page.honor-page .honor-feature-card__topline,
+.site-page.honor-page .honor-feature-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-page.honor-page .honor-feature-card__topline {
+  color: #4d75c4;
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.site-page.honor-page .honor-feature-card__number {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.site-page.honor-page .honor-feature-card h3 {
+  margin: 2.5rem 0 0.85rem;
+  color: var(--site-ink);
+  font-size: clamp(1.12rem, 2.1vw, 1.42rem);
+  line-height: 1.45;
+}
+
+.site-page.honor-page .honor-feature-card > p {
+  color: var(--site-muted);
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+
+.site-page.honor-page .honor-feature-card__footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  color: #7890b3;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+}
+
+.site-page.honor-page .honor-section {
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.site-page.honor-page .honor-section__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.site-page.honor-page .honor-section__heading span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #4d75c4;
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+}
+
+.site-page.honor-page .honor-section__heading .card-title {
+  margin-bottom: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+}
+
+.site-page.honor-page .honor-section__heading > p {
+  color: var(--site-muted);
+  font-size: 0.78rem;
+}
+
+.site-page.honor-page .honor-ranking .overflow-x-auto {
+  box-shadow: none;
+}
+
+.site-page.honor-page .honor-ranking .highlight-row {
+  box-shadow: inset 3px 0 #2563eb;
+}
+
+.site-page.honor-page .honor-competitions {
+  background:
+    radial-gradient(circle at 100% 50%, rgba(96, 165, 250, 0.12), transparent 18rem),
+    #ffffff;
+}
+
+.site-page.honor-page .honor-competitions .tag {
+  padding: 0.55rem 0.9rem;
+  background: rgba(239, 246, 255, 0.82);
+}
+
+.site-page.honor-page .honor-stats-panel {
+  background:
+    radial-gradient(circle at 88% 20%, rgba(96, 165, 250, 0.18), transparent 18rem),
+    linear-gradient(145deg, #f8fbff, #edf4ff);
+}
+
+.site-page.honor-page .honor-stats-grid .stat-card {
+  border-color: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 8px 22px rgba(30, 64, 175, 0.06);
+}
+  </style>
 </head>
 <body class="site-page sub-page honor-page">
   <div id="nav-placeholder"></div>
