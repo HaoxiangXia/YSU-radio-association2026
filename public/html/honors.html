@@ -18,15 +18,21 @@
     </div>
   </header>
 
-  <main class="page-container subpage-content">
+  <main class="page-container subpage-content honor-content">
     <!-- 荣誉卡片 -->
-    <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6">
+    <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6 honor-feature-grid">
       <!-- 荣誉卡片由 JavaScript 动态生成 -->
     </div>
 
     <!-- 活力团支部榜单 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">河北省高校活力团支部TOP10</h2>
+    <section class="card card-section mb-6 honor-section honor-ranking">
+      <div class="honor-section__heading">
+        <div>
+          <span>RANKING / 2024</span>
+          <h2 class="card-title">河北省高校活力团支部TOP10</h2>
+        </div>
+        <p>省内高校团支部活力建设榜单</p>
+      </div>
       <div class="overflow-x-auto">
         <table class="data-table">
           <thead>
@@ -41,20 +47,30 @@
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
 
     <!-- 竞赛列表 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">参与竞赛</h2>
+    <section class="card card-section mb-6 honor-section honor-competitions">
+      <div class="honor-section__heading">
+        <div>
+          <span>COMPETITIONS</span>
+          <h2 class="card-title">参与竞赛</h2>
+        </div>
+      </div>
       <div class="flex flex-wrap gap-2" id="competition-tags">
         <!-- 竞赛标签由 JavaScript 动态生成 -->
       </div>
-    </div>
+    </section>
 
     <!-- 成就统计 -->
-    <div class="card card-section">
-      <h2 class="card-title">成就统计</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <section class="card card-section honor-section honor-stats-panel">
+      <div class="honor-section__heading">
+        <div>
+          <span>ACHIEVEMENT OVERVIEW</span>
+          <h2 class="card-title">成就统计</h2>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 honor-stats-grid">
         <div class="stat-card">
           <div class="stat-value">150+</div>
           <div class="stat-label">获奖总数</div>
@@ -72,7 +88,7 @@
           <div class="stat-label">其他奖项</div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 
   <div id="footer-placeholder"></div>
@@ -91,16 +107,19 @@
       const container = document.getElementById('honors-cards');
       if (!container) return;
       
-      container.innerHTML = topHonors.map(honor => `
-        <div class="card card-section">
-          <div class="text-center">
-            <div class="text-3xl mb-2">${honor.rank ? '🏅' : '🏆'}</div>
-            <h3 class="font-bold text-gray-800 mb-2">${honor.title}</h3>
-            <div class="text-sm text-gray-500 mb-2">${honor.year}</div>
-            ${honor.rank ? `<span class="badge badge-red">TOP${honor.rank}</span>` : ''}
-            <p class="text-gray-600 text-sm mt-3">${honor.description}</p>
+      container.innerHTML = topHonors.map((honor, index) => `
+        <article class="card card-section honor-feature-card">
+          <div class="honor-feature-card__topline">
+            <span>HONOR / ${honor.year}</span>
+            ${honor.rank ? `<span class="badge badge-red">TOP ${honor.rank}</span>` : `<span class="honor-feature-card__number">${String(index + 1).padStart(2, '0')}</span>`}
           </div>
-        </div>
+          <h3>${honor.title}</h3>
+          <p>${honor.description}</p>
+          <div class="honor-feature-card__footer">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
       `).join('');
     }
 

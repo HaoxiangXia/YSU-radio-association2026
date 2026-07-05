@@ -42,38 +42,39 @@
       const container = document.getElementById('competitions-list');
       if (!container) return;
       
-      container.innerHTML = competitions.map(comp => `
-        <div class="card card-section">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <h2 class="card-title mb-0">${comp.name}</h2>
-              <div class="text-sm text-gray-500 mt-1">${comp.date}</div>
-            </div>
+      container.innerHTML = competitions.map((comp, index) => `
+        <article class="card card-section activity-record activity-record--competition">
+          <div class="activity-record__rail">
+            <span class="activity-record__index">${String(index + 1).padStart(2, '0')}</span>
+            <span class="activity-record__date">${comp.date}</span>
             <span class="badge">${comp.year}</span>
           </div>
-          
-          <p class="text-gray-600 text-sm leading-relaxed mb-4">${comp.description}</p>
-          
-          <div class="flex flex-wrap gap-2 mb-4">
-            ${comp.tracks.map(track => `<span class="tag">${track}</span>`).join('')}
+
+          <div class="activity-record__content">
+            <h2 class="card-title">${comp.name}</h2>
+            <p class="activity-record__summary">${comp.description}</p>
+
+            <div class="flex flex-wrap gap-2 activity-record__tags">
+              ${comp.tracks.map(track => `<span class="tag">${track}</span>`).join('')}
+            </div>
+
+            <div class="activity-record__details">
+              <div class="info-panel activity-record__metric">
+                <span>参赛人数</span>
+                <strong>${comp.participants} 人</strong>
+              </div>
+
+              <div class="info-panel activity-record__highlights">
+                <h3>活动亮点</h3>
+                <ul class="space-y-2">
+                  ${comp.highlights.map(item => `
+                    <li><span aria-hidden="true"></span>${item}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
           </div>
-          
-          <div class="info-panel mb-4">
-            <h3 class="font-semibold mb-2 text-sm text-gray-700">参赛人数</h3>
-            <p class="text-blue-600 font-bold">${comp.participants} 人</p>
-          </div>
-          
-          <div class="info-panel">
-            <h3 class="font-semibold mb-2 text-sm text-gray-700">活动亮点</h3>
-            <ul class="space-y-2">
-              ${comp.highlights.map(item => `
-                <li class="text-sm text-gray-600 flex items-start gap-2">
-                  <span class="text-blue-400 mt-1">-</span>${item}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-        </div>
+        </article>
       `).join('');
     }
 

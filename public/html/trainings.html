@@ -18,36 +18,45 @@
     </div>
   </header>
 
-  <main class="page-container subpage-content">
+  <main class="page-container subpage-content training-content">
     <!-- 培训体系概述 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">培训体系</h2>
+    <section class="card card-section mb-6 training-section training-overview">
+      <div class="training-section__heading">
+        <span>01 / LEARNING SYSTEM</span>
+        <h2 class="card-title">培训体系</h2>
+      </div>
       <p class="text-gray-600 leading-relaxed mb-4">
         协会建立了完善的培训体系，从基础入门到高级进阶，涵盖嵌入式开发、编程、机械设计等多个方向。通过系统的课程安排和实践项目，帮助成员快速成长。
       </p>
       
       <!-- 培训统计 -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6" id="training-stats">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6 training-stats" id="training-stats">
         <!-- 统计内容由 JavaScript 动态生成 -->
       </div>
       
       <!-- 技能标签 -->
-      <div class="flex flex-wrap gap-2" id="skill-tags">
+      <div class="flex flex-wrap gap-2 training-skills" id="skill-tags">
         <!-- 技能标签由 JavaScript 动态生成 -->
       </div>
-    </div>
+    </section>
 
     <!-- 培训时间线 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">培训时间线</h2>
+    <section class="card card-section mb-6 training-section training-roadmap">
+      <div class="training-section__heading">
+        <span>02 / ROADMAP</span>
+        <h2 class="card-title">培训时间线</h2>
+      </div>
       <div class="timeline" id="training-timeline">
         <!-- 时间线内容由 JavaScript 动态生成 -->
       </div>
-    </div>
+    </section>
 
     <!-- 课程安排 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">每周课程安排</h2>
+    <section class="card card-section mb-6 training-section training-schedule">
+      <div class="training-section__heading">
+        <span>03 / WEEKLY SCHEDULE</span>
+        <h2 class="card-title">每周课程安排</h2>
+      </div>
       <div class="overflow-x-auto">
         <table class="data-table">
           <thead>
@@ -61,22 +70,26 @@
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
 
     <!-- 往期培训 -->
-    <div class="card card-section mb-6">
-      <h2 class="card-title">往期培训</h2>
+    <section class="card card-section mb-6 training-section training-archive">
+      <div class="training-section__heading">
+        <span>04 / ARCHIVE</span>
+        <h2 class="card-title">往期培训</h2>
+      </div>
       <div id="past-trainings">
         <!-- 往期培训内容由 JavaScript 动态生成 -->
       </div>
-    </div>
+    </section>
 
     <!-- 报名号召 -->
-    <div class="card card-section cta-card text-center p-8">
+    <section class="card card-section cta-card text-center p-8 training-cta">
+      <span class="training-cta__eyebrow">START YOUR PRACTICE</span>
       <h2 class="card-title">加入我们</h2>
       <p class="text-gray-600 mb-6">对技术充满热情？想要学习新技能？加入无线电爱好者协会，开启你的技术之旅！</p>
       <a href="/html/registration.html" class="btn-solid">立即报名</a>
-    </div>
+    </section>
   </main>
 
   <div id="footer-placeholder"></div>
@@ -146,18 +159,18 @@
       if (!container) return;
       
       container.innerHTML = pastTrainings.map(training => `
-        <div class="info-panel mb-4">
+        <article class="info-panel training-archive-item">
           <div class="flex items-start justify-between mb-2">
             <h3 class="font-bold text-gray-800">${training.title}</h3>
             <span class="text-sm text-gray-500">${training.date}</span>
           </div>
           <p class="text-gray-600 text-sm mb-2">${training.description}</p>
-          <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-            <span>📍 ${training.location}</span>
-            <span>👨‍🏫 ${training.instructor}</span>
-            <span>👥 ${training.target}</span>
+          <div class="training-archive-item__meta">
+            <span><strong>地点</strong>${training.location}</span>
+            <span><strong>讲师</strong>${training.instructor}</span>
+            <span><strong>对象</strong>${training.target}</span>
           </div>
-        </div>
+        </article>
       `).join('');
     }
 

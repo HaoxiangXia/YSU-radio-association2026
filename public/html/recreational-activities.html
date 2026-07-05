@@ -42,27 +42,30 @@
       const container = document.getElementById('recreational-list');
       if (!container) return;
       
-      container.innerHTML = recreationalActivities.map(activity => `
-        <div class="card card-section">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <h2 class="card-title mb-0">${activity.name}</h2>
-              <div class="text-sm text-gray-500 mt-1">${activity.date}</div>
+      container.innerHTML = recreationalActivities.map((activity, index) => `
+        <article class="card card-section activity-record activity-record--community">
+          <div class="activity-record__rail">
+            <span class="activity-record__index">${String(index + 1).padStart(2, '0')}</span>
+            <span class="activity-record__date">${activity.date}</span>
+          </div>
+
+          <div class="activity-record__content">
+            <h2 class="card-title">${activity.name}</h2>
+            <p class="activity-record__summary">${activity.description}</p>
+
+            <div class="activity-record__details activity-record__details--equal">
+              <div class="info-panel activity-record__note">
+                <h3>参与人员</h3>
+                <p>${activity.participants}</p>
+              </div>
+
+              <div class="info-panel activity-record__note">
+                <h3>活动成果</h3>
+                <p>${activity.achievements}</p>
+              </div>
             </div>
           </div>
-          
-          <p class="text-gray-600 text-sm leading-relaxed mb-4">${activity.description}</p>
-          
-          <div class="info-panel mb-4">
-            <h3 class="font-semibold mb-2 text-sm text-gray-700">参与人员</h3>
-            <p class="text-gray-600 text-sm">${activity.participants}</p>
-          </div>
-          
-          <div class="info-panel">
-            <h3 class="font-semibold mb-2 text-sm text-gray-700">活动成果</h3>
-            <p class="text-gray-600 text-sm">${activity.achievements}</p>
-          </div>
-        </div>
+        </article>
       `).join('');
     }
 

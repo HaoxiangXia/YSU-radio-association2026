@@ -18,8 +18,9 @@
     </div>
   </header>
 
-  <main class="page-container page-container--narrow subpage-content">
-    <div class="card card-section mb-6">
+  <main class="page-container page-container--narrow subpage-content query-content">
+    <section class="card card-section mb-6 query-card">
+      <span class="query-card__eyebrow">RESULT LOOKUP</span>
       <h2 class="card-title">查询录取结果</h2>
       <p class="text-gray-600 text-sm mb-4">请输入你的学号查询录取结果</p>
       
@@ -31,9 +32,9 @@
       <div id="query-result" class="mt-4" style="display: none;">
         <!-- 查询结果由 JavaScript 动态生成 -->
       </div>
-    </div>
+    </section>
 
-    <div class="card card-section">
+    <aside class="card card-section query-guide">
       <h3 class="font-bold text-gray-800 mb-3">查询说明</h3>
       <ul class="space-y-2 text-sm text-gray-600">
         <li class="flex items-start gap-2">
@@ -49,7 +50,7 @@
           如有疑问，请联系协会负责人
         </li>
       </ul>
-    </div>
+    </aside>
   </main>
 
   <div id="footer-placeholder"></div>

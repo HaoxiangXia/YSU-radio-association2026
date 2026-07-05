@@ -18,14 +18,19 @@
     </div>
   </header>
 
-  <main class="page-container page-container--narrow subpage-content">
-    <div class="card card-section notice-card mb-6">
+  <main class="page-container page-container--narrow subpage-content recruit-content">
+    <div class="card card-section notice-card mb-6 recruit-notice">
       <h3 class="font-bold mb-2 text-gray-800">报名须知</h3>
       <p class="text-gray-500 text-sm">请填写以下信息完成报名，我们会尽快与您联系确认相关事宜</p>
       <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
     </div>
 
-    <form id="registration-form" class="card form-card space-y-4">
+    <form id="registration-form" class="card form-card space-y-4 recruit-form">
+      <div class="recruit-form__heading">
+        <span>APPLICATION FORM</span>
+        <h2>填写报名资料</h2>
+        <p>请确保联系方式准确，提交前可再次检查填写内容。</p>
+      </div>
       <div>
         <label for="registration-name" class="form-label">姓名 <span class="text-red-500">*</span></label>
         <input type="text" id="registration-name" name="name" class="form-input" placeholder="请输入姓名" aria-describedby="error-name" required>

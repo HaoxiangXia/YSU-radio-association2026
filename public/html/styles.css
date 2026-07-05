@@ -2972,37 +2972,39 @@ textarea.form-input {
 
 .home-page .home-honors-section {
   isolation: isolate;
+  border-top-color: rgba(107, 139, 196, 0.16);
   background:
-    radial-gradient(circle at 12% 18%, rgba(69, 114, 255, 0.3), transparent 30rem),
-    radial-gradient(circle at 88% 75%, rgba(188, 95, 255, 0.18), transparent 28rem),
-    linear-gradient(145deg, #070d20, #050817 70%);
+    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
+    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
+    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
 }
 
 .home-page .home-honors-section::after {
   content: "";
   position: absolute;
   z-index: 0;
-  inset: 0;
-  opacity: 0.32;
-  background-image:
-    linear-gradient(rgba(131, 165, 230, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(131, 165, 230, 0.08) 1px, transparent 1px);
-  background-size: 58px 58px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 42%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 42%, transparent);
+  top: -12rem;
+  right: -10rem;
+  width: 34rem;
+  height: 34rem;
+  border: 1px solid rgba(114, 167, 255, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4rem rgba(114, 167, 255, 0.025),
+    0 0 0 8rem rgba(139, 124, 255, 0.018);
   pointer-events: none;
 }
 
 .home-page .home-honors-section .home-section-index {
-  color: #91b4f5;
+  color: #5578b9;
 }
 
 .home-page .home-honors-section .home-section-heading h2 {
-  color: #f5f8ff;
+  color: #101d35;
 }
 
 .home-page .home-honors-section .more-link {
-  color: #c8dcff;
+  color: #2563eb;
 }
 
 .home-page .home-honor-grid {
@@ -3012,35 +3014,46 @@ textarea.form-input {
 }
 
 .home-page .home-honor-card {
-  min-height: 278px;
-  border-color: rgba(155, 189, 255, 0.18);
+  min-height: 248px;
+  border: 1px solid transparent;
   background:
-    linear-gradient(145deg, rgba(26, 48, 93, 0.76), rgba(8, 18, 43, 0.88));
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.94)) padding-box,
+    linear-gradient(135deg, rgba(114, 167, 255, 0.42), rgba(101, 228, 255, 0.15), rgba(139, 124, 255, 0.25)) border-box;
   box-shadow:
-    0 22px 52px rgba(0, 4, 16, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+    0 18px 45px rgba(37, 66, 112, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .home-page .home-honor-card::after {
-  opacity: 0.34;
-  background: radial-gradient(circle, rgba(139, 124, 255, 0.32), transparent 68%);
+  opacity: 0.28;
+  background: radial-gradient(circle, rgba(114, 167, 255, 0.26), transparent 68%);
 }
 
 .home-page .home-honor-kicker {
-  color: #8fbdff;
+  color: #426dcc;
+}
+
+.home-page .home-honor-rank {
+  border-color: rgba(217, 119, 6, 0.28);
+  color: #a16207;
+  background: rgba(245, 158, 11, 0.08);
 }
 
 .home-page .home-honor-card h3 {
   position: relative;
   z-index: 1;
-  color: #f6f8ff;
+  color: #102b57;
   font-size: 1.12rem;
 }
 
 .home-page .home-honor-card p {
   position: relative;
   z-index: 1;
-  color: #b8c7e2;
+  color: #566b8a;
+}
+
+.home-page .home-honor-card-foot {
+  color: #64748b;
 }
 
 .home-page .home-honor-card-foot,
@@ -3106,10 +3119,9 @@ textarea.form-input {
 
   .home-page .home-honor-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(142, 192, 255, 0.34);
     box-shadow:
-      0 28px 62px rgba(0, 4, 16, 0.34),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 24px 56px rgba(37, 66, 112, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.94);
   }
 }
 
@@ -4072,6 +4084,913 @@ textarea.form-input {
   .site-page .btn-solid:hover,
   .site-page .btn-primary:hover,
   .site-page .back-link:hover {
+    transform: none !important;
+  }
+}
+
+/* 第七轮：内页编辑式视觉层级（按页面作用域隔离） */
+.site-page.activity-page {
+  --page-accent: #2563eb;
+  --page-accent-soft: rgba(37, 99, 235, 0.1);
+}
+
+.site-page.honor-page {
+  --page-accent: #b7791f;
+  --page-accent-soft: rgba(217, 119, 6, 0.1);
+}
+
+.site-page.departments-page {
+  --page-accent: #0f72c9;
+  --page-accent-soft: rgba(14, 116, 201, 0.09);
+}
+
+.site-page.training-page {
+  --page-accent: #087f8c;
+  --page-accent-soft: rgba(8, 127, 140, 0.09);
+}
+
+/* 活动入口：编辑式导航卡，移除 Emoji 原型感 */
+.site-page.activity-page .activity-hub-grid {
+  align-items: stretch;
+}
+
+.site-page.activity-page .activity-gateway {
+  position: relative;
+  display: flex;
+  min-height: 25rem;
+  overflow: hidden;
+  border-color: rgba(96, 165, 250, 0.2);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(96, 165, 250, 0.2), transparent 17rem),
+    linear-gradient(145deg, #ffffff, #f5f8ff);
+  color: var(--site-ink);
+  text-decoration: none;
+}
+
+.site-page.activity-page .activity-gateway--community {
+  --page-accent: #6d4de0;
+  --page-accent-soft: rgba(109, 77, 224, 0.1);
+  border-color: rgba(109, 77, 224, 0.18);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(139, 92, 246, 0.17), transparent 17rem),
+    linear-gradient(145deg, #ffffff, #f8f6ff);
+}
+
+.site-page.activity-page .activity-gateway::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7.5rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--page-accent), #67e8f9);
+}
+
+.site-page.activity-page .activity-gateway__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  max-width: 72%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+.site-page.activity-page .activity-gateway__index {
+  margin-bottom: auto;
+  color: var(--page-accent);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+}
+
+.site-page.activity-page .activity-gateway h2 {
+  margin: 5.25rem 0 0.85rem;
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  letter-spacing: -0.025em;
+}
+
+.site-page.activity-page .activity-gateway p {
+  max-width: 28rem;
+  color: var(--site-muted);
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.site-page.activity-page .activity-gateway .more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 2rem;
+  color: var(--page-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.site-page.activity-page .activity-gateway .more-link::after {
+  content: '→';
+  transition: transform 200ms ease;
+}
+
+.site-page.activity-page .activity-gateway__visual {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48%;
+  height: 100%;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.site-page.activity-page .activity-gateway__visual::before {
+  content: '';
+  position: absolute;
+  inset: 12% -34% 12% 8%;
+  border: 1px solid var(--page-accent-soft);
+  border-radius: 50%;
+}
+
+.site-page.activity-page .activity-gateway__visual span {
+  position: absolute;
+  border: 1px solid var(--page-accent-soft);
+  background: var(--page-accent-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span {
+  width: 4.25rem;
+  aspect-ratio: 1;
+  border-radius: 13px;
+  transform: rotate(18deg);
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(1) {
+  top: 18%;
+  right: 18%;
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(2) {
+  top: 44%;
+  right: 40%;
+  width: 2.8rem;
+}
+
+.site-page.activity-page .activity-gateway--competition .activity-gateway__visual span:nth-child(3) {
+  right: 8%;
+  bottom: 14%;
+  width: 6rem;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span {
+  border-radius: 50%;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(1) {
+  top: 17%;
+  right: 15%;
+  width: 7rem;
+  aspect-ratio: 1;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(2) {
+  top: 48%;
+  right: 42%;
+  width: 2.25rem;
+  aspect-ratio: 1;
+}
+
+.site-page.activity-page .activity-gateway--community .activity-gateway__visual span:nth-child(3) {
+  right: 8%;
+  bottom: 11%;
+  width: 3.75rem;
+  aspect-ratio: 1;
+}
+
+@media (hover: hover) {
+  .site-page.activity-page .activity-gateway:hover .more-link::after {
+    transform: translateX(4px);
+  }
+}
+
+/* 活动详情：日期侧栏 + 记录内容 */
+.site-page.activity-page .activity-record {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 10.5rem) minmax(0, 1fr);
+  overflow: hidden;
+  padding: 0;
+}
+
+.site-page.activity-page .activity-record::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--page-accent), #67e8f9);
+}
+
+.site-page.recreational-page .activity-record {
+  --page-accent: #6d4de0;
+  --page-accent-soft: rgba(109, 77, 224, 0.1);
+}
+
+.site-page.activity-page .activity-record__rail {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid rgba(148, 163, 184, 0.16);
+  background:
+    linear-gradient(180deg, var(--page-accent-soft), rgba(248, 250, 252, 0.28));
+}
+
+.site-page.activity-page .activity-record__index {
+  color: var(--page-accent);
+  font-size: 1.9rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.site-page.activity-page .activity-record__date {
+  color: var(--site-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.site-page.activity-page .activity-record__content {
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.site-page.activity-page .activity-record__content > .card-title {
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+}
+
+.site-page.activity-page .activity-record__summary {
+  max-width: 52rem;
+  margin-bottom: 1.25rem;
+  color: var(--site-muted);
+  font-size: 0.94rem;
+  line-height: 1.8;
+}
+
+.site-page.activity-page .activity-record__tags {
+  margin-bottom: 1.4rem;
+}
+
+.site-page.activity-page .activity-record__details {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.42fr) minmax(0, 1fr);
+  gap: 0.9rem;
+}
+
+.site-page.activity-page .activity-record__details--equal {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.site-page.activity-page .activity-record__metric,
+.site-page.activity-page .activity-record__note,
+.site-page.activity-page .activity-record__highlights {
+  padding: 1rem;
+  box-shadow: none;
+}
+
+.site-page.activity-page .activity-record__metric {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.site-page.activity-page .activity-record__metric span,
+.site-page.activity-page .activity-record__note h3,
+.site-page.activity-page .activity-record__highlights h3 {
+  margin-bottom: 0.45rem;
+  color: #475569;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.site-page.activity-page .activity-record__metric strong {
+  color: var(--page-accent);
+  font-size: 1.35rem;
+}
+
+.site-page.activity-page .activity-record__note p,
+.site-page.activity-page .activity-record__highlights li {
+  color: var(--site-muted);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.site-page.activity-page .activity-record__highlights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.site-page.activity-page .activity-record__highlights li > span {
+  width: 0.35rem;
+  height: 0.35rem;
+  flex: 0 0 auto;
+  margin-top: 0.55rem;
+  border-radius: 50%;
+  background: var(--page-accent);
+}
+
+/* 荣誉页：正式记录卡、榜单和统计分区 */
+.site-page.honor-page .honor-feature-grid {
+  align-items: stretch;
+}
+
+.site-page.honor-page .honor-feature-card {
+  position: relative;
+  display: flex;
+  min-height: 17rem;
+  overflow: hidden;
+  flex-direction: column;
+  border-color: rgba(59, 130, 246, 0.17);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.15), transparent 12rem),
+    linear-gradient(145deg, #ffffff, #f8faff);
+}
+
+.site-page.honor-page .honor-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.35rem;
+  width: 5.5rem;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #67e8f9);
+}
+
+.site-page.honor-page .honor-feature-card__topline,
+.site-page.honor-page .honor-feature-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-page.honor-page .honor-feature-card__topline {
+  color: #4d75c4;
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.site-page.honor-page .honor-feature-card__number {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.site-page.honor-page .honor-feature-card h3 {
+  margin: 2.5rem 0 0.85rem;
+  color: var(--site-ink);
+  font-size: clamp(1.12rem, 2.1vw, 1.42rem);
+  line-height: 1.45;
+}
+
+.site-page.honor-page .honor-feature-card > p {
+  color: var(--site-muted);
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+
+.site-page.honor-page .honor-feature-card__footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  color: #7890b3;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+}
+
+.site-page.honor-page .honor-section {
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.site-page.honor-page .honor-section__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.site-page.honor-page .honor-section__heading span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #4d75c4;
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+}
+
+.site-page.honor-page .honor-section__heading .card-title {
+  margin-bottom: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+}
+
+.site-page.honor-page .honor-section__heading > p {
+  color: var(--site-muted);
+  font-size: 0.78rem;
+}
+
+.site-page.honor-page .honor-ranking .overflow-x-auto {
+  box-shadow: none;
+}
+
+.site-page.honor-page .honor-ranking .highlight-row {
+  box-shadow: inset 3px 0 #2563eb;
+}
+
+.site-page.honor-page .honor-competitions {
+  background:
+    radial-gradient(circle at 100% 50%, rgba(96, 165, 250, 0.12), transparent 18rem),
+    #ffffff;
+}
+
+.site-page.honor-page .honor-competitions .tag {
+  padding: 0.55rem 0.9rem;
+  background: rgba(239, 246, 255, 0.82);
+}
+
+.site-page.honor-page .honor-stats-panel {
+  background:
+    radial-gradient(circle at 88% 20%, rgba(96, 165, 250, 0.18), transparent 18rem),
+    linear-gradient(145deg, #f8fbff, #edf4ff);
+}
+
+.site-page.honor-page .honor-stats-grid .stat-card {
+  border-color: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 8px 22px rgba(30, 64, 175, 0.06);
+}
+
+/* 部门页：部门头部、指标与内容分层 */
+.site-page.departments-page .content-stack {
+  gap: 2rem;
+}
+
+.site-page.departments-page .department-card {
+  position: relative;
+  overflow: hidden;
+  border-top: 3px solid var(--page-accent);
+  background:
+    radial-gradient(circle at 96% 0%, var(--page-accent-soft), transparent 18rem),
+    linear-gradient(145deg, #ffffff, #fafcff);
+}
+
+.site-page.departments-page .department-card:nth-child(even) {
+  --page-accent: #5b5bd6;
+  --page-accent-soft: rgba(91, 91, 214, 0.08);
+}
+
+.site-page.departments-page .department-card__heading {
+  margin-bottom: 1.3rem;
+}
+
+.site-page.departments-page .department-card__index {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--page-accent);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+}
+
+.site-page.departments-page .department-card__heading .card-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.site-page.departments-page .department-metrics {
+  margin-bottom: 1.25rem;
+  padding: 1rem 0;
+}
+
+.site-page.departments-page .department-metrics > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-page.departments-page .department-metrics > div + div {
+  border-left: 1px solid rgba(148, 163, 184, 0.17);
+}
+
+.site-page.departments-page .department-metrics strong {
+  color: var(--page-accent);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.site-page.departments-page .department-metrics span {
+  color: var(--site-muted);
+  font-size: 0.72rem;
+}
+
+.site-page.departments-page .department-tags {
+  margin-bottom: 1.25rem;
+}
+
+.site-page.departments-page .department-summary {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.28fr) minmax(0, 0.72fr);
+  gap: 0.3rem 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.2rem;
+  border-left: 3px solid var(--page-accent);
+  box-shadow: none;
+}
+
+.site-page.departments-page .department-summary > span {
+  grid-row: 1 / span 2;
+  color: var(--page-accent);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.site-page.departments-page .department-summary h3 {
+  color: var(--site-ink);
+  font-size: 0.9rem;
+}
+
+.site-page.departments-page .department-summary p {
+  color: var(--site-muted);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.site-page.departments-page .department-detail {
+  position: relative;
+  padding: 1.15rem;
+  overflow: hidden;
+  border-top: 2px solid var(--page-accent);
+  box-shadow: none;
+}
+
+.site-page.departments-page .department-detail__index {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  color: rgba(100, 116, 139, 0.22);
+  font-size: 1.35rem;
+  font-weight: 750;
+}
+
+.site-page.departments-page .department-detail h3 {
+  margin-bottom: 0.9rem;
+  color: var(--page-accent);
+  font-size: 0.85rem;
+}
+
+.site-page.departments-page .department-detail li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--site-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-page.departments-page .department-detail li > span {
+  width: 0.3rem;
+  height: 0.3rem;
+  flex: 0 0 auto;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: var(--page-accent);
+}
+
+/* 培训页：编号分区、学习路径与档案 */
+.site-page.training-page .training-section {
+  border-color: rgba(8, 127, 140, 0.16);
+}
+
+.site-page.training-page .training-section__heading {
+  margin-bottom: 1rem;
+}
+
+.site-page.training-page .training-section__heading > span,
+.site-page.training-page .training-cta__eyebrow {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--page-accent);
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+}
+
+.site-page.training-page .training-section__heading .card-title {
+  margin-bottom: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+}
+
+.site-page.training-page .training-overview {
+  background:
+    radial-gradient(circle at 95% 10%, rgba(45, 212, 191, 0.12), transparent 18rem),
+    #ffffff;
+}
+
+.site-page.training-page .training-stats .stat-card {
+  border-top: 2px solid rgba(8, 127, 140, 0.48);
+}
+
+.site-page.training-page .training-stats .stat-value {
+  color: var(--page-accent);
+}
+
+.site-page.training-page .training-skills .tag {
+  border-color: rgba(8, 127, 140, 0.17);
+  background: rgba(236, 254, 255, 0.76);
+  color: #0f6973;
+}
+
+.site-page.training-page .training-roadmap .timeline-item {
+  padding: 0.2rem 0 1.55rem 2rem;
+}
+
+.site-page.training-page .training-roadmap .timeline-date {
+  color: var(--page-accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+}
+
+.site-page.training-page .training-roadmap .timeline-title {
+  color: var(--site-ink);
+  font-size: 1rem;
+}
+
+.site-page.training-page .training-archive-item {
+  display: block;
+  margin-bottom: 0.85rem;
+  padding: 1rem 1.15rem;
+  border-left: 2px solid rgba(8, 127, 140, 0.38);
+  box-shadow: none;
+}
+
+.site-page.training-page .training-archive-item:last-child {
+  margin-bottom: 0;
+}
+
+.site-page.training-page .training-archive-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
+  color: var(--site-muted);
+  font-size: 0.76rem;
+}
+
+.site-page.training-page .training-archive-item__meta span {
+  display: inline-flex;
+  gap: 0.42rem;
+}
+
+.site-page.training-page .training-archive-item__meta strong {
+  color: var(--page-accent);
+  font-weight: 700;
+}
+
+.site-page.training-page .training-cta {
+  overflow: hidden;
+  border-color: rgba(125, 211, 252, 0.14);
+  background:
+    radial-gradient(circle at 86% 14%, rgba(45, 212, 191, 0.19), transparent 18rem),
+    linear-gradient(125deg, #071a2c, #0a3550);
+}
+
+.site-page.training-page .training-cta .training-cta__eyebrow {
+  color: #67e8f9;
+}
+
+.site-page.training-page .training-cta .card-title {
+  color: #f8fafc;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.site-page.training-page .training-cta p {
+  color: rgba(226, 232, 240, 0.76);
+}
+
+/* 报名和查询：仅增强展示层，不改变控件和业务行为 */
+.site-page.recruit-page .recruit-notice {
+  position: relative;
+  padding-left: clamp(1.35rem, 3vw, 2.25rem);
+}
+
+.site-page.recruit-page .recruit-notice::before {
+  content: '01';
+  position: absolute;
+  top: 1.35rem;
+  right: 1.5rem;
+  color: rgba(37, 99, 235, 0.14);
+  font-size: 2.25rem;
+  font-weight: 750;
+}
+
+.site-page.recruit-page .recruit-form {
+  border-color: rgba(59, 130, 246, 0.2);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.1), transparent 18rem),
+    #ffffff;
+}
+
+.site-page.recruit-page .recruit-form__heading {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.site-page.recruit-page .recruit-form__heading span,
+.site-page.query-page .query-card__eyebrow {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #2563eb;
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+}
+
+.site-page.recruit-page .recruit-form__heading h2 {
+  margin-bottom: 0.4rem;
+  color: var(--site-ink);
+  font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+}
+
+.site-page.recruit-page .recruit-form__heading p {
+  color: var(--site-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-page.recruit-page .recruit-form > div:not(.recruit-form__heading) {
+  padding-bottom: 0.2rem;
+}
+
+.site-page.query-page .query-card {
+  position: relative;
+  overflow: hidden;
+  border-top: 3px solid #2563eb;
+  background:
+    radial-gradient(circle at 94% 12%, rgba(96, 165, 250, 0.14), transparent 16rem),
+    #ffffff;
+}
+
+.site-page.query-page .query-card .card-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+}
+
+.site-page.query-page .query-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(59, 130, 246, 0.13);
+  background: rgba(239, 246, 255, 0.66);
+}
+
+.site-page.query-page .query-guide {
+  border-color: rgba(148, 163, 184, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.055);
+}
+
+.site-page.query-page .query-guide li > span {
+  color: #2563eb;
+}
+
+@media (max-width: 800px) {
+  .site-page.activity-page .activity-gateway {
+    min-height: 21rem;
+  }
+
+  .site-page.activity-page .activity-gateway h2 {
+    margin-top: 3.25rem;
+  }
+
+  .site-page.activity-page .activity-record {
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+  }
+
+  .site-page.activity-page .activity-record__details,
+  .site-page.activity-page .activity-record__details--equal {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-page.activity-page .activity-hub-grid {
+    gap: 1rem;
+  }
+
+  .site-page.activity-page .activity-gateway {
+    min-height: 19rem;
+  }
+
+  .site-page.activity-page .activity-gateway__body {
+    max-width: 100%;
+    padding: 1.4rem;
+  }
+
+  .site-page.activity-page .activity-gateway__visual {
+    width: 55%;
+    opacity: 0.32;
+  }
+
+  .site-page.activity-page .activity-gateway h2 {
+    margin-top: 2.75rem;
+  }
+
+  .site-page.activity-page .activity-record {
+    display: block;
+  }
+
+  .site-page.activity-page .activity-record__rail {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.15rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  .site-page.activity-page .activity-record__index {
+    font-size: 1.3rem;
+  }
+
+  .site-page.activity-page .activity-record__rail .badge {
+    margin-left: auto;
+  }
+
+  .site-page.activity-page .activity-record__content {
+    padding: 1.25rem 1.15rem;
+  }
+
+  .site-page.honor-page .honor-section__heading {
+    display: block;
+  }
+
+  .site-page.honor-page .honor-section__heading > p {
+    margin-top: 0.5rem;
+  }
+
+  .site-page.departments-page .department-summary {
+    display: block;
+  }
+
+  .site-page.departments-page .department-summary > span {
+    margin-bottom: 0.5rem;
+  }
+
+  .site-page.departments-page .department-metrics {
+    gap: 0.25rem;
+  }
+
+  .site-page.departments-page .department-metrics strong {
+    font-size: 1.25rem;
+  }
+
+  .site-page.departments-page .department-metrics span {
+    font-size: 0.64rem;
+    text-align: center;
+  }
+
+  .site-page.training-page .training-archive-item > div:first-child {
+    display: block;
+  }
+
+  .site-page.training-page .training-archive-item > div:first-child > span {
+    display: block;
+    margin-top: 0.35rem;
+  }
+
+  .site-page.query-page .query-form {
+    grid-template-columns: 1fr;
+    padding: 0.65rem;
+  }
+
+  .site-page.query-page .query-form .btn-solid {
+    width: 100%;
+    min-height: 2.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-page.activity-page .activity-gateway .more-link::after {
+    transition: none !important;
     transform: none !important;
   }
 }

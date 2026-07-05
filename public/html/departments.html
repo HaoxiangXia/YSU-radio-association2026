@@ -18,7 +18,7 @@
     </div>
   </header>
 
-  <main class="page-container subpage-content">
+  <main class="page-container subpage-content departments-content">
     <div id="departments-list" class="content-stack">
       <!-- 部门内容由 JavaScript 动态生成 -->
     </div>
@@ -46,66 +46,73 @@
         const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
         
         return `
-          <div class="card card-section">
-            <h2 class="card-title card-title--accent">${dept.name}</h2>
+          <article class="card card-section department-card">
+            <div class="department-card__heading">
+              <span class="department-card__index">DEPARTMENT / ${String(index + 1).padStart(2, '0')}</span>
+              <h2 class="card-title">${dept.name}</h2>
+            </div>
 
-            <div class="metric-strip grid grid-cols-3 gap-4 mb-5">
-              <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">${dept.stats.members}</div>
-                <div class="text-xs text-gray-500">部门成员</div>
+            <div class="metric-strip grid grid-cols-3 gap-4 department-metrics">
+              <div>
+                <strong>${dept.stats.members}</strong>
+                <span>部门成员</span>
               </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">${stat1Value}</div>
-                <div class="text-xs text-gray-500">${dept.statLabel1}</div>
+              <div>
+                <strong>${stat1Value}</strong>
+                <span>${dept.statLabel1}</span>
               </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">${stat2Value}</div>
-                <div class="text-xs text-gray-500">${dept.statLabel2}</div>
+              <div>
+                <strong>${stat2Value}</strong>
+                <span>${dept.statLabel2}</span>
               </div>
             </div>
             
-            <div class="flex flex-wrap gap-2 mb-5">
+            <div class="flex flex-wrap gap-2 department-tags">
               ${dept.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
             
-            <div class="info-panel info-panel--accent mb-5">
-              <h3 class="font-semibold mb-2 text-sm text-gray-700">部门简介</h3>
-              <p class="text-gray-600 text-sm leading-relaxed">${dept.description}</p>
+            <div class="info-panel info-panel--accent department-summary">
+              <span>ABOUT THE TEAM</span>
+              <h3>部门简介</h3>
+              <p>${dept.description}</p>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-4">
-              <div class="info-panel info-panel--accent">
-                <h3 class="font-semibold mb-3 text-sm text-blue-600">主要职责</h3>
+            <div class="grid md:grid-cols-3 gap-4 department-detail-grid">
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">01</span>
+                <h3>主要职责</h3>
                 <ul class="space-y-2">
                   ${dept.responsibilities.map(item => `
-                    <li class="text-sm text-gray-600 flex items-start gap-2">
-                      <span class="text-blue-400 mt-1">-</span>${item}
+                    <li>
+                      <span aria-hidden="true"></span>${item}
                     </li>
                   `).join('')}
                 </ul>
               </div>
-              <div class="info-panel info-panel--accent">
-                <h3 class="font-semibold mb-3 text-sm text-blue-600">部门特色</h3>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">02</span>
+                <h3>部门特色</h3>
                 <ul class="space-y-2">
                   ${dept.features.map(item => `
-                    <li class="text-sm text-gray-600 flex items-start gap-2">
-                      <span class="text-blue-400 mt-1">-</span>${item}
+                    <li>
+                      <span aria-hidden="true"></span>${item}
                     </li>
                   `).join('')}
                 </ul>
               </div>
-              <div class="info-panel info-panel--accent">
-                <h3 class="font-semibold mb-3 text-sm text-blue-600">学习内容</h3>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">03</span>
+                <h3>学习内容</h3>
                 <ul class="space-y-2">
                   ${dept.learn.map(item => `
-                    <li class="text-sm text-gray-600 flex items-start gap-2">
-                      <span class="text-blue-400 mt-1">-</span>${item}
+                    <li>
+                      <span aria-hidden="true"></span>${item}
                     </li>
                   `).join('')}
                 </ul>
               </div>
             </div>
-          </div>
+          </article>
         `;
       }).join('');
     }
