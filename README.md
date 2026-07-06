@@ -1,4 +1,4 @@
-# 📻 无线电爱好者协会信息展示系统
+# 无线电爱好者协会信息展示系统
 
 > 燕山大学无线电爱好者协会（无协）官方信息展示与招新管理系统
 
@@ -9,9 +9,9 @@
 
 ---
 
-## 📖 项目简介
+## 项目简介
 
-本项目是燕山大学**无线电爱好者协会**（成立于 1988 年）的官方信息展示与招新管理系统。系统提供协会风采展示、部门介绍、竞赛培训记录、在线报名、管理员后台等功能，旨在为协会提供一个集宣传与管理于一体的信息化平台。
+本项目是燕山大学无线电爱好者协会（成立于 1988 年）的官方信息展示与招新管理系统。系统提供协会风采展示、关于协会、竞赛培训记录、在线报名、管理员后台等功能，旨在为协会提供一个集宣传与管理于一体的信息化平台。
 
 ### 协会简介
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 🏗️ 技术架构
+## 技术架构
 
 ```
 ┌──────────────────────────────────────────────┐
@@ -54,33 +54,37 @@
 
 ---
 
-## ✨ 功能特性
+## 功能特性
 
 ### 对外展示（访客）
 
-- 🏠 **首页** — 协会概况、口号、荣誉、统计数据一览
-- 🏢 **部门介绍** — 五大部门（组织部、嵌入式部、机械部、计算机部、团支部）详细介绍
-- 🏆 **竞赛活动** — 历年竞赛记录（展望杯、DIY达人赛、指尖风暴大赛）
-- 📚 **培训记录** — 线下培训、专业知识授课、焊接实训等
-- 🎖️ **荣誉墙** — 省级/校级荣誉展示
-- 🎉 **社团活动** — 休闲娱乐活动展示
-- 📝 **在线报名** — 新生在线填写报名表单提交
-- ✅ **录取查询** — 通过学号查询录取结果
+- **首页** — 固定单屏落地页，协会口号、入口动画、快捷入口
+- **关于协会** — 协会概况、招新视频、协会数据、部门介绍
+- **协会活动** — 竞赛活动、文娱活动等综合入口
+- **竞赛活动** — 历年竞赛记录（展望杯、DIY 达人赛、指尖风暴大赛）
+- **文娱活动** — 休闲娱乐活动展示
+- **培训记录** — 线下培训、专业知识授课、焊接实训等
+- **荣誉墙** — 省级/校级荣誉展示
+- **在线报名** — 新生在线填写报名表单提交
+- **录取查询** — 通过学号查询录取结果
 
 ### 后台管理（管理员）
 
-- 🔐 **管理员登录** — JWT 认证，支持"记住我"
-- 📋 **报名管理** — 查看所有报名信息，支持分页、搜索、筛选
-- 📊 **数据导出** — 将报名信息导出为 CSV
+- **管理员登录** — JWT 认证，支持“记住我”
+- **报名管理** — 查看所有报名信息，支持分页、搜索、筛选
+- **数据导出** — 将报名信息导出为 CSV
 
 ---
 
-## 📁 项目结构
+## 项目结构
 
 ```
 radio-association/
 ├── package.json                  # 项目配置与依赖
-├── .env                          # 环境变量（端口号、JWT密钥等）
+├── .env                          # 环境变量（端口号、JWT 密钥等）
+├── AGENTS.md                     # 项目规范与开发约定
+├── CONTEXT.md                    # 领域术语表
+├── README.md                     # 项目说明
 ├── server/                       # 后端服务
 │   ├── app.js                    # Express 应用入口
 │   ├── initDB.js                 # 数据库初始化脚本
@@ -105,9 +109,9 @@ radio-association/
 │       └── database.sqlite
 ├── public/                       # 前端静态资源
 │   ├── html/                     # 纯 HTML 页面
-│   │   ├── index.html            # 首页
-│   │   ├── departments.html      # 部门介绍
-│   │   ├── activities.html       # 协会活动
+│   │   ├── index.html            # 首页（固定落地页）
+│   │   ├── about-association.html # 关于协会（协会概况 + 部门介绍）
+│   │   ├── activities.html       # 协会活动总入口
 │   │   ├── competition-activities.html # 竞赛活动
 │   │   ├── recreational-activities.html # 文娱活动
 │   │   ├── honors.html           # 荣誉墙
@@ -118,8 +122,9 @@ radio-association/
 │   │   ├── admin-login.html      # 管理员登录
 │   │   ├── styles.css            # 公共样式
 │   │   ├── common.js             # 公共脚本（导航、页脚、交互）
-│   │   └── data.js               # 静态数据
-│   ├── images/                   # 图片资源（会徽、Hero背景等）
+│   │   ├── data.js               # 静态数据
+│   │   └── home-effects.js       # 首页粒子背景动画
+│   ├── images/                   # 图片资源（会徽、Hero 背景等）
 │   ├── image/                    # 图片与视频资源
 │   └── favicon.ico               # 网站图标
 ├── backup/                       # 备份目录
@@ -130,7 +135,7 @@ radio-association/
 
 ---
 
-## 🚀 快速开始
+## 快速开始
 
 ### 环境要求
 
@@ -149,13 +154,20 @@ cd radio-association
 bun install
 ```
 
-### 3. 配置环境变量
+### 环境变量
+
+| 变量 | 必填 | 说明 |
+|------|------|------|
+| `PORT` | 否 | 服务端口号，默认 `5000` |
+| `JWT_SECRET` | 否 | JWT 签名密钥，生产环境必须修改 |
+| `ADMIN_ACCOUNTS` | 否 | 管理员账号列表，格式 `用户名:密码:姓名;...`；默认 `wuxie:513513#:无协管理员` |
 
 在项目根目录创建 `.env` 文件：
 
 ```env
 PORT=5000
 JWT_SECRET=your-secret-key-change-in-production
+ADMIN_ACCOUNTS=wuxie:513513#:无协管理员;admin2:pass2#:技术负责人
 ```
 
 ### 4. 初始化数据库
@@ -184,7 +196,7 @@ bun scripts/export-admissions.js
 
 ---
 
-## 🔌 API 接口
+## API 接口
 
 ### 公开接口
 
@@ -210,47 +222,47 @@ bun scripts/export-admissions.js
 
 ---
 
-## 📊 数据模型
+## 数据模型
 
 ### Registration（报名信息）
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| name | String | ✅ | 姓名 |
-| studentId | String | ✅ | 学号 |
-| college | String | ✅ | 学院 |
-| grade | String | ✅ | 年级 |
-| phone | String | ✅ | 手机号 |
-| email | String | ✅ | 邮箱 |
-| experience | String | ✅ | 相关经历 |
-| expectation | String | ❌ | 期望方向 |
+| name | String | 是 | 姓名 |
+| studentId | String | 是 | 学号 |
+| college | String | 是 | 学院 |
+| grade | String | 是 | 年级 |
+| phone | String | 是 | 手机号 |
+| email | String | 是 | 邮箱 |
+| experience | String | 是 | 相关经历 |
+| expectation | String | 否 | 期望方向 |
 | createdAt | DateTime | 自动 | 报名时间 |
 
 ---
 
-## 🛠️ 脚本说明
+## 脚本说明
 
 | 脚本 | 命令 | 说明 |
 |------|------|------|
-| `start` | `bun server/app.js` | 启动生产服务器 |
-| `init` | `bun server/initDB.js` | 初始化 SQLite 数据库 |
-| `export:admissions` | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
+| start | `bun server/app.js` | 启动生产服务器 |
+| init | `bun server/initDB.js` | 初始化 SQLite 数据库 |
+| export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 
 ---
 
-## 🔒 安全说明
+## 安全说明
 
-- 管理员密码使用 **bcrypt** 加密存储
-- API 认证使用 **JWT** 令牌机制
+- 管理员密码使用 bcrypt 加密存储
+- API 认证使用 JWT 令牌机制
 - 报名管理接口需要 Bearer Token 认证
 - 生产环境请务必修改 `.env` 中的 `JWT_SECRET` 和默认管理员密码
 
 ---
 
-## 📄 License
+## License
 
 MIT License
 
 ---
 
-> 💡 **无线电爱好者协会** — 挖掘潜质，就在无协！
+> 无线电爱好者协会 — 挖掘潜质，就在无协！
