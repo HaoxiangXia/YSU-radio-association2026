@@ -79,7 +79,7 @@ function getNavHTML() {
         </a>
         <div class="nav-links">
           <a href="/html/index.html">首页</a>
-          <a href="/html/departments.html">部门介绍</a>
+          <a href="/html/about-association.html">关于协会</a>
           <a href="/html/activities.html">协会活动</a>
           <a href="/html/honors.html">荣誉成就</a>
           <a href="/html/trainings.html">培训教学</a>
@@ -90,7 +90,7 @@ function getNavHTML() {
       </div>
       <div class="mobile-menu" id="mobile-navigation">
         <a href="/html/index.html">首页</a>
-        <a href="/html/departments.html">部门介绍</a>
+        <a href="/html/about-association.html">关于协会</a>
         <a href="/html/activities.html">协会活动</a>
         <a href="/html/honors.html">荣誉成就</a>
         <a href="/html/trainings.html">培训教学</a>
@@ -111,16 +111,6 @@ function getFooterHTML() {
             <h4>无线电爱好者协会</h4>
             <p>燕山大学技术实践类社团，致力于培养和传播科学技术的热情。</p>
             <a href="/html/admin-login.html" class="footer-admin-link">管理员入口</a>
-          </div>
-          <div>
-            <h4>快速链接</h4>
-            <div class="footer-links">
-              <a href="/html/departments.html">部门介绍</a>
-              <a href="/html/activities.html">协会活动</a>
-              <a href="/html/honors.html">荣誉成就</a>
-              <a href="/html/trainings.html">培训教学</a>
-              <a href="/html/registration.html">招新报名</a>
-            </div>
           </div>
           <div>
             <h4>联系我们</h4>

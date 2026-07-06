@@ -89,8 +89,10 @@ button:focus-visible {
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  position: sticky;
+  position: fixed;
   top: 0;
+  right: 0;
+  left: 0;
   z-index: 1000;
 }
 
@@ -1277,6 +1279,9 @@ textarea.form-input {
   .footer-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+  .footer-grid > div:last-child {
+    grid-column: 3;
+  }
 }
 
 .footer h4 {
@@ -1699,6 +1704,10 @@ textarea.form-input {
     #f5f8fc;
   color: var(--site-ink);
 }
+.site-page {
+  padding-top: 3.5rem;
+}
+
 
 .site-page .page-container.subpage-content {
   position: relative;
@@ -1798,7 +1807,7 @@ textarea.form-input {
 /* 内页统一 Page Hero */
 .site-page .subpage-hero {
   position: relative;
-  min-height: 18rem;
+  min-height: 15rem;
   overflow: hidden;
   isolation: isolate;
   color: #10233f;
@@ -2512,23 +2521,23 @@ textarea.form-input {
     margin-top: 0.5rem;
   }
 
-  .site-page.departments-page .department-summary {
+  .site-page.about-association-page .department-summary {
     display: block;
   }
 
-  .site-page.departments-page .department-summary > span {
+  .site-page.about-association-page .department-summary > span {
     margin-bottom: 0.5rem;
   }
 
-  .site-page.departments-page .department-metrics {
+  .site-page.about-association-page .department-metrics {
     gap: 0.25rem;
   }
 
-  .site-page.departments-page .department-metrics strong {
+  .site-page.about-association-page .department-metrics strong {
     font-size: 1.25rem;
   }
 
-  .site-page.departments-page .department-metrics span {
+  .site-page.about-association-page .department-metrics span {
     font-size: 0.64rem;
     text-align: center;
   }

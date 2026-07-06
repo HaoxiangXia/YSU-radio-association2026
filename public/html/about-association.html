@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于协会 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+  <style>
+.max-w-6xl {
+  max-width: 1100px;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+/* Hero 区域 */
+.hero {
+  position: relative;
+  height: clamp(320px, 34vw, 400px);
+  overflow: hidden;
+  isolation: isolate;
+  background: #071a38;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  color: white;
+}
+
+.hero-copy {
+  position: relative;
+  max-width: 740px;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.hero-eyebrow span {
+  width: 2.25rem;
+  height: 1px;
+  background: #60a5fa;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
+}
+
+.hero-content h1 {
+  max-width: 720px;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.9rem;
+  letter-spacing: 0.025em;
+  text-shadow: 0 3px 18px rgba(2, 12, 29, 0.48);
+}
+
+.hero-content p {
+  max-width: 36rem;
+  margin-bottom: 1.65rem;
+  color: rgba(239, 246, 255, 0.88);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  letter-spacing: 0.025em;
+  text-shadow: 0 2px 8px rgba(2, 12, 29, 0.45);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.hero .hero-btn-primary {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #1d4ed8;
+  box-shadow: 0 8px 22px rgba(2, 12, 29, 0.16);
+}
+
+.hero .hero-btn-primary:hover {
+  background: #eff6ff;
+  border-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.hero .hero-btn-secondary {
+  background: rgba(15, 54, 107, 0.48);
+  border-color: rgba(191, 219, 254, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.home-about-section {
+  scroll-margin-top: 4.5rem;
+}
+
+@media (max-width: 800px) {
+  .hero {
+    height: 320px;
+  }
+
+  .hero-content {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .hero-copy {
+    max-width: 32rem;
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 0.65rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-eyebrow span {
+    width: 1.5rem;
+  }
+
+  .hero-content h1 {
+    max-width: 20rem;
+    font-size: clamp(1.8rem, 8vw, 2.25rem);
+  }
+
+  .hero-content p {
+    margin-bottom: 1.35rem;
+    font-size: 0.95rem;
+  }
+
+  .hero-signal {
+    right: -70px;
+    width: 230px;
+    opacity: 0.26;
+  }
+
+  .hero-wave {
+    right: -18%;
+    bottom: 10%;
+    width: 80vw;
+    opacity: 0.1;
+  }
+
+  .hero-grid {
+    opacity: 0.1;
+    background-size: 34px 34px;
+  }
+
+  .hero-signal span,
+  .hero-wave {
+    animation: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .hero {
+    height: 300px;
+  }
+
+  .hero-signal {
+    opacity: 0.18;
+  }
+
+  .hero-wave {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero-buttons {
+    gap: 0.6rem;
+  }
+
+  .hero-buttons .btn-primary {
+    padding-right: 1.1rem;
+    padding-left: 1.1rem;
+  }
+}
+
+/* 按钮 */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.5rem;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 4px;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: rgba(255,255,255,0.35);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
+}
+
+.home-content-card {
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+}
+
+.recent-event-card h3 {
+  transition: color 180ms ease;
+}
+
+.recent-event-card:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.px-3 {
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.block {
+  display: block;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+
+.space-y-1\.5 > * + * {
+  margin-top: 0.375rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+.aspect-video {
+  aspect-ratio: 16/9;
+}
+
+.transition-colors {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* 侧边栏 */
+.sidebar-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+}
+
+.sidebar-card h4 {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.5rem;
+}
+
+/* 首页第五轮：抽象光场与高级交互（仅限首页作用域） */
+.about-association-page {
+  --home-electric-blue: #2563eb;
+  --home-cyan: #0891b2;
+  --home-panel-light: #dceafb;
+  --home-surface-blue: #f1f6fd;
+  --home-line-blue: rgba(37, 99, 235, 0.2);
+  background: #f5f8fc;
+}
+
+.about-association-page .hero {
+  height: clamp(560px, 72vh, 680px);
+  min-height: 560px;
+  background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
+}
+
+.about-association-page .home-hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.about-association-page .home-hero-mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(30, 78, 121, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 78, 121, 0.13) 1px, transparent 1px);
+  background-position: center;
+  background-size: 52px 52px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 4%, rgba(0, 0, 0, 0.22) 34%, #000 58%, #000);
+  mask-image: linear-gradient(90deg, transparent 4%, rgba(0, 0, 0, 0.22) 34%, #000 58%, #000);
+  pointer-events: none;
+}
+
+.about-association-page .hero-content {
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4.5rem;
+  padding-bottom: 4rem;
+}
+
+.about-association-page .home-hero-copy {
+  position: relative;
+  width: min(100%, 900px);
+  max-width: 900px;
+}
+
+.about-association-page .hero-eyebrow {
+  gap: 0;
+  margin-bottom: 1rem;
+  color: #315d88;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+}
+
+.about-association-page .hero-eyebrow::before {
+  content: "";
+  width: 2.6rem;
+  height: 1px;
+  margin-right: 0.8rem;
+  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
+}
+
+.about-association-page .hero-eyebrow span {
+  display: none;
+}
+
+.about-association-page .hero-content h1 {
+  max-width: 900px;
+  margin-bottom: 1.25rem;
+  font-size: clamp(3rem, 5.9vw, 5.35rem);
+  font-weight: 720;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: #10233f;
+  text-shadow: none;
+}
+
+.about-association-page .hero-content p {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+  color: #52657d;
+  font-size: clamp(1.05rem, 1.5vw, 1.24rem);
+  letter-spacing: 0.03em;
+  text-shadow: none;
+}
+
+.about-association-page .hero-buttons {
+  gap: 0.85rem;
+}
+
+.about-association-page .hero-btn-primary,
+.about-association-page .hero-btn-secondary {
+  position: relative;
+  overflow: hidden;
+  min-width: 8rem;
+  border-radius: 0.65rem;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+.about-association-page .hero .hero-btn-primary {
+  color: #ffffff;
+  border-color: #2563eb;
+  background: #2563eb;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.2);
+}
+
+.about-association-page .hero .hero-btn-secondary {
+  color: #1e4f91;
+  border-color: rgba(30, 79, 145, 0.32);
+  background: rgba(255, 255, 255, 0.66);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.about-association-page .home-hero-scroll-cue {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 3.2rem;
+  color: rgba(49, 93, 136, 0.68);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.about-association-page .home-hero-scroll-cue span {
+  width: 2.8rem;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(30, 79, 145, 0.18);
+}
+
+.about-association-page .home-hero-scroll-cue span::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--home-electric-blue));
+  transform: translateX(-100%);
+  animation: about-home-scroll-cue 2.8s ease-in-out infinite;
+}
+
+.about-association-page .home-about-section {
+  padding-top: 4.25rem;
+  padding-bottom: 4.25rem;
+}
+
+.about-association-page .home-news-section,
+.about-association-page .home-honors-section {
+  position: relative;
+  overflow: hidden;
+  padding: 4.5rem 0;
+}
+
+.about-association-page .home-news-section {
+  border-top: 1px solid #dce8f7;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(96, 165, 250, 0.11), transparent 24rem),
+    var(--home-surface-blue);
+}
+
+.about-association-page .home-news-section::before,
+.about-association-page .home-honors-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(72rem, calc(100% - 2rem));
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.72), transparent);
+  transform: translateX(-50%);
+}
+
+.about-association-page .home-section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.about-association-page .home-news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
+}
+
+.about-association-page .recent-event-card {
+  display: flex;
+  min-height: 230px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.55rem;
+  border-color: rgba(59, 130, 246, 0.14);
+  background:
+    linear-gradient(90deg, #2563eb, #67e8f9, rgba(103, 232, 249, 0.08)) top / 100% 3px no-repeat,
+    #ffffff;
+  color: inherit;
+  text-decoration: none;
+}
+
+.about-association-page .home-card-meta,
+.about-association-page .home-honor-card-head,
+.about-association-page .home-honor-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.about-association-page .home-card-meta {
+  margin-bottom: 1.35rem;
+}
+
+.about-association-page .home-card-kicker,
+.about-association-page .home-honor-kicker {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.about-association-page .home-card-kicker {
+  color: #2563eb;
+}
+
+.about-association-page .home-card-date {
+  flex: 0 0 auto;
+  color: #64748b;
+  font-size: 0.74rem;
+}
+
+.about-association-page .recent-event-card h3 {
+  color: #163b75;
+  line-height: 1.4;
+}
+
+.about-association-page .recent-event-card p {
+  color: #52647b;
+}
+
+.about-association-page .home-card-link-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  color: #2563eb;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+}
+
+.about-association-page .home-card-link-cue i {
+  font-style: normal;
+  transition: transform 180ms ease;
+}
+
+.about-association-page .home-honors-section {
+  color: #dbeafe;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(37, 99, 235, 0.22), transparent 27rem),
+    radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12), transparent 24rem),
+    linear-gradient(145deg, #071a36, #041225 72%);
+}
+
+.about-association-page .home-honors-section .more-link {
+  color: #bae6fd;
+}
+
+.about-association-page .home-honors-section .more-link:focus-visible {
+  outline-color: #7dd3fc;
+}
+
+.about-association-page .home-honor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.about-association-page .home-honor-card {
+  position: relative;
+  display: flex;
+  min-height: 260px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.5rem;
+  border: 1px solid rgba(147, 197, 253, 0.19);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(90deg, #60a5fa, #67e8f9, rgba(103, 232, 249, 0.06)) top / 100% 3px no-repeat,
+    linear-gradient(145deg, rgba(20, 57, 105, 0.78), rgba(6, 29, 62, 0.9));
+  box-shadow: 0 14px 34px rgba(1, 8, 22, 0.2);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.about-association-page .home-honor-kicker {
+  color: #7dd3fc;
+}
+
+.about-association-page .home-honor-rank {
+  flex: 0 0 auto;
+  padding: 0.22rem 0.5rem;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 999px;
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.08);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.about-association-page .home-honor-card h3 {
+  margin: 1.4rem 0 0.85rem;
+  color: #f8fbff;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.about-association-page .home-honor-card p {
+  color: #b9cbe3;
+  font-size: 0.87rem;
+  line-height: 1.75;
+}
+
+.about-association-page .home-honor-card-foot {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  color: #7f9bbd;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+@media (hover: hover) {
+  .about-association-page .recent-event-card:hover .home-card-link-cue i {
+    transform: translateX(3px);
+  }
+
+  .about-association-page .home-honor-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(125, 211, 252, 0.38);
+    box-shadow: 0 18px 40px rgba(1, 8, 22, 0.3);
+  }
+}
+
+@media (max-width: 1023px) {
+  .about-association-page .hero {
+    height: 480px;
+  }
+
+  .about-association-page .hero-content {
+    grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
+    gap: 1.75rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    font-size: clamp(2.35rem, 4.8vw, 3.1rem);
+  }
+
+}
+
+@media (max-width: 900px) {
+  .about-association-page .home-honor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .about-association-page .hero {
+    height: auto;
+    min-height: 0;
+  }
+
+  .about-association-page .hero-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+    padding-top: 2.75rem;
+    padding-bottom: 2.75rem;
+  }
+
+  .about-association-page .hero-copy {
+    max-width: 38rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    max-width: 34rem;
+    font-size: clamp(2.15rem, 7vw, 2.75rem);
+  }
+
+  .about-association-page .home-about-section {
+    padding-top: 3.25rem;
+    padding-bottom: 3.25rem;
+  }
+
+  .about-association-page .home-news-section,
+  .about-association-page .home-honors-section {
+    padding: 3.5rem 0;
+  }
+
+  .about-association-page .recent-event-card {
+    min-height: 210px;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-association-page .home-honor-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-association-page .home-honor-card {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 540px) {
+  .about-association-page .hero-content {
+    gap: 1.25rem;
+    padding-top: 2.35rem;
+    padding-bottom: 2.35rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    font-size: clamp(2rem, 9vw, 2.35rem);
+  }
+
+  .about-association-page .home-news-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-association-page .themed-section-header {
+    align-items: flex-end;
+    gap: 0.75rem;
+  }
+
+  .about-association-page .recent-event-card,
+  .about-association-page .home-honor-card {
+    padding: 1.3rem;
+  }
+
+  .about-association-page .recent-event-card {
+    min-height: 0;
+  }
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.about-association-page .about-assoc-intro {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.about-association-page .about-assoc-intro__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-association-page .about-assoc-intro__body p {
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  line-height: 1.85;
+  color: #475569;
+}
+
+.about-association-page .about-assoc-intro__body p .font-semibold,
+.about-association-page .about-assoc-intro__body p .font-medium {
+  color: #1e293b;
+}
+
+.about-association-page .about-assoc-intro__media .aspect-video {
+  aspect-ratio: 16/9;
+  border-radius: 0.75rem;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.about-association-page .about-assoc-intro__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* 第五轮内容层次与进入动效 */
+.about-association-page main {
+  background:
+    radial-gradient(circle at 10% 30%, rgba(139, 124, 255, 0.045), transparent 28rem),
+    #f8faff;
+}
+
+@media (max-width: 800px) {
+  .grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.about-association-page .about-assoc-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .about-association-page .about-assoc-intro__body p {
+    font-size: 1rem;
+  }
+
+  .about-association-page .about-assoc-intro__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.about-association-page .home-about-section {
+  position: relative;
+}
+
+.about-association-page .home-about-section .card,
+.about-association-page .home-about-section .sidebar-card {
+  border-color: rgba(111, 142, 196, 0.16);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.92));
+  box-shadow:
+    0 20px 50px rgba(33, 55, 92, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.about-association-page .home-section-header {
+  position: relative;
+  z-index: 2;
+}
+
+.about-association-page .home-section-heading {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.about-association-page .home-section-index {
+  color: #5578b9;
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.18em;
+}
+
+.about-association-page .home-section-heading h2 {
+  position: relative;
+  margin: 0;
+  padding-bottom: 0.9rem;
+  color: #101d35;
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  font-weight: 720;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.about-association-page .home-section-heading h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 5.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan), transparent);
+  box-shadow: 0 0 12px rgba(101, 228, 255, 0.24);
+}
+
+.about-association-page .home-news-section {
+  isolation: isolate;
+  border-top-color: rgba(107, 139, 196, 0.16);
+  background:
+    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
+    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
+    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
+}
+
+.about-association-page .home-news-section::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -12rem;
+  right: -10rem;
+  width: 34rem;
+  height: 34rem;
+  border: 1px solid rgba(114, 167, 255, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4rem rgba(114, 167, 255, 0.025),
+    0 0 0 8rem rgba(139, 124, 255, 0.018);
+  pointer-events: none;
+}
+
+.about-association-page .recent-event-card {
+  position: relative;
+  min-height: 248px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.94)) padding-box,
+    linear-gradient(135deg, rgba(114, 167, 255, 0.42), rgba(101, 228, 255, 0.15), rgba(139, 124, 255, 0.25)) border-box;
+  box-shadow:
+    0 18px 45px rgba(37, 66, 112, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.about-association-page .recent-event-card::before,
+.about-association-page .home-honor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.4rem;
+  width: 4rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
+  box-shadow: 0 0 14px rgba(101, 228, 255, 0.42);
+  pointer-events: none;
+}
+
+.about-association-page .recent-event-card::after,
+.about-association-page .home-honor-card::after {
+  content: "";
+  position: absolute;
+  right: -4.5rem;
+  bottom: -5.5rem;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 50%;
+  opacity: 0.28;
+  background: radial-gradient(circle, rgba(114, 167, 255, 0.26), transparent 68%);
+  transform: scale(0.9);
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
+  pointer-events: none;
+}
+
+.about-association-page .home-card-kicker {
+  color: #426dcc;
+}
+
+.about-association-page .recent-event-card h3 {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.2rem;
+  color: #102b57;
+  font-size: 1.18rem;
+}
+
+.about-association-page .recent-event-card p,
+.about-association-page .home-card-meta,
+.about-association-page .home-card-link-cue {
+  position: relative;
+  z-index: 1;
+}
+
+.about-association-page .home-card-link-cue {
+  color: #345fc2;
+}
+
+.about-association-page .home-honors-section {
+  isolation: isolate;
+  border-top-color: rgba(107, 139, 196, 0.16);
+  background:
+    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
+    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
+    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
+}
+
+.about-association-page .home-honors-section::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -12rem;
+  right: -10rem;
+  width: 34rem;
+  height: 34rem;
+  border: 1px solid rgba(114, 167, 255, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4rem rgba(114, 167, 255, 0.025),
+    0 0 0 8rem rgba(139, 124, 255, 0.018);
+  pointer-events: none;
+}
+
+.about-association-page .home-honors-section .home-section-index {
+  color: #5578b9;
+}
+
+.about-association-page .home-honors-section .home-section-heading h2 {
+  color: #101d35;
+}
+
+.about-association-page .home-honors-section .more-link {
+  color: #2563eb;
+}
+
+.about-association-page .home-honor-grid {
+  position: relative;
+  z-index: 1;
+  gap: 1.1rem;
+}
+
+.about-association-page .home-honor-card {
+  min-height: 248px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.94)) padding-box,
+    linear-gradient(135deg, rgba(114, 167, 255, 0.42), rgba(101, 228, 255, 0.15), rgba(139, 124, 255, 0.25)) border-box;
+  box-shadow:
+    0 18px 45px rgba(37, 66, 112, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.about-association-page .home-honor-card::after {
+  opacity: 0.28;
+  background: radial-gradient(circle, rgba(114, 167, 255, 0.26), transparent 68%);
+}
+
+.about-association-page .home-honor-kicker {
+  color: #426dcc;
+}
+
+.about-association-page .home-honor-rank {
+  border-color: rgba(217, 119, 6, 0.28);
+  color: #a16207;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.about-association-page .home-honor-card h3 {
+  position: relative;
+  z-index: 1;
+  color: #102b57;
+  font-size: 1.12rem;
+}
+
+.about-association-page .home-honor-card p {
+  position: relative;
+  z-index: 1;
+  color: #566b8a;
+}
+
+.about-association-page .home-honor-card-foot {
+  color: #64748b;
+}
+
+.about-association-page .home-honor-card-foot,
+.about-association-page .home-honor-card-head {
+  position: relative;
+  z-index: 1;
+}
+
+.about-association-page.home-effects-ready .home-reveal,
+.about-association-page.home-effects-ready .home-reveal-item {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 560ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-association-page.home-effects-ready .home-reveal.is-visible,
+.about-association-page.home-effects-ready .home-reveal-item.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.about-association-page.home-effects-ready .home-news-grid > :nth-child(2),
+.about-association-page.home-effects-ready .home-honor-grid > :nth-child(2) {
+  transition-delay: 70ms;
+}
+
+.about-association-page.home-effects-ready .home-news-grid > :nth-child(3),
+.about-association-page.home-effects-ready .home-honor-grid > :nth-child(3) {
+  transition-delay: 140ms;
+}
+
+@media (hover: hover) {
+  .about-association-page .hero .hero-btn-primary:hover {
+    transform: translateY(-2px);
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.26);
+  }
+
+  .about-association-page .hero .hero-btn-secondary:hover {
+    transform: translateY(-2px);
+    color: #173f73;
+    border-color: rgba(30, 79, 145, 0.5);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 12px 26px rgba(41, 76, 112, 0.13);
+  }
+
+  .about-association-page .recent-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 24px 56px rgba(37, 66, 112, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  }
+
+  .about-association-page .recent-event-card:hover::after,
+  .about-association-page .home-honor-card:hover::after {
+    opacity: 0.56;
+    transform: scale(1.08);
+  }
+
+  .about-association-page .home-honor-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 24px 56px rgba(37, 66, 112, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  }
+}
+
+@media (max-width: 1023px) {
+  .about-association-page .hero {
+    height: 600px;
+    min-height: 560px;
+  }
+
+  .about-association-page .hero-content {
+    padding-top: 4rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    max-width: 48rem;
+    font-size: clamp(3rem, 7vw, 4.45rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .about-association-page .hero {
+    height: 540px;
+    min-height: 520px;
+  }
+
+  .about-association-page .hero-content {
+    padding-top: 3.25rem;
+    padding-bottom: 3rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    max-width: 37rem;
+    font-size: clamp(2.55rem, 8vw, 3.45rem);
+  }
+
+  .about-association-page .home-hero-scroll-cue span::after {
+    animation: none;
+  }
+
+  .about-association-page .home-hero-mesh {
+    opacity: 0.3;
+    background-size: 44px 44px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .about-association-page.home-effects-ready .home-reveal,
+  .about-association-page.home-effects-ready .home-reveal-item,
+  .about-association-page.home-effects-ready .home-reveal.is-visible,
+  .about-association-page.home-effects-ready .home-reveal-item.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .about-association-page .hero {
+    height: 510px;
+    min-height: 500px;
+  }
+
+  .about-association-page .hero-content {
+    padding-top: 2.75rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .about-association-page .hero-content h1 {
+    font-size: clamp(2.25rem, 10.5vw, 2.75rem);
+    line-height: 1.08;
+  }
+
+  .about-association-page .hero-content p {
+    max-width: 21rem;
+    margin-bottom: 1.6rem;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .about-association-page .hero-buttons {
+    gap: 0.65rem;
+  }
+
+  .about-association-page .hero-btn-primary,
+  .about-association-page .hero-btn-secondary {
+    min-width: 7rem;
+    min-height: 2.75rem;
+    padding-right: 1.1rem;
+    padding-left: 1.1rem;
+  }
+
+  .about-association-page .home-hero-scroll-cue {
+    display: none;
+  }
+
+  .about-association-page .home-section-heading h2 {
+    font-size: 1.75rem;
+  }
+
+  .about-association-page .home-news-section,
+  .about-association-page .home-honors-section {
+    padding-top: 3.25rem;
+    padding-bottom: 3.25rem;
+  }
+
+  .about-association-page .recent-event-card,
+  .about-association-page .home-honor-card {
+    padding: 1.35rem;
+  }
+}
+
+.info-panel--accent {
+  border-left: 3px solid #60a5fa;
+}
+
+.metric-strip {
+  padding: 0.9rem;
+  border: 1px solid rgba(37, 99, 235, 0.08);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.8), rgba(248, 250, 252, 0.92));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.site-page .info-panel--accent {
+  border-left-color: rgba(37, 99, 235, 0.48);
+}
+
+.site-page .metric-strip {
+  border: 1px solid rgba(96, 165, 250, 0.16);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.82), rgba(248, 250, 252, 0.72));
+}
+
+.site-page.about-association-page {
+  --page-accent: #0f72c9;
+  --page-accent-soft: rgba(14, 116, 201, 0.09);
+}
+
+/* 部门页：部门头部、指标与内容分层 */
+.site-page.about-association-page .content-stack {
+  gap: 2rem;
+}
+
+.site-page.about-association-page .department-card {
+  position: relative;
+  overflow: hidden;
+  border-top: 3px solid var(--page-accent);
+  background:
+    radial-gradient(circle at 96% 0%, var(--page-accent-soft), transparent 18rem),
+    linear-gradient(145deg, #ffffff, #fafcff);
+}
+
+.site-page.about-association-page .department-card:nth-child(even) {
+  --page-accent: #5b5bd6;
+  --page-accent-soft: rgba(91, 91, 214, 0.08);
+}
+
+.site-page.about-association-page .department-card__heading {
+  margin-bottom: 1.3rem;
+}
+
+.site-page.about-association-page .department-card__index {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--page-accent);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+}
+
+.site-page.about-association-page .department-card__heading .card-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.site-page.about-association-page .department-metrics {
+  margin-bottom: 1.25rem;
+  padding: 1rem 0;
+}
+
+.site-page.about-association-page .department-metrics > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-page.about-association-page .department-metrics > div + div {
+  border-left: 1px solid rgba(148, 163, 184, 0.17);
+}
+
+.site-page.about-association-page .department-metrics strong {
+  color: var(--page-accent);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.site-page.about-association-page .department-metrics span {
+  color: var(--site-muted);
+  font-size: 0.72rem;
+}
+
+.site-page.about-association-page .department-tags {
+  margin-bottom: 1.25rem;
+}
+
+.site-page.about-association-page .department-summary {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.28fr) minmax(0, 0.72fr);
+  gap: 0.3rem 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.2rem;
+  border-left: 3px solid var(--page-accent);
+  box-shadow: none;
+}
+
+.site-page.about-association-page .department-summary > span {
+  grid-row: 1 / span 2;
+  color: var(--page-accent);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.site-page.about-association-page .department-summary h3 {
+  color: var(--site-ink);
+  font-size: 0.9rem;
+}
+
+.site-page.about-association-page .department-summary p {
+  color: var(--site-muted);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.site-page.about-association-page .department-detail {
+  position: relative;
+  padding: 1.15rem;
+  overflow: hidden;
+  border-top: 2px solid var(--page-accent);
+  box-shadow: none;
+}
+
+.site-page.about-association-page .department-detail__index {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  color: rgba(100, 116, 139, 0.22);
+  font-size: 1.35rem;
+  font-weight: 750;
+}
+
+.site-page.about-association-page .department-detail h3 {
+  margin-bottom: 0.9rem;
+  color: var(--page-accent);
+  font-size: 0.85rem;
+}
+
+.site-page.about-association-page .department-detail li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--site-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-page.about-association-page .department-detail li > span {
+  width: 0.3rem;
+  height: 0.3rem;
+  flex: 0 0 auto;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: var(--page-accent);
+}
+  </style>
+</head>
+<body class="site-page sub-page about-page about-association-page">
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero">
+    <div class="container subpage-hero__inner">
+      <h1>关于协会</h1>
+      <p>了解协会历史、部门设置与成员成长路径。</p>
+    </div>
+  </header>
+
+  <main class="page-container subpage-content about-association-content departments-content">
+    <!-- 协会介绍 + 侧边栏 -->
+    <section id="about-association" class="home-about-section max-w-6xl mx-auto px-4 py-10">
+      <div class="home-reveal">
+        <div class="card about-assoc-intro">
+          <div class="about-assoc-intro__media">
+            <div class="rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
+              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
+                <source src="/image/招新视频.mp4" type="video/mp4">
+                <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
+              </video>
+            </div>
+            <div class="about-assoc-intro__stats">
+              <div class="stat-card">
+                <div class="stat-value">1988</div>
+                <div class="stat-label">成立年份</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">部门数量</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">200+</div>
+                <div class="stat-label">会员人数</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">150+</div>
+                <div class="stat-label">获奖数量</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-assoc-intro__body">
+            <p class="text-gray-600 leading-relaxed mb-4">
+              燕山大学无线电爱好者协会，简称"无协"，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">38个春秋</span>。
+            </p>
+            <p class="text-gray-600 leading-relaxed mb-4">
+              协会秉承<span class="font-semibold text-gray-800">"厚德、博学、求是"</span>的燕大校训，发扬<span class="font-semibold text-gray-800">"艰苦奋斗、严谨治学、求实创新"</span>的燕大精神，致力于培养和传播科学技术的热情。
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+              亲爱的同学们和爱好者们，欢迎加入无线电爱好者协会！我们是一个致力于探索和研究
+              <span class="font-semibold text-gray-800">嵌入式开发与FPGA</span>、
+              <span class="font-semibold text-gray-800">人工智能应用与软件开发</span>、
+              <span class="font-semibold text-gray-800">机械建模</span> 和
+              <span class="font-semibold text-gray-800">智能控制</span> 的团队。
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+              我们致力于传播知识、启发灵感，并为每一位热爱科技的朋友提供一个共同成长的平台。
+            </p>
+          </div>
+        </div>
+
+        
+        
+      </div>
+    </section>
+
+    <!-- 最新动态 -->
+    <section class="home-news-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <span class="home-section-index">01 / LATEST</span>
+            <h2>最新动态</h2>
+          </div>
+          <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
+        </div>
+        <div class="home-news-grid" id="recent-events">
+          <!-- 动态内容由 JavaScript 动态生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 荣誉成就 -->
+    <section class="home-honors-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <span class="home-section-index">02 / HONORS</span>
+            <h2>荣誉成就</h2>
+          </div>
+          <a href="/html/honors.html" class="more-link">查看更多</a>
+        </div>
+        <div class="home-honor-grid" id="honors-grid">
+          <!-- 荣誉内容由 JavaScript 动态生成 -->
+        </div>
+      </div>
+    </section>
+
+    <div id="departments-list" class="content-stack">
+      <!-- 部门内容由 JavaScript 动态生成 -->
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    // 渲染最新动态
+    function renderRecentEvents() {
+      const container = document.getElementById('recent-events');
+      if (!container) return;
+      
+      container.innerHTML = recentEvents.map(event => `
+        <a href="/html/activities.html" class="card group home-content-card recent-event-card home-reveal-item">
+          <div class="home-card-meta">
+            <span class="home-card-kicker">ASSOCIATION UPDATE</span>
+            <span class="home-card-date">${event.date}</span>
+          </div>
+          <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>
+          <span class="home-card-link-cue">READ UPDATE <i aria-hidden="true">→</i></span>
+        </a>
+      `).join('');
+    }
+
+    // 渲染荣誉卡片
+    function renderHonorCards() {
+      const container = document.getElementById('honors-grid');
+      if (!container) return;
+      
+      container.innerHTML = topHonors.map(honor => `
+        <article class="home-honor-card home-reveal-item">
+          <div class="home-honor-card-head">
+            <span class="home-honor-kicker">HONOR / ${honor.year}</span>
+            ${honor.rank ? `<span class="home-honor-rank">TOP ${honor.rank}</span>` : ''}
+          </div>
+          <h3>${honor.title}</h3>
+          <p>${honor.description}</p>
+          <div class="home-honor-card-foot">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // 渲染部门列表
+    function renderDepartments() {
+      const container = document.getElementById('departments-list');
+      if (!container) return;
+      
+      container.innerHTML = departments.map((dept, index) => {
+        // 获取统计数据
+        const stat1Value = dept.stats.activities || dept.stats.projects || dept.stats.models || dept.stats.softwares || dept.stats.events;
+        const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
+        
+        return `
+          <article class="card card-section department-card">
+            <div class="department-card__heading">
+              <span class="department-card__index">DEPARTMENT / ${String(index + 1).padStart(2, '0')}</span>
+              <h2 class="card-title">${dept.name}</h2>
+            </div>
+
+            <div class="metric-strip grid grid-cols-3 gap-4 department-metrics">
+              <div>
+                <strong>${dept.stats.members}</strong>
+                <span>部门成员</span>
+              </div>
+              <div>
+                <strong>${stat1Value}</strong>
+                <span>${dept.statLabel1}</span>
+              </div>
+              <div>
+                <strong>${stat2Value}</strong>
+                <span>${dept.statLabel2}</span>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 department-tags">
+              ${dept.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            
+            <div class="info-panel info-panel--accent department-summary">
+              <span>ABOUT THE TEAM</span>
+              <h3>部门简介</h3>
+              <p>${dept.description}</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4 department-detail-grid">
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">01</span>
+                <h3>主要职责</h3>
+                <ul class="space-y-2">
+                  ${dept.responsibilities.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">02</span>
+                <h3>部门特色</h3>
+                <ul class="space-y-2">
+                  ${dept.features.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">03</span>
+                <h3>学习内容</h3>
+                <ul class="space-y-2">
+                  ${dept.learn.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // 页面加载后渲染
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRecentEvents();
+      renderHonorCards();
+      renderDepartments();
+    });
+  </script>
+</body>
+</html>

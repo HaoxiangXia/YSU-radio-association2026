@@ -5,6 +5,8 @@ node_modules/
 *.sqlite-wal
 server/data/
 public/data/admissions.json
+public/image/*.mp4
 工作簿1.xlsx
 ~$*.xlsx
 AGENTS.md
+CONTEXT.md

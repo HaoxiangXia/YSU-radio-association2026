@@ -7,335 +7,33 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
   <style>
-.max-w-6xl {
-  max-width: 1100px;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.px-4 {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.py-10 {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-}
-
-/* Hero 区域 */
-.hero {
-  position: relative;
-  height: clamp(320px, 34vw, 400px);
-  overflow: hidden;
-  isolation: isolate;
-  background: #071a38;
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-
-.hero-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  height: 100%;
-  color: white;
-}
-
-.hero-copy {
-  position: relative;
-  max-width: 740px;
-}
-
-.hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
-  color: #bfdbfe;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-}
-
-.hero-eyebrow span {
-  width: 2.25rem;
-  height: 1px;
-  background: #60a5fa;
-  box-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
-}
-
-.hero-content h1 {
-  max-width: 720px;
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 0.9rem;
-  letter-spacing: 0.025em;
-  text-shadow: 0 3px 18px rgba(2, 12, 29, 0.48);
-}
-
-.hero-content p {
-  max-width: 36rem;
-  margin-bottom: 1.65rem;
-  color: rgba(239, 246, 255, 0.88);
-  font-size: clamp(1rem, 1.6vw, 1.15rem);
-  letter-spacing: 0.025em;
-  text-shadow: 0 2px 8px rgba(2, 12, 29, 0.45);
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.hero .hero-btn-primary {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #1d4ed8;
-  box-shadow: 0 8px 22px rgba(2, 12, 29, 0.16);
-}
-
-.hero .hero-btn-primary:hover {
-  background: #eff6ff;
-  border-color: #eff6ff;
-  color: #1d4ed8;
-}
-
-.hero .hero-btn-secondary {
-  background: rgba(15, 54, 107, 0.48);
-  border-color: rgba(191, 219, 254, 0.65);
-  backdrop-filter: blur(4px);
-}
-
-.home-about-section {
-  scroll-margin-top: 4.5rem;
-}
-
-@media (max-width: 800px) {
-  .hero {
-    height: 320px;
-  }
-
-  .hero-content {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .hero-copy {
-    max-width: 32rem;
-  }
-
-  .hero-eyebrow {
-    margin-bottom: 0.65rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-  }
-
-  .hero-eyebrow span {
-    width: 1.5rem;
-  }
-
-  .hero-content h1 {
-    max-width: 20rem;
-    font-size: clamp(1.8rem, 8vw, 2.25rem);
-  }
-
-  .hero-content p {
-    margin-bottom: 1.35rem;
-    font-size: 0.95rem;
-  }
-
-  .hero-signal {
-    right: -70px;
-    width: 230px;
-    opacity: 0.26;
-  }
-
-  .hero-wave {
-    right: -18%;
-    bottom: 10%;
-    width: 80vw;
-    opacity: 0.1;
-  }
-
-  .hero-grid {
-    opacity: 0.1;
-    background-size: 34px 34px;
-  }
-
-  .hero-signal span,
-  .hero-wave {
-    animation: none;
-  }
-}
-
-@media (max-width: 540px) {
-  .hero {
-    height: 300px;
-  }
-
-  .hero-signal {
-    opacity: 0.18;
-  }
-
-  .hero-wave {
-    display: none;
-  }
-}
-
-@media (max-width: 390px) {
-  .hero-buttons {
-    gap: 0.6rem;
-  }
-
-  .hero-buttons .btn-primary {
-    padding-right: 1.1rem;
-    padding-left: 1.1rem;
-  }
-}
-
-/* 按钮 */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 2.75rem;
-  padding: 0.6rem 1.5rem;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.5);
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 4px;
-  transition:
-    background-color 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease,
-    box-shadow 200ms ease,
-    transform 200ms ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-primary:hover {
-  background: rgba(255,255,255,0.35);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
-}
-
-.home-content-card {
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-}
-
-.recent-event-card h3 {
-  transition: color 180ms ease;
-}
-
-.recent-event-card:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 3px;
-}
-
-.mt-6 {
-  margin-top: 1.5rem;
-}
-
-.px-3 {
-  padding-right: 0.75rem;
-  padding-left: 0.75rem;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.bg-gray-100 {
-  background-color: #f3f4f6;
-}
-
-.block {
-  display: block;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.space-y-1 > * + * {
-  margin-top: 0.25rem;
-}
-
-.space-y-1\.5 > * + * {
-  margin-top: 0.375rem;
-}
-
-.overflow-hidden {
-  overflow: hidden;
-}
-
-.h-full {
-  height: 100%;
-}
-
-.object-cover {
-  object-fit: cover;
-}
-
-.aspect-video {
-  aspect-ratio: 16/9;
-}
-
-.transition-colors {
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-/* 侧边栏 */
-.sidebar-card {
-  background: white;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-border);
-  padding: 1rem;
-}
-
-.sidebar-card h4 {
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 0.75rem;
-  color: #374151;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 0.5rem;
-}
-
-/* 首页第五轮：抽象光场与高级交互（仅限首页作用域） */
 .home-page {
   --home-electric-blue: #2563eb;
   --home-cyan: #0891b2;
   --home-panel-light: #dceafb;
-  --home-surface-blue: #f1f6fd;
-  --home-line-blue: rgba(37, 99, 235, 0.2);
   background: #f5f8fc;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.home-page .nav {
+  position: fixed;
+  inset: 0 0 auto 0;
 }
 
 .home-page .hero {
-  height: clamp(560px, 72vh, 680px);
-  min-height: 560px;
+  position: relative;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
   background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
+}
+
+.home-page .hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
 }
 
 .home-page .home-hero-canvas {
@@ -363,76 +61,97 @@
 }
 
 .home-page .hero-content {
+  position: relative;
   z-index: 6;
   display: flex;
-  align-items: flex-start;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding-top: 4.5rem;
-  padding-bottom: 4rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-align: center;
 }
 
 .home-page .home-hero-copy {
   position: relative;
   width: min(100%, 900px);
   max-width: 900px;
+  text-align: center;
 }
 
 .home-page .hero-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0;
   margin-bottom: 1rem;
   color: #315d88;
   font-size: 0.72rem;
+  font-weight: 600;
   letter-spacing: 0.2em;
 }
 
-.home-page .hero-eyebrow::before {
+.home-page .hero-eyebrow::before,
+.home-page .hero-eyebrow::after {
   content: "";
   width: 2.6rem;
   height: 1px;
-  margin-right: 0.8rem;
+  margin: 0 0.8rem;
   background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
-}
-
-.home-page .hero-eyebrow span {
-  display: none;
 }
 
 .home-page .hero-content h1 {
   max-width: 900px;
   margin-bottom: 1.25rem;
+  color: #10233f;
   font-size: clamp(3rem, 5.9vw, 5.35rem);
   font-weight: 720;
   line-height: 1.05;
   letter-spacing: -0.025em;
   text-wrap: balance;
-  color: #10233f;
-  text-shadow: none;
 }
 
 .home-page .hero-content p {
   max-width: 42rem;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
   color: #52657d;
   font-size: clamp(1.05rem, 1.5vw, 1.24rem);
   letter-spacing: 0.03em;
-  text-shadow: none;
 }
 
 .home-page .hero-buttons {
+  display: flex;
+  justify-content: center;
   gap: 0.85rem;
+}
+
+.home-page .btn-primary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 0.65rem;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
 }
 
 .home-page .hero-btn-primary,
 .home-page .hero-btn-secondary {
   position: relative;
-  overflow: hidden;
   min-width: 8rem;
-  border-radius: 0.65rem;
-  transition:
-    transform 220ms ease,
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    background-color 220ms ease;
+  overflow: hidden;
 }
 
 .home-page .hero .hero-btn-primary {
@@ -450,606 +169,63 @@
   backdrop-filter: blur(6px);
 }
 
-.home-page .home-hero-scroll-cue {
+.home-page .footer,
+.home-page .scrollTopBtn {
+  display: none;
+}
+
+.site-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
   display: flex;
-  width: max-content;
-  align-items: center;
-  gap: 0.7rem;
-  margin-top: 3.2rem;
-  color: rgba(49, 93, 136, 0.68);
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-}
-
-.home-page .home-hero-scroll-cue span {
-  width: 2.8rem;
-  height: 1px;
-  overflow: hidden;
-  background: rgba(30, 79, 145, 0.18);
-}
-
-.home-page .home-hero-scroll-cue span::after {
-  content: "";
-  display: block;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, var(--home-electric-blue));
-  transform: translateX(-100%);
-  animation: home-scroll-cue 2.8s ease-in-out infinite;
-}
-
-.home-page .home-about-section {
-  padding-top: 4.25rem;
-  padding-bottom: 4.25rem;
-}
-
-.home-page .home-news-section,
-.home-page .home-honors-section {
-  position: relative;
-  overflow: hidden;
-  padding: 4.5rem 0;
-}
-
-.home-page .home-news-section {
-  border-top: 1px solid #dce8f7;
-  background:
-    radial-gradient(circle at 88% 18%, rgba(96, 165, 250, 0.11), transparent 24rem),
-    var(--home-surface-blue);
-}
-
-.home-page .home-news-section::before,
-.home-page .home-honors-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: min(72rem, calc(100% - 2rem));
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.72), transparent);
-  transform: translateX(-50%);
-}
-
-.home-page .home-section-inner {
-  position: relative;
-  z-index: 1;
-}
-
-.home-page .home-news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.15rem;
-}
-
-.home-page .recent-event-card {
-  display: flex;
-  min-height: 230px;
   flex-direction: column;
-  overflow: hidden;
-  padding: 1.55rem;
-  border-color: rgba(59, 130, 246, 0.14);
-  background:
-    linear-gradient(90deg, #2563eb, #67e8f9, rgba(103, 232, 249, 0.08)) top / 100% 3px no-repeat,
-    #ffffff;
-  color: inherit;
-  text-decoration: none;
-}
-
-.home-page .home-card-meta,
-.home-page .home-honor-card-head,
-.home-page .home-honor-card-foot {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 0.75rem;
+  background: linear-gradient(145deg, #071a36, #041225);
+  color: #ffffff;
+  transition: opacity 800ms ease, transform 800ms ease, visibility 800ms;
 }
 
-.home-page .home-card-meta {
-  margin-bottom: 1.35rem;
-}
-
-.home-page .home-card-kicker,
-.home-page .home-honor-kicker {
-  font-size: 0.63rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.home-page .home-card-kicker {
-  color: #2563eb;
-}
-
-.home-page .home-card-date {
-  flex: 0 0 auto;
-  color: #64748b;
-  font-size: 0.74rem;
-}
-
-.home-page .recent-event-card h3 {
-  color: #163b75;
-  line-height: 1.4;
-}
-
-.home-page .recent-event-card p {
-  color: #52647b;
-}
-
-.home-page .home-card-link-cue {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: auto;
-  padding-top: 1.5rem;
-  color: #2563eb;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-}
-
-.home-page .home-card-link-cue i {
-  font-style: normal;
-  transition: transform 180ms ease;
-}
-
-.home-page .home-honors-section {
-  color: #dbeafe;
-  background:
-    radial-gradient(circle at 12% 20%, rgba(37, 99, 235, 0.22), transparent 27rem),
-    radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12), transparent 24rem),
-    linear-gradient(145deg, #071a36, #041225 72%);
-}
-
-.home-page .home-honors-section .more-link {
-  color: #bae6fd;
-}
-
-.home-page .home-honors-section .more-link:focus-visible {
-  outline-color: #7dd3fc;
-}
-
-.home-page .home-honor-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.home-page .home-honor-card {
-  position: relative;
-  display: flex;
-  min-height: 260px;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 1.5rem;
-  border: 1px solid rgba(147, 197, 253, 0.19);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(90deg, #60a5fa, #67e8f9, rgba(103, 232, 249, 0.06)) top / 100% 3px no-repeat,
-    linear-gradient(145deg, rgba(20, 57, 105, 0.78), rgba(6, 29, 62, 0.9));
-  box-shadow: 0 14px 34px rgba(1, 8, 22, 0.2);
-  transition:
-    transform 220ms ease,
-    border-color 220ms ease,
-    box-shadow 220ms ease;
-}
-
-.home-page .home-honor-kicker {
-  color: #7dd3fc;
-}
-
-.home-page .home-honor-rank {
-  flex: 0 0 auto;
-  padding: 0.22rem 0.5rem;
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  border-radius: 999px;
-  color: #fde68a;
-  background: rgba(245, 158, 11, 0.08);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.home-page .home-honor-card h3 {
-  margin: 1.4rem 0 0.85rem;
-  color: #f8fbff;
-  font-size: 1.08rem;
-  font-weight: 700;
-  line-height: 1.55;
-}
-
-.home-page .home-honor-card p {
-  color: #b9cbe3;
-  font-size: 0.87rem;
-  line-height: 1.75;
-}
-
-.home-page .home-honor-card-foot {
-  margin-top: auto;
-  padding-top: 1.5rem;
-  color: #7f9bbd;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-}
-
-@media (hover: hover) {
-  .home-page .recent-event-card:hover .home-card-link-cue i {
-    transform: translateX(3px);
-  }
-
-  .home-page .home-honor-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(125, 211, 252, 0.38);
-    box-shadow: 0 18px 40px rgba(1, 8, 22, 0.3);
-  }
-}
-
-@media (max-width: 1023px) {
-  .home-page .hero {
-    height: 480px;
-  }
-
-  .home-page .hero-content {
-    grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
-    gap: 1.75rem;
-  }
-
-  .home-page .hero-content h1 {
-    font-size: clamp(2.35rem, 4.8vw, 3.1rem);
-  }
-
-}
-
-@media (max-width: 900px) {
-  .home-page .home-honor-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 800px) {
-  .home-page .hero {
-    height: auto;
-    min-height: 0;
-  }
-
-  .home-page .hero-content {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.4rem;
-    padding-top: 2.75rem;
-    padding-bottom: 2.75rem;
-  }
-
-  .home-page .hero-copy {
-    max-width: 38rem;
-  }
-
-  .home-page .hero-content h1 {
-    max-width: 34rem;
-    font-size: clamp(2.15rem, 7vw, 2.75rem);
-  }
-
-  .home-page .home-about-section {
-    padding-top: 3.25rem;
-    padding-bottom: 3.25rem;
-  }
-
-  .home-page .home-news-section,
-  .home-page .home-honors-section {
-    padding: 3.5rem 0;
-  }
-
-  .home-page .recent-event-card {
-    min-height: 210px;
-  }
-}
-
-@media (max-width: 640px) {
-  .home-page .home-honor-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .home-page .home-honor-card {
-    min-height: 230px;
-  }
-}
-
-@media (max-width: 540px) {
-  .home-page .hero-content {
-    gap: 1.25rem;
-    padding-top: 2.35rem;
-    padding-bottom: 2.35rem;
-  }
-
-  .home-page .hero-content h1 {
-    font-size: clamp(2rem, 9vw, 2.35rem);
-  }
-
-  .home-page .home-news-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .home-page .themed-section-header {
-    align-items: flex-end;
-    gap: 0.75rem;
-  }
-
-  .home-page .recent-event-card,
-  .home-page .home-honor-card {
-    padding: 1.3rem;
-  }
-
-  .home-page .recent-event-card {
-    min-height: 0;
-  }
-}
-
-/* 第五轮内容层次与进入动效 */
-.home-page main {
-  background:
-    radial-gradient(circle at 10% 30%, rgba(139, 124, 255, 0.045), transparent 28rem),
-    #f8faff;
-}
-
-.home-page .home-about-section {
-  position: relative;
-}
-
-.home-page .home-about-section .card,
-.home-page .home-about-section .sidebar-card {
-  border-color: rgba(111, 142, 196, 0.16);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.92));
-  box-shadow:
-    0 20px 50px rgba(33, 55, 92, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.82);
-}
-
-.home-page .home-section-header {
-  position: relative;
-  z-index: 2;
-}
-
-.home-page .home-section-heading {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.home-page .home-section-index {
-  color: #5578b9;
-  font-size: 0.64rem;
-  font-weight: 750;
-  letter-spacing: 0.18em;
-}
-
-.home-page .home-section-heading h2 {
-  position: relative;
-  margin: 0;
-  padding-bottom: 0.9rem;
-  color: #101d35;
-  font-size: clamp(1.8rem, 3vw, 2.35rem);
-  font-weight: 720;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-
-.home-page .home-section-heading h2::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 5.5rem;
-  height: 2px;
-  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan), transparent);
-  box-shadow: 0 0 12px rgba(101, 228, 255, 0.24);
-}
-
-.home-page .home-news-section {
-  isolation: isolate;
-  border-top-color: rgba(107, 139, 196, 0.16);
-  background:
-    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
-    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
-    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
-}
-
-.home-page .home-news-section::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: -12rem;
-  right: -10rem;
-  width: 34rem;
-  height: 34rem;
-  border: 1px solid rgba(114, 167, 255, 0.12);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 4rem rgba(114, 167, 255, 0.025),
-    0 0 0 8rem rgba(139, 124, 255, 0.018);
-  pointer-events: none;
-}
-
-.home-page .recent-event-card {
-  position: relative;
-  min-height: 248px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.94)) padding-box,
-    linear-gradient(135deg, rgba(114, 167, 255, 0.42), rgba(101, 228, 255, 0.15), rgba(139, 124, 255, 0.25)) border-box;
-  box-shadow:
-    0 18px 45px rgba(37, 66, 112, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.home-page .recent-event-card::before,
-.home-page .home-honor-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 1.4rem;
-  width: 4rem;
-  height: 2px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
-  box-shadow: 0 0 14px rgba(101, 228, 255, 0.42);
-  pointer-events: none;
-}
-
-.home-page .recent-event-card::after,
-.home-page .home-honor-card::after {
-  content: "";
-  position: absolute;
-  right: -4.5rem;
-  bottom: -5.5rem;
-  width: 11rem;
-  height: 11rem;
-  border-radius: 50%;
-  opacity: 0.28;
-  background: radial-gradient(circle, rgba(114, 167, 255, 0.26), transparent 68%);
-  transform: scale(0.9);
-  transition:
-    opacity 240ms ease,
-    transform 240ms ease;
-  pointer-events: none;
-}
-
-.home-page .home-card-kicker {
-  color: #426dcc;
-}
-
-.home-page .recent-event-card h3 {
-  position: relative;
-  z-index: 1;
-  margin-top: 0.2rem;
-  color: #102b57;
-  font-size: 1.18rem;
-}
-
-.home-page .recent-event-card p,
-.home-page .home-card-meta,
-.home-page .home-card-link-cue {
-  position: relative;
-  z-index: 1;
-}
-
-.home-page .home-card-link-cue {
-  color: #345fc2;
-}
-
-.home-page .home-honors-section {
-  isolation: isolate;
-  border-top-color: rgba(107, 139, 196, 0.16);
-  background:
-    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
-    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
-    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
-}
-
-.home-page .home-honors-section::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: -12rem;
-  right: -10rem;
-  width: 34rem;
-  height: 34rem;
-  border: 1px solid rgba(114, 167, 255, 0.12);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 4rem rgba(114, 167, 255, 0.025),
-    0 0 0 8rem rgba(139, 124, 255, 0.018);
-  pointer-events: none;
-}
-
-.home-page .home-honors-section .home-section-index {
-  color: #5578b9;
-}
-
-.home-page .home-honors-section .home-section-heading h2 {
-  color: #101d35;
-}
-
-.home-page .home-honors-section .more-link {
-  color: #2563eb;
-}
-
-.home-page .home-honor-grid {
-  position: relative;
-  z-index: 1;
-  gap: 1.1rem;
-}
-
-.home-page .home-honor-card {
-  min-height: 248px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.94)) padding-box,
-    linear-gradient(135deg, rgba(114, 167, 255, 0.42), rgba(101, 228, 255, 0.15), rgba(139, 124, 255, 0.25)) border-box;
-  box-shadow:
-    0 18px 45px rgba(37, 66, 112, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.home-page .home-honor-card::after {
-  opacity: 0.28;
-  background: radial-gradient(circle, rgba(114, 167, 255, 0.26), transparent 68%);
-}
-
-.home-page .home-honor-kicker {
-  color: #426dcc;
-}
-
-.home-page .home-honor-rank {
-  border-color: rgba(217, 119, 6, 0.28);
-  color: #a16207;
-  background: rgba(245, 158, 11, 0.08);
-}
-
-.home-page .home-honor-card h3 {
-  position: relative;
-  z-index: 1;
-  color: #102b57;
-  font-size: 1.12rem;
-}
-
-.home-page .home-honor-card p {
-  position: relative;
-  z-index: 1;
-  color: #566b8a;
-}
-
-.home-page .home-honor-card-foot {
-  color: #64748b;
-}
-
-.home-page .home-honor-card-foot,
-.home-page .home-honor-card-head {
-  position: relative;
-  z-index: 1;
-}
-
-.home-page.home-effects-ready .home-reveal,
-.home-page.home-effects-ready .home-reveal-item {
+.site-intro.is-exiting {
   opacity: 0;
-  transform: translate3d(0, 18px, 0);
-  transition:
-    opacity 560ms ease,
-    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(-18px);
+  visibility: hidden;
+  pointer-events: none;
 }
 
-.home-page.home-effects-ready .home-reveal.is-visible,
-.home-page.home-effects-ready .home-reveal-item.is-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+.site-intro__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: intro-brand-in 600ms ease both;
 }
 
-.home-page.home-effects-ready .home-news-grid > :nth-child(2),
-.home-page.home-effects-ready .home-honor-grid > :nth-child(2) {
-  transition-delay: 70ms;
+.site-intro__brand img {
+  width: 3rem;
+  height: 3rem;
+  padding: 4px;
+  border-radius: 6px;
+  background: #2563eb;
 }
 
-.home-page.home-effects-ready .home-news-grid > :nth-child(3),
-.home-page.home-effects-ready .home-honor-grid > :nth-child(3) {
-  transition-delay: 140ms;
+.site-intro__brand span {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.site-intro__tagline {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  animation: intro-brand-in 600ms 120ms ease both;
+}
+
+@keyframes intro-brand-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (hover: hover) {
@@ -1067,65 +243,9 @@
     background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 12px 26px rgba(41, 76, 112, 0.13);
   }
-
-  .home-page .recent-event-card:hover {
-    transform: translateY(-4px);
-    box-shadow:
-      0 24px 56px rgba(37, 66, 112, 0.14),
-      inset 0 1px 0 rgba(255, 255, 255, 0.94);
-  }
-
-  .home-page .recent-event-card:hover::after,
-  .home-page .home-honor-card:hover::after {
-    opacity: 0.56;
-    transform: scale(1.08);
-  }
-
-  .home-page .home-honor-card:hover {
-    transform: translateY(-4px);
-    box-shadow:
-      0 24px 56px rgba(37, 66, 112, 0.14),
-      inset 0 1px 0 rgba(255, 255, 255, 0.94);
-  }
-}
-
-@media (max-width: 1023px) {
-  .home-page .hero {
-    height: 600px;
-    min-height: 560px;
-  }
-
-  .home-page .hero-content {
-    padding-top: 4rem;
-    padding-bottom: 3.5rem;
-  }
-
-  .home-page .hero-content h1 {
-    max-width: 48rem;
-    font-size: clamp(3rem, 7vw, 4.45rem);
-  }
 }
 
 @media (max-width: 800px) {
-  .home-page .hero {
-    height: 540px;
-    min-height: 520px;
-  }
-
-  .home-page .hero-content {
-    padding-top: 3.25rem;
-    padding-bottom: 3rem;
-  }
-
-  .home-page .hero-content h1 {
-    max-width: 37rem;
-    font-size: clamp(2.55rem, 8vw, 3.45rem);
-  }
-
-  .home-page .home-hero-scroll-cue span::after {
-    animation: none;
-  }
-
   .home-page .home-hero-mesh {
     opacity: 0.3;
     background-size: 44px 44px;
@@ -1133,25 +253,27 @@
     mask-image: none;
   }
 
-  .home-page.home-effects-ready .home-reveal,
-  .home-page.home-effects-ready .home-reveal-item,
-  .home-page.home-effects-ready .home-reveal.is-visible,
-  .home-page.home-effects-ready .home-reveal-item.is-visible {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  .home-page .hero-content h1 {
+    max-width: 37rem;
+    font-size: clamp(2.55rem, 8vw, 3.45rem);
   }
 }
 
 @media (max-width: 540px) {
-  .home-page .hero {
-    height: 510px;
-    min-height: 500px;
+  .home-page .hero-content {
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
 
-  .home-page .hero-content {
-    padding-top: 2.75rem;
-    padding-bottom: 2.5rem;
+  .home-page .hero-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .home-page .hero-eyebrow::before,
+  .home-page .hero-eyebrow::after {
+    width: 1.5rem;
+    margin: 0 0.55rem;
   }
 
   .home-page .hero-content h1 {
@@ -1177,29 +299,34 @@
     padding-right: 1.1rem;
     padding-left: 1.1rem;
   }
+}
 
-  .home-page .home-hero-scroll-cue {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .site-intro {
+    transition: none;
   }
 
-  .home-page .home-section-heading h2 {
-    font-size: 1.75rem;
+  .site-intro__brand,
+  .site-intro__tagline {
+    animation: none;
+    opacity: 1;
   }
 
-  .home-page .home-news-section,
-  .home-page .home-honors-section {
-    padding-top: 3.25rem;
-    padding-bottom: 3.25rem;
-  }
-
-  .home-page .recent-event-card,
-  .home-page .home-honor-card {
-    padding: 1.35rem;
+  .site-intro.is-exiting {
+    opacity: 0;
   }
 }
   </style>
 </head>
 <body class="home-page">
+  <div class="site-intro" id="site-intro" aria-hidden="true" style="display: none;">
+    <div class="site-intro__brand">
+      <img src="/images/emblem.png" alt="">
+      <span>无线电爱好者协会</span>
+    </div>
+    <div class="site-intro__tagline">燕山大学 · 技术实践类社团</div>
+  </div>
+
   <div id="nav-placeholder"></div>
 
   <!-- Hero 区域 -->
@@ -1214,116 +341,12 @@
         <h1>燕山大学无线电爱好者协会</h1>
         <p>连接无线电技术、电子实践与工程创新</p>
         <div class="hero-buttons">
-          <a href="#about-association" class="btn-primary hero-btn-primary">了解协会</a>
+          <a href="/html/about-association.html" class="btn-primary hero-btn-primary">了解协会</a>
           <a href="/html/registration.html" class="btn-primary hero-btn-secondary">加入我们</a>
-        </div>
-        <div class="home-hero-scroll-cue" aria-hidden="true">
-          <span></span>
-          向下浏览
         </div>
       </div>
     </div>
   </header>
-
-  <!-- 主要内容 -->
-  <main>
-    <!-- 协会介绍 + 侧边栏 -->
-    <section id="about-association" class="home-about-section max-w-6xl mx-auto px-4 py-10">
-      <div class="grid md:grid-cols-3 gap-6 home-reveal">
-        <div class="md:col-span-2">
-          <div class="card">
-            <p class="text-gray-600 leading-relaxed mb-4">
-              燕山大学无线电爱好者协会，简称"无协"，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">37个春秋</span>。
-            </p>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              协会秉承"厚德、博学、求是"的燕大校训，发扬"艰苦奋斗、严谨治学、求实创新"的燕大精神，致力于培养和传播科学技术的热情。
-            </p>
-            <p class="text-gray-600 leading-relaxed">
-              亲爱的同学们和爱好者们，欢迎加入无线电爱好者协会！我们是一个致力于探索和研究
-              <span class="text-blue-600 font-medium">嵌入式技术</span>、
-              <span class="text-blue-600 font-medium">编程</span>、
-              <span class="text-blue-600 font-medium">机械建模</span>和
-              <span class="text-blue-600 font-medium">智能控制</span>的团队。
-            </p>
-            <!-- 视频区域 -->
-            <div class="mt-6 rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
-              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
-                <source src="/image/招新视频.mp4" type="video/mp4">
-                <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
-              </video>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="sidebar-card">
-            <h4>快速导航</h4>
-            <div class="space-y-1">
-              <a href="/html/departments.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">部门介绍</a>
-              <a href="/html/activities.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">协会活动</a>
-              <a href="/html/trainings.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">培训教学</a>
-              <a href="/html/honors.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">荣誉成就</a>
-              <a href="/html/registration.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">招新报名</a>
-              <a href="/html/admission.html" class="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">录取查询</a>
-            </div>
-          </div>
-          <div class="sidebar-card">
-            <h4>协会数据</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="stat-card">
-                <div class="stat-value">1988</div>
-                <div class="stat-label">成立年份</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">5</div>
-                <div class="stat-label">部门数量</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">200+</div>
-                <div class="stat-label">会员人数</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">150+</div>
-                <div class="stat-label">获奖数量</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 最新动态 -->
-    <section class="home-news-section">
-      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
-        <div class="home-section-header flex items-end justify-between mb-6">
-          <div class="home-section-heading">
-            <span class="home-section-index">01 / LATEST</span>
-            <h2>最新动态</h2>
-          </div>
-          <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
-        </div>
-        <div class="home-news-grid" id="recent-events">
-          <!-- 动态内容由 JavaScript 动态生成 -->
-        </div>
-      </div>
-    </section>
-
-    <!-- 荣誉成就 -->
-    <section class="home-honors-section">
-      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
-        <div class="home-section-header flex items-end justify-between mb-6">
-          <div class="home-section-heading">
-            <span class="home-section-index">02 / HONORS</span>
-            <h2>荣誉成就</h2>
-          </div>
-          <a href="/html/honors.html" class="more-link">查看更多</a>
-        </div>
-        <div class="home-honor-grid" id="honors-grid">
-          <!-- 荣誉内容由 JavaScript 动态生成 -->
-        </div>
-      </div>
-    </section>
-  </main>
 
   <div id="footer-placeholder"></div>
 
@@ -1333,53 +356,36 @@
     <img src="" alt="查看图片">
   </div>
 
-  <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
   <script>
-    // 渲染最新动态
-    function renderRecentEvents() {
-      const container = document.getElementById('recent-events');
-      if (!container) return;
-      
-      container.innerHTML = recentEvents.map(event => `
-        <a href="/html/activities.html" class="card group home-content-card recent-event-card home-reveal-item">
-          <div class="home-card-meta">
-            <span class="home-card-kicker">ASSOCIATION UPDATE</span>
-            <span class="home-card-date">${event.date}</span>
-          </div>
-          <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
-          <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>
-          <span class="home-card-link-cue">READ UPDATE <i aria-hidden="true">→</i></span>
-        </a>
-      `).join('');
-    }
+    (function () {
+      const intro = document.getElementById('site-intro');
+      if (!intro) return;
 
-    // 渲染荣誉卡片
-    function renderHonorCards() {
-      const container = document.getElementById('honors-grid');
-      if (!container) return;
-      
-      container.innerHTML = topHonors.map(honor => `
-        <article class="home-honor-card home-reveal-item">
-          <div class="home-honor-card-head">
-            <span class="home-honor-kicker">HONOR / ${honor.year}</span>
-            ${honor.rank ? `<span class="home-honor-rank">TOP ${honor.rank}</span>` : ''}
-          </div>
-          <h3>${honor.title}</h3>
-          <p>${honor.description}</p>
-          <div class="home-honor-card-foot">
-            <span>ASSOCIATION RECORD</span>
-            <span aria-hidden="true">•••</span>
-          </div>
-        </article>
-      `).join('');
-    }
+      try {
+        if (sessionStorage.getItem('radio-intro-shown')) {
+          intro.remove();
+          return;
+        }
 
-    // 页面加载后渲染
-    document.addEventListener('DOMContentLoaded', () => {
-      renderRecentEvents();
-      renderHonorCards();
-    });
+        intro.style.display = '';
+
+        const exit = () => {
+          intro.classList.add('is-exiting');
+          sessionStorage.setItem('radio-intro-shown', '1');
+        };
+
+        if (document.readyState === 'complete') {
+          window.setTimeout(exit, 1400);
+        } else {
+          window.addEventListener('load', () => window.setTimeout(exit, 900), { once: true });
+        }
+
+        intro.addEventListener('transitionend', () => intro.remove(), { once: true });
+      } catch (error) {
+        intro.remove();
+      }
+    })();
   </script>
   <script src="/html/home-effects.js"></script>
 </body>
