@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>关于协会 - 无线电爱好者协会</title>
+  <title>协会详情 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
   <style>
@@ -329,9 +329,6 @@
   --home-panel-light: #dceafb;
   --home-surface-blue: #f1f6fd;
   --home-line-blue: rgba(37, 99, 235, 0.2);
-  height: 100dvh;
-  overflow: hidden;
-  padding-top: 0;
   background: #f5f8fc;
 }
 
@@ -1433,7 +1430,6 @@
 /* 协会介绍首屏全屏 landing */
 .about-association-page .page-container.subpage-content {
   padding-top: 0;
-  padding-bottom: 0;
 }
 
 .about-association-page .home-about-section.about-landing {
@@ -1441,9 +1437,9 @@
   height: 100dvh;
   flex-direction: column;
   justify-content: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+  width: calc(100% + 3rem);
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
   padding: 5.5rem 1rem 5.5rem;
   background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
   isolation: isolate;
@@ -1584,6 +1580,9 @@
   .about-association-page .home-about-section.about-landing {
     height: auto;
     min-height: 100dvh;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
     padding: 4.5rem 0.75rem 5rem;
   }
 
@@ -1606,6 +1605,9 @@
 
 @media (max-width: 480px) {
   .about-association-page .home-about-section.about-landing {
+    width: calc(100% + 1.8rem);
+    margin-left: -0.9rem;
+    margin-right: -0.9rem;
     padding: 4.25rem 0.6rem 4.5rem;
   }
 
@@ -1618,76 +1620,90 @@
   }
 }
 
+/* 返回首屏提示 */
+.scroll-back-cue {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+.scroll-back-cue.is-visible {
+  opacity: 1;
+}
+.scroll-back-cue svg {
+  animation: scroll-back-cue-bounce 1.8s ease-in-out infinite;
+}
+@keyframes scroll-back-cue-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
   </style>
 </head>
 <body class="site-page sub-page about-page about-association-page">
   <div id="nav-placeholder"></div>
 
   <main class="page-container subpage-content about-association-content departments-content">
-    <!-- 协会介绍 + 侧边栏 -->
-    <section id="about-association" class="home-about-section about-landing">
-      <div class="about-landing-mesh" aria-hidden="true"></div>
-      <div class="about-landing-inner">
-        <div class="about-landing-header">
-          <h1>关于协会</h1>
-          <p>了解协会历史、部门设置与成员成长路径</p>
-        </div>
-        <div class="card about-assoc-intro">
-          <div class="about-assoc-intro__media">
-            <div class="rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
-              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
-                <source src="/image/招新视频.mp4" type="video/mp4">
-                <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
-              </video>
-            </div>
-            <div class="about-assoc-intro__stats">
-              <div class="stat-card">
-                <div class="stat-value">1988</div>
-                <div class="stat-label">成立年份</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">5</div>
-                <div class="stat-label">部门数量</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">200+</div>
-                <div class="stat-label">会员人数</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">150+</div>
-                <div class="stat-label">获奖数量</div>
-              </div>
-            </div>
+    <div class="scroll-back-cue" id="scrollBackCue" aria-hidden="true">
+      <span>上滑返回首屏</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </div>
+    <!-- 最新动态 -->
+    <section class="home-news-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <span class="home-section-index">01 / LATEST</span>
+            <h2>最新动态</h2>
           </div>
-          <div class="about-assoc-intro__body">
-            <p class="text-gray-600 leading-relaxed mb-4">
-              燕山大学无线电爱好者协会，简称"无协"，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">38个春秋</span>。
-            </p>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              协会秉承<span class="font-semibold text-gray-800">"厚德、博学、求是"</span>的燕大校训，发扬<span class="font-semibold text-gray-800">"艰苦奋斗、严谨治学、求实创新"</span>的燕大精神，致力于培养和传播科学技术的热情。
-            </p>
-            <p class="text-gray-600 leading-relaxed">
-              亲爱的同学们和爱好者们，欢迎加入无线电爱好者协会！我们是一个致力于探索和研究
-              <span class="font-semibold text-gray-800">嵌入式开发与FPGA</span>、
-              <span class="font-semibold text-gray-800">人工智能应用与软件开发</span>、
-              <span class="font-semibold text-gray-800">机械建模</span> 和
-              <span class="font-semibold text-gray-800">智能控制</span> 的团队。
-            </p>
-            <p class="text-gray-600 leading-relaxed">
-              我们致力于传播知识、启发灵感，并为每一位热爱科技的朋友提供一个共同成长的平台。
-            </p>
-          </div>
+          <a href="/html/activities.html" class="more-link text-sm text-blue-600">查看更多</a>
         </div>
-      </div>
-
-      <div class="scroll-cue" id="scrollCue" aria-hidden="true">
-        <span>下滑了解更多</span>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
+        <div class="home-news-grid" id="recent-events">
+          <!-- 动态内容由 JavaScript 动态生成 -->
+        </div>
       </div>
     </section>
+
+    <!-- 荣誉成就 -->
+    <section class="home-honors-section">
+      <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
+        <div class="home-section-header flex items-end justify-between mb-6">
+          <div class="home-section-heading">
+            <h2>荣誉成就</h2>
+          </div>
+          <a href="/html/honors.html" class="more-link">查看更多</a>
+        </div>
+        <div class="home-honor-grid" id="honors-grid">
+          <!-- 荣誉内容由 JavaScript 动态生成 -->
+        </div>
+      </div>
+    </section>
+
+    <div id="departments-list" class="content-stack">
+      <!-- 部门内容由 JavaScript 动态生成 -->
+    </div>
   </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
 
   <div class="image-viewer">
     <img src="" alt="查看图片">
@@ -1695,49 +1711,187 @@
 
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script>
-    // 首屏滚动提示：下滑后淡出
-    (function() {
-      const scrollCue = document.getElementById('scrollCue');
-      if (scrollCue) {
+    // 渲染最新动态
+    function renderRecentEvents() {
+      const container = document.getElementById('recent-events');
+      if (!container) return;
+      
+      container.innerHTML = recentEvents.map(event => `
+        <a href="/html/activities.html" class="card group home-content-card recent-event-card home-reveal-item">
+          <div class="home-card-meta">
+            <span class="home-card-date">${event.date}</span>
+          </div>
+          <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>
+          <span class="home-card-link-cue"><i aria-hidden="true">→</i></span>
+        </a>
+      `).join('');
+    }
+
+    // 渲染荣誉卡片
+    function renderHonorCards() {
+      const container = document.getElementById('honors-grid');
+      if (!container) return;
+      
+      container.innerHTML = topHonors.map(honor => `
+        <article class="home-honor-card home-reveal-item">
+          <h3>${honor.title}</h3>
+          <p>${honor.description}</p>
+          <div class="home-honor-card-foot">
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // 渲染部门列表
+    function renderDepartments() {
+      const container = document.getElementById('departments-list');
+      if (!container) return;
+      
+      container.innerHTML = departments.map((dept, index) => {
+        // 获取统计数据
+        const stat1Value = dept.stats.activities || dept.stats.projects || dept.stats.models || dept.stats.softwares || dept.stats.events;
+        const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
+        
+        return `
+          <article class="card card-section department-card">
+            <div class="department-card__heading">
+              <h2 class="card-title">${dept.name}</h2>
+            </div>
+
+            <div class="metric-strip grid grid-cols-3 gap-4 department-metrics">
+              <div>
+                <strong>${dept.stats.members}</strong>
+                <span>部门成员</span>
+              </div>
+              <div>
+                <strong>${stat1Value}</strong>
+                <span>${dept.statLabel1}</span>
+              </div>
+              <div>
+                <strong>${stat2Value}</strong>
+                <span>${dept.statLabel2}</span>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 department-tags">
+              ${dept.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            
+            <div class="info-panel info-panel--accent department-summary">
+              <h3>部门简介</h3>
+              <p>${dept.description}</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4 department-detail-grid">
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">01</span>
+                <h3>主要职责</h3>
+                <ul class="space-y-2">
+                  ${dept.responsibilities.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">02</span>
+                <h3>部门特色</h3>
+                <ul class="space-y-2">
+                  ${dept.features.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+              <div class="info-panel department-detail">
+                <span class="department-detail__index">03</span>
+                <h3>学习内容</h3>
+                <ul class="space-y-2">
+                  ${dept.learn.map(item => `
+                    <li>
+                      <span aria-hidden="true"></span>${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // 页面加载后渲染
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRecentEvents();
+      renderHonorCards();
+      renderDepartments();
+
+      // GSAP：页面内容从底部向上滚入（尊重减少动画偏好）
+      if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const main = document.querySelector('main');
+        if (main) {
+          gsap.from(main, {
+            y: '100vh',
+            duration: 0.8,
+            ease: 'power2.out',
+            delay: 0.1,
+          });
+        }
+      }
+
+      // 返回首屏提示：在顶部时显示
+      const scrollBackCue = document.getElementById('scrollBackCue');
+      if (scrollBackCue) {
         const onScroll = () => {
-          if (window.scrollY > 60) {
-            scrollCue.classList.add('is-hidden');
+          if (window.scrollY <= 0) {
+            scrollBackCue.classList.add('is-visible');
           } else {
-            scrollCue.classList.remove('is-hidden');
+            scrollBackCue.classList.remove('is-visible');
           }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
       }
-    })();
 
-    // 下滑切换：桌面滚轮 / 移动触控
-    (function() {
-      const detailUrl = '/html/about-association-detail.html';
-      let redirected = false;
+      // 上滑返回协会介绍页（入场动画结束后才启用，避免误跳）
+      const landingUrl = '/html/about-association.html';
+      let redirecting = false;
+      let entranceLock = true;
+      setTimeout(() => { entranceLock = false; }, 1000);
 
-      function redirect() {
-        if (redirected) return;
-        redirected = true;
-        window.location.href = detailUrl;
+      function redirectToLanding() {
+        if (entranceLock || redirecting) return;
+        redirecting = true;
+        window.location.href = landingUrl;
       }
 
-      // 桌面滚轮
+      // 桌面滚轮：在最顶部继续上滑则返回
       window.addEventListener('wheel', (e) => {
-        if (e.deltaY > 30) redirect();
-      }, { once: true });
+        if (window.scrollY <= 0 && e.deltaY < -30) {
+          redirectToLanding();
+        }
+      }, { passive: true });
 
-      // 移动触控
+      // 移动触控：在最顶部继续下滑（即内容上滑）则返回
       let touchStartY = 0;
       window.addEventListener('touchstart', (e) => {
         touchStartY = e.touches[0].clientY;
       }, { passive: true });
       window.addEventListener('touchend', (e) => {
-        const deltaY = touchStartY - e.changedTouches[0].clientY;
-        if (deltaY > 50) redirect();
+        if (window.scrollY > 0) return;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (deltaY > 50) {
+          redirectToLanding();
+        }
       }, { passive: true });
-    })();
+    });
   </script>
 </body>
 </html>
