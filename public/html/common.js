@@ -120,8 +120,13 @@ function getFooterHTML() {
           </div>
           <div>
             <h4>联系我们</h4>
-            <p>联系人：郭思源</p>
-            <p>电话：15371530788</p>
+            <p class="footer-contact-line">
+              现任会长：赵易贵
+              <span class="qq-contact">
+                <span class="qq-icon">QQ</span>
+                3140848313
+              </span>
+            </p>
             <p class="footer-contact-meta">燕山大学 · 无线电爱好者协会</p>
           </div>
         </div>
