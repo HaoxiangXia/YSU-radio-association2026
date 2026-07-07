@@ -9,8 +9,8 @@ function initNav() {
     menuBtn.addEventListener('click', () => {
       mobileMenu.classList.toggle('open');
       const isOpen = mobileMenu.classList.contains('open');
-      menuBtn.textContent = isOpen ? '关闭' : '菜单';
       menuBtn.setAttribute('aria-expanded', String(isOpen));
+      menuBtn.setAttribute('aria-label', isOpen ? '关闭菜单' : '打开菜单');
     });
   }
   
@@ -86,7 +86,13 @@ function getNavHTML() {
           <a href="/html/registration.html">招新报名</a>
           <a href="/html/admission.html">录取查询</a>
         </div>
-        <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-navigation">菜单</button>
+        <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-navigation" aria-label="打开菜单">
+          <span class="menu-btn__icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
       </div>
       <div class="mobile-menu" id="mobile-navigation">
         <a href="/html/index.html">首页</a>
