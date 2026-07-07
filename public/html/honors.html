@@ -72,11 +72,6 @@
   letter-spacing: 0.12em;
 }
 
-.site-page.honor-page .honor-feature-card__number {
-  color: #94a3b8;
-  font-size: 0.78rem;
-}
-
 .site-page.honor-page .honor-feature-card h3 {
   margin: 2.5rem 0 0.85rem;
   color: var(--site-ink);
@@ -174,14 +169,49 @@
   <main class="page-container subpage-content honor-content">
     <!-- 荣誉卡片 -->
     <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6 honor-feature-grid">
-      <!-- 荣誉卡片由 JavaScript 动态生成 -->
+        <article class="card card-section honor-feature-card">
+          <div class="honor-feature-card__topline">
+            <span>2024年</span>
+            <span class="badge badge-red">TOP 6</span>
+          </div>
+          <h3>河北省高校活力团支部TOP10</h3>
+          <p>共青团河北省委颁发，展现了协会在组织建设方面的卓越成就</p>
+          <div class="honor-feature-card__footer">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
+        <article class="card card-section honor-feature-card">
+          <div class="honor-feature-card__topline">
+            <span>2024年</span>
+            
+          </div>
+          <h3>燕山大学五星级社团</h3>
+          <p>燕山大学学生社团联合会评选，是对协会全年工作的高度认可</p>
+          <div class="honor-feature-card__footer">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
+        <article class="card card-section honor-feature-card">
+          <div class="honor-feature-card__topline">
+            <span>2024年</span>
+            
+          </div>
+          <h3>全国大学生电子设计竞赛河北赛区优秀组织奖</h3>
+          <p>全国大学生电子设计竞赛河北赛区组委会颁发，表彰协会在竞赛组织方面的突出贡献</p>
+          <div class="honor-feature-card__footer">
+            <span>ASSOCIATION RECORD</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+        </article>
     </div>
 
     <!-- 活力团支部榜单 -->
     <section class="card card-section mb-6 honor-section honor-ranking">
       <div class="honor-section__heading">
         <div>
-          <span>RANKING / 2024</span>
+          <span>2024</span>
           <h2 class="card-title">河北省高校活力团支部TOP10</h2>
         </div>
         <p>省内高校团支部活力建设榜单</p>
@@ -196,7 +226,56 @@
             </tr>
           </thead>
           <tbody id="league-table">
-            <!-- 榜单内容由 JavaScript 动态生成 -->
+            <tr class="">
+              <td class="text-center font-bold text-blue-600">1</td>
+              <td class="text-gray-600">河北科技大学</td>
+              <td class="text-gray-600">化学与制药工程学院药学类专业2021级4班团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-blue-600">2</td>
+              <td class="text-gray-600">河北工业职业技术大学</td>
+              <td class="text-gray-600">计算机技术系2020级物联网应用技术班团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-blue-600">3</td>
+              <td class="text-gray-600">河北北方学院</td>
+              <td class="text-gray-600">中医学院中医学专业2020级本科1班团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">4</td>
+              <td class="text-gray-600">石家庄信息工程职业学院</td>
+              <td class="text-gray-600">网络与通信工程系活力团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">5</td>
+              <td class="text-gray-600">燕京理工学院</td>
+              <td class="text-gray-600">会计学院注会2001班团支部</td>
+            </tr>
+            <tr class="highlight-row">
+              <td class="text-center font-bold text-gray-600">6</td>
+              <td class="text-gray-600">燕山大学</td>
+              <td class="text-gray-600">无线电爱好者协会团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">7</td>
+              <td class="text-gray-600">石家庄铁道大学</td>
+              <td class="text-gray-600">电21卓越团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">8</td>
+              <td class="text-gray-600">河北科技学院</td>
+              <td class="text-gray-600">2020级工程造价(本)1班团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">9</td>
+              <td class="text-gray-600">河北体育学院</td>
+              <td class="text-gray-600">社会体育系2021级体育经济与管理1班团支部</td>
+            </tr>
+            <tr class="">
+              <td class="text-center font-bold text-gray-600">10</td>
+              <td class="text-gray-600">河北经贸大学</td>
+              <td class="text-gray-600">会计学院2020级数字财会2班团支部</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -211,8 +290,17 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-2" id="competition-tags">
-        <!-- 竞赛标签由 JavaScript 动态生成 -->
-      </div>
+        <span class="tag">大学生创新创业训练计划项目</span>
+        <span class="tag">蓝桥杯大赛</span>
+        <span class="tag">河北省创新创业年会</span>
+        <span class="tag">中国大学生计算机设计大赛</span>
+        <span class="tag">全国大学生电子设计竞赛</span>
+        <span class="tag">全国大学生电子商务"创新、创意及创业"挑战赛</span>
+        <span class="tag">蓝桥杯全国软件和信息技术专业人才大赛</span>
+        <span class="tag">全国大学生数学建模竞赛</span>
+        <span class="tag">全国大学生恩智浦杯智能车竞赛</span>
+        <span class="tag">全国大学生光电设计竞赛</span>
+    </div>
     </section>
 
     <!-- 成就统计 -->
@@ -251,61 +339,6 @@
   <div class="image-viewer">
     <img src="" alt="查看图片">
   </div>
-
-  <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
-  <script>
-    // 渲染荣誉卡片
-    function renderHonorsCards() {
-      const container = document.getElementById('honors-cards');
-      if (!container) return;
-      
-      container.innerHTML = topHonors.map((honor, index) => `
-        <article class="card card-section honor-feature-card">
-          <div class="honor-feature-card__topline">
-            <span>HONOR / ${honor.year}</span>
-            ${honor.rank ? `<span class="badge badge-red">TOP ${honor.rank}</span>` : `<span class="honor-feature-card__number">${String(index + 1).padStart(2, '0')}</span>`}
-          </div>
-          <h3>${honor.title}</h3>
-          <p>${honor.description}</p>
-          <div class="honor-feature-card__footer">
-            <span>ASSOCIATION RECORD</span>
-            <span aria-hidden="true">•••</span>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    // 渲染活力团支部榜单
-    function renderLeagueTable() {
-      const tbody = document.getElementById('league-table');
-      if (!tbody) return;
-      
-      tbody.innerHTML = leagueTop10.map(item => `
-        <tr class="${item.highlight ? 'highlight-row' : ''}">
-          <td class="text-center font-bold ${item.rank <= 3 ? 'text-blue-600' : 'text-gray-600'}">${item.rank}</td>
-          <td class="text-gray-600">${item.school}</td>
-          <td class="text-gray-600">${item.name}</td>
-        </tr>
-      `).join('');
-    }
-
-    // 渲染竞赛标签
-    function renderCompetitionTags() {
-      const container = document.getElementById('competition-tags');
-      if (!container) return;
-      
-      container.innerHTML = competitionList.map(comp => `
-        <span class="tag">${comp}</span>
-      `).join('');
-    }
-
-    // 页面加载后渲染
-    document.addEventListener('DOMContentLoaded', () => {
-      renderHonorsCards();
-      renderLeagueTable();
-      renderCompetitionTags();
-    });
-  </script>
 </body>
 </html>

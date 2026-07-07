@@ -1515,7 +1515,6 @@
       <div class="home-section-inner max-w-6xl mx-auto px-4 home-reveal">
         <div class="home-section-header flex items-end justify-between mb-6">
           <div class="home-section-heading">
-            <span class="home-section-index">02 / HONORS</span>
             <h2>荣誉成就</h2>
           </div>
           <a href="/html/honors.html" class="more-link">查看更多</a>
@@ -1550,12 +1549,11 @@
       container.innerHTML = recentEvents.map(event => `
         <a href="/html/activities.html" class="card group home-content-card recent-event-card home-reveal-item">
           <div class="home-card-meta">
-            <span class="home-card-kicker">ASSOCIATION UPDATE</span>
             <span class="home-card-date">${event.date}</span>
           </div>
           <h3 class="text-lg font-semibold text-blue-600 group-hover:underline mb-2">${event.title}</h3>
           <p class="text-gray-600 text-sm leading-relaxed">${event.description}</p>
-          <span class="home-card-link-cue">READ UPDATE <i aria-hidden="true">→</i></span>
+          <span class="home-card-link-cue"><i aria-hidden="true">→</i></span>
         </a>
       `).join('');
     }
@@ -1567,14 +1565,9 @@
       
       container.innerHTML = topHonors.map(honor => `
         <article class="home-honor-card home-reveal-item">
-          <div class="home-honor-card-head">
-            <span class="home-honor-kicker">HONOR / ${honor.year}</span>
-            ${honor.rank ? `<span class="home-honor-rank">TOP ${honor.rank}</span>` : ''}
-          </div>
           <h3>${honor.title}</h3>
           <p>${honor.description}</p>
           <div class="home-honor-card-foot">
-            <span>ASSOCIATION RECORD</span>
             <span aria-hidden="true">•••</span>
           </div>
         </article>
@@ -1594,7 +1587,6 @@
         return `
           <article class="card card-section department-card">
             <div class="department-card__heading">
-              <span class="department-card__index">DEPARTMENT / ${String(index + 1).padStart(2, '0')}</span>
               <h2 class="card-title">${dept.name}</h2>
             </div>
 
@@ -1618,7 +1610,6 @@
             </div>
             
             <div class="info-panel info-panel--accent department-summary">
-              <span>ABOUT THE TEAM</span>
               <h3>部门简介</h3>
               <p>${dept.description}</p>
             </div>
