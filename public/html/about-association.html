@@ -1516,19 +1516,27 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.55rem 1.1rem;
+  border: none;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   color: #315d88;
+  font-family: inherit;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   box-shadow: 0 6px 20px rgba(30, 79, 145, 0.1);
   transform: translateX(-50%);
-  transition: opacity 320ms ease, transform 320ms ease;
-  pointer-events: none;
+  transition: opacity 320ms ease, transform 320ms ease, background-color 0.2s ease;
+  pointer-events: auto;
+  cursor: pointer;
   animation: about-scroll-cue-bounce 2.4s ease-in-out infinite;
+}
+
+.scroll-cue:hover {
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d4ed8;
 }
 
 .scroll-cue svg {
@@ -1680,12 +1688,12 @@
         </div>
       </div>
 
-      <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+      <button type="button" class="scroll-cue" id="scrollCue" aria-label="下滑进入详情页">
         <span>下滑了解更多</span>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12l7 7 7-7" />
         </svg>
-      </div>
+      </button>
     </section>
   </main>
 
@@ -1696,8 +1704,17 @@
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
   <script>
-    // 首屏滚动提示：下滑后淡出
     (function() {
+      const detailUrl = '/html/about-association-detail.html';
+      let redirected = false;
+
+      function redirect() {
+        if (redirected) return;
+        redirected = true;
+        window.location.href = detailUrl;
+      }
+
+      // 首屏滚动提示：下滑后淡出 + 点击跳转
       const scrollCue = document.getElementById('scrollCue');
       if (scrollCue) {
         const onScroll = () => {
@@ -1709,18 +1726,8 @@
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
-      }
-    })();
 
-    // 下滑切换：桌面滚轮 / 移动触控
-    (function() {
-      const detailUrl = '/html/about-association-detail.html';
-      let redirected = false;
-
-      function redirect() {
-        if (redirected) return;
-        redirected = true;
-        window.location.href = detailUrl;
+        scrollCue.addEventListener('click', () => redirect());
       }
 
       // 桌面滚轮

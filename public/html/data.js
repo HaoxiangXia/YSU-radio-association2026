@@ -51,6 +51,7 @@ const topHonors = [
 const departments = [
   {
     name: '组织部',
+    category: 'non-technical',
     description: '组织部是协会的核心协调部门，负责统筹各项活动的策划与执行，是连接各部门的重要纽带。无论是大型竞赛还是日常活动，组织部都在其中发挥着关键的组织协调作用。',
     responsibilities: [
       '策划和组织协会各类活动，包括技术沙龙、竞赛准备、招新活动等',
@@ -82,6 +83,7 @@ const departments = [
   },
   {
     name: '嵌入式部',
+    category: 'technical',
     description: '嵌入式部专注于嵌入式系统开发与应用，是协会的核心技术部门之一，致力于培养成员的软硬件结合能力。部门配备了多种主流开发板和实验设备，为成员提供良好的实践环境。',
     responsibilities: [
       '开展嵌入式技术相关的培训和教学',
@@ -113,6 +115,7 @@ const departments = [
   },
   {
     name: '机械部',
+    category: 'technical',
     description: '机械部专注于机械设计与制造，为协会的各类项目提供结构设计支持，是技术实现的重要保障。部门拥有3D打印机等先进设备，能够将设计理念快速转化为实物模型。',
     responsibilities: [
       '负责各类竞赛和项目的机械结构设计',
@@ -144,6 +147,7 @@ const departments = [
   },
   {
     name: '计算机部',
+    category: 'technical',
     description: '计算机部专注于软件与算法开发，为协会提供软件开发和信息技术支持，推动智能化技术应用。部门成员参与从算法设计到应用开发的全流程工作，技术覆盖面广。',
     responsibilities: [
       '开发各类应用程序和控制系统',
@@ -176,6 +180,7 @@ const departments = [
   },
   {
     name: '团支部',
+    category: 'non-technical',
     description: '团支部是协会的思想引领核心，负责协会的思想政治工作和团员管理，促进协会健康发展。同时也承担着协会文化建设和对外宣传的重要职责。',
     responsibilities: [
       '组织开展主题团日活动和政治学习',
