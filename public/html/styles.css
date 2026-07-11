@@ -2,6 +2,7 @@
 
 /* 基础变量 */
 :root {
+  --nav-height: 3.5rem;
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
   --color-primary-light: #3b82f6;
@@ -100,7 +101,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 3.5rem;
+  height: var(--nav-height);
 }
 
 .nav-logo {

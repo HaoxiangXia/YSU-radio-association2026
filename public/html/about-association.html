@@ -329,8 +329,8 @@
   --home-panel-light: #dceafb;
   --home-surface-blue: #f1f6fd;
   --home-line-blue: rgba(37, 99, 235, 0.2);
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
   padding-top: 0;
   background: #f5f8fc;
 }
@@ -1462,16 +1462,15 @@
 
 .about-association-page .home-about-section.about-landing {
   display: flex;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   flex-direction: column;
   justify-content: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  padding: 5.5rem 1rem 5.5rem;
+  width: 100%;
+  margin: 0;
+  padding: calc(var(--nav-height) + 2rem) 1rem 3rem;
   background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
   isolation: isolate;
-  overflow: hidden;
   z-index: 1;
 }
 
@@ -1491,6 +1490,8 @@
 }
 
 .about-landing-inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
@@ -1509,12 +1510,15 @@
   font-weight: 720;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .about-landing-header p {
   color: #52657d;
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
 }
 
 /* 下方内容覆盖首屏 */
@@ -1584,7 +1588,8 @@
 
 @media (max-height: 800px) {
   .about-association-page .home-about-section.about-landing {
-    padding: 4rem 1rem 4rem;
+    justify-content: flex-start;
+    padding: calc(var(--nav-height) + 1.5rem) 1rem 2.5rem;
   }
 
   .about-landing-header {
@@ -1606,6 +1611,10 @@
   .about-association-page .about-assoc-intro {
     padding: 1.5rem;
   }
+
+  .scroll-cue {
+    display: none;
+  }
 }
 
 @media (max-width: 800px) {
@@ -1614,9 +1623,8 @@
   }
 
   .about-association-page .home-about-section.about-landing {
-    height: auto;
-    min-height: 100dvh;
-    padding: 4.5rem 0.75rem 5rem;
+    min-height: 100svh;
+    padding: calc(var(--nav-height) + 1.5rem) 0.75rem 3rem;
   }
 
   .about-landing-inner {
@@ -1638,7 +1646,7 @@
 
 @media (max-width: 480px) {
   .about-association-page .home-about-section.about-landing {
-    padding: 4.25rem 0.6rem 4.5rem;
+    padding: calc(var(--nav-height) + 1.25rem) 0.6rem 2.5rem;
   }
 
   .about-landing-inner {
@@ -1647,6 +1655,23 @@
 
   .scroll-cue {
     font-size: 0.65rem;
+  }
+}
+
+/* 此规则必须位于旧版双列样式之后，避免移动端被后续声明重新撑宽。 */
+@media (max-width: 800px) {
+  .about-association-page .about-assoc-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .about-association-page .about-assoc-intro__media,
+  .about-association-page .about-assoc-intro__body {
+    min-width: 0;
+  }
+
+  .about-association-page .about-assoc-intro__body p {
+    overflow-wrap: anywhere;
   }
 }
 
@@ -1754,10 +1779,18 @@
         scrollCue.addEventListener('click', () => redirect());
       }
 
-      // 桌面滚轮
+      function pageCanScroll() {
+        return document.documentElement.scrollHeight > window.innerHeight + 2;
+      }
+
+      function isAtPageBottom() {
+        return window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      }
+
+      // 桌面滚轮：内容因缩放或大字体变高时，先允许浏览器自然滚动。
       window.addEventListener('wheel', (e) => {
-        if (e.deltaY > 30) redirect();
-      }, { once: true });
+        if (e.deltaY > 30 && (!pageCanScroll() || isAtPageBottom())) redirect();
+      });
 
       // 移动触控
       let touchStartY = 0;
@@ -1766,7 +1799,7 @@
       }, { passive: true });
       window.addEventListener('touchend', (e) => {
         const deltaY = touchStartY - e.changedTouches[0].clientY;
-        if (deltaY > 50) redirect();
+        if (deltaY > 50 && (!pageCanScroll() || isAtPageBottom())) redirect();
       }, { passive: true });
     })();
   </script>
