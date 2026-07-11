@@ -63,7 +63,7 @@
       <div class="section-header">
         <div>
           <h2 class="card-title">部门介绍</h2>
-          <p class="section-desc">点击卡片查看各部门详情</p>
+          <p class="section-desc">探索五个部门的方向、职责与成长路径</p>
         </div>
       </div>
       <h3 class="department-group-title">技术部门</h3>
@@ -146,25 +146,37 @@
       nonTechnicalContainer.innerHTML = nonTechnical.map((dept, index) => renderDepartmentCard(dept, index, 'non-tech')).join('');
 
       const allCards = document.querySelectorAll('.department-card');
+      const compactLayout = window.matchMedia('(max-width: 959px)');
+
+      function setCardExpanded(card, expanded) {
+        const button = card.querySelector('.department-card__toggle');
+        const detail = card.querySelector('.department-card__detail');
+        card.classList.toggle('is-expanded', expanded);
+        button.setAttribute('aria-expanded', String(expanded));
+        detail.setAttribute('aria-hidden', String(!expanded));
+      }
+
+      function syncDepartmentLayout() {
+        allCards.forEach(card => {
+          if (compactLayout.matches) {
+            setCardExpanded(card, false);
+          } else {
+            setCardExpanded(card, true);
+          }
+        });
+      }
+
       allCards.forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.tag')) return;
+          if (!compactLayout.matches || e.target.closest('.tag, .department-card__media')) return;
 
           const isExpanded = card.classList.contains('is-expanded');
-          const button = card.querySelector('.department-card__toggle');
-          const detail = card.querySelector('.department-card__detail');
-
           allCards.forEach(other => {
             if (other !== card && other.classList.contains('is-expanded')) {
-              other.classList.remove('is-expanded');
-              other.querySelector('.department-card__toggle').setAttribute('aria-expanded', 'false');
-              other.querySelector('.department-card__detail').setAttribute('aria-hidden', 'true');
+              setCardExpanded(other, false);
             }
           });
-
-          card.classList.toggle('is-expanded', !isExpanded);
-          button.setAttribute('aria-expanded', String(!isExpanded));
-          detail.setAttribute('aria-hidden', String(isExpanded));
+          setCardExpanded(card, !isExpanded);
 
           if (!isExpanded) {
             setTimeout(() => {
@@ -173,23 +185,70 @@
           }
         });
       });
+
+      compactLayout.addEventListener('change', syncDepartmentLayout);
+      syncDepartmentLayout();
+      setupDepartmentGalleries();
+    }
+
+    function setupDepartmentGalleries() {
+      document.querySelectorAll('.department-card__media').forEach(gallery => {
+        const images = JSON.parse(gallery.dataset.images);
+        if (images.length < 2) return;
+
+        const image = gallery.querySelector('.department-card__photo');
+        const preview = gallery.querySelector('.department-card__preview');
+        const counter = gallery.querySelector('.department-card__media-count');
+        let currentIndex = 0;
+
+        function showImage(nextIndex) {
+          currentIndex = (nextIndex + images.length) % images.length;
+          const current = images[currentIndex];
+          image.src = current.src;
+          image.alt = current.alt;
+          preview.dataset.image = current.src;
+          preview.dataset.imageAlt = current.alt;
+          preview.setAttribute('aria-label', `查看${current.alt}完整图片`);
+          counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        gallery.addEventListener('click', event => {
+          const control = event.target.closest('[data-gallery-direction]');
+          if (!control) return;
+          event.preventDefault();
+          event.stopPropagation();
+          showImage(currentIndex + Number(control.dataset.galleryDirection));
+        });
+      });
     }
 
     function renderDepartmentCard(dept, index, prefix) {
       const stat1Value = dept.stats.activities || dept.stats.projects || dept.stats.models || dept.stats.softwares || dept.stats.events;
       const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
       const paddedIndex = String(index + 1).padStart(2, '0');
+      const galleryImages = dept.images || [];
+      const firstImage = galleryImages[0];
+      const galleryData = JSON.stringify(galleryImages).replace(/"/g, '&quot;');
 
       return `
         <article class="department-card" data-department-index="${prefix}-${index}">
-          <div class="department-card__header">
-            <h3 class="department-card__name">${dept.name}</h3>
-            <span class="department-card__index">${paddedIndex}</span>
+          <div class="department-card__media" data-images="${galleryData}">
+            <button type="button" class="department-card__preview" data-image="${firstImage.src}" data-image-alt="${firstImage.alt}" aria-label="查看${firstImage.alt}完整图片">
+              <img class="department-card__photo" src="${firstImage.src}" alt="${firstImage.alt}" loading="lazy">
+            </button>
+            <button type="button" class="department-card__media-control department-card__media-control--previous" data-gallery-direction="-1" aria-label="查看上一张图片">‹</button>
+            <button type="button" class="department-card__media-control department-card__media-control--next" data-gallery-direction="1" aria-label="查看下一张图片">›</button>
+            <span class="department-card__media-count" aria-live="polite">1 / ${galleryImages.length}</span>
+            <div class="department-card__identity">
+              <h3 class="department-card__name">${dept.name}</h3>
+              <span class="department-card__index">${paddedIndex}</span>
+            </div>
           </div>
-          <div class="department-card__tags">
-            ${dept.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
-          </div>
-          <p class="department-card__desc">${dept.description}</p>
+          <div class="department-card__content">
+            <div class="department-card__tags">
+              ${dept.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            <p class="department-card__desc">${dept.description}</p>
           <button type="button" class="department-card__toggle" aria-expanded="false" aria-controls="dept-detail-${prefix}-${index}">
             <span>了解详情</span>
             <span class="department-card__toggle-icon" aria-hidden="true">↓</span>
@@ -229,6 +288,7 @@
                 </ul>
               </div>
             </div>
+          </div>
           </div>
         </article>
       `;
