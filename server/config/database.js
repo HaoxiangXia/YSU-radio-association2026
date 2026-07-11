@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { Database } = require('bun:sqlite');
 const path = require('path');
 const fs = require('fs');
@@ -7,7 +9,11 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const dbPath = path.join(dataDir, 'database.sqlite');
+const configuredPath = process.env.DATABASE_PATH;
+const dbPath = configuredPath
+  ? path.resolve(configuredPath)
+  : path.join(dataDir, 'database.sqlite');
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 const db = new Database(dbPath);
 
 db.run('PRAGMA journal_mode = WAL');
@@ -84,6 +90,8 @@ db.exec(`
     description TEXT
   )
 `);
+
+db.exec('CREATE UNIQUE INDEX IF NOT EXISTS registrations_student_id_unique ON registrations(studentId)');
 
 console.log('SQLite database initialized');
 

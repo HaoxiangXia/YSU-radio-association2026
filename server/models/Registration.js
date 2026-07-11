@@ -19,6 +19,13 @@ const Registration = {
     return { id: Number(info.lastInsertRowid), ...data };
   },
 
+  findOptions() {
+    return {
+      colleges: db.prepare('SELECT DISTINCT college FROM registrations ORDER BY college').all().map((row) => row.college),
+      grades: db.prepare('SELECT DISTINCT grade FROM registrations ORDER BY grade').all().map((row) => row.grade),
+    };
+  },
+
   findAll({ page = 1, limit = 50, college, grade, search, sortBy = 'createdAt', sortOrder = 'desc' } = {}) {
     let conditions = [];
     let params = [];
@@ -43,14 +50,16 @@ const Registration = {
     const safeSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'createdAt';
     const safeSortOrder = sortOrder === 'asc' ? 'ASC' : 'DESC';
 
-    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const safePage = Math.max(1, Number.parseInt(page, 10) || 1);
+    const safeLimit = Math.min(50, Math.max(1, Number.parseInt(limit, 10) || 20));
+    const offset = (safePage - 1) * safeLimit;
 
     const countRow = db.prepare(`SELECT COUNT(*) as total FROM registrations ${where}`).get(...params);
     const total = countRow.total;
 
-    const rows = db.prepare(`SELECT * FROM registrations ${where} ORDER BY ${safeSortBy} ${safeSortOrder} LIMIT ? OFFSET ?`).all(...params, parseInt(limit), offset);
+    const rows = db.prepare(`SELECT * FROM registrations ${where} ORDER BY ${safeSortBy} ${safeSortOrder} LIMIT ? OFFSET ?`).all(...params, safeLimit, offset);
 
-    return { registrations: rows, total };
+    return { registrations: rows, total, page: safePage, limit: safeLimit };
   },
 
   findById(id) {

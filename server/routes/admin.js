@@ -1,134 +1,82 @@
 const express = require('express');
-const router = express.Router();
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { getAdminSettings } = require('../config/settings');
+const { rateLimit } = require('../utils/rateLimit');
 
-// JWT密钥（实际项目中应该使用环境变量）
-const JWT_SECRET = process.env.JWT_SECRET || 'radio-association-admin-secret-key-2024';
+const router = express.Router();
 
-// 从环境变量读取管理员账号
-// 格式：username:password:name;username:password:name
-// 示例：ADMIN_ACCOUNTS=wuxie:513513#:无协管理员;admin2:pass2#:技术负责人
-function loadAdminAccounts() {
-  const raw = process.env.ADMIN_ACCOUNTS || 'wuxie:513513#:无协管理员';
-  const accounts = [];
-
-  raw.split(';').forEach((segment) => {
-    const trimmed = segment.trim();
-    if (!trimmed) return;
-    const parts = trimmed.split(':');
-    if (parts.length < 2) return;
-    const [username, password, name] = parts;
-    accounts.push({
-      username: username.trim(),
-      password: password.trim(),
-      name: (name || username).trim(),
-    });
-  });
-
-  return accounts;
+function hasValidAdminSettings() {
+  const { username, passwordHash, jwtSecret } = getAdminSettings();
+  return Boolean(username && passwordHash && jwtSecret);
 }
 
-// 管理员登录
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
+  const attempt = rateLimit({ key: `admin-login:${req.ip}`, limit: 5, windowMs: 10 * 60 * 1000 });
+  if (!attempt.allowed) {
+    res.set('Retry-After', String(attempt.retryAfter));
+    return res.status(429).json({ message: '尝试次数过多，请稍后再试。' });
+  }
+
+  const username = typeof req.body.username === 'string' ? req.body.username.trim() : '';
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
+  const remember = req.body.remember === true;
+  const settings = getAdminSettings();
+
+  if (!hasValidAdminSettings()) {
+    console.error('管理员配置不完整：请检查 ADMIN_USERNAME、ADMIN_PASSWORD_HASH 和 JWT_SECRET。');
+    return res.status(503).json({ message: '管理员功能尚未配置完成。' });
+  }
+  if (!username || !password || username.length > 64 || password.length > 256) {
+    return res.status(401).json({ message: '用户名或密码错误。' });
+  }
+
+  let passwordMatches = false;
   try {
-    const { username, password, remember } = req.body;
-
-    // 验证输入
-    if (!username || !password) {
-      return res.status(400).json({ message: '用户名和密码不能为空' });
-    }
-
-    const accounts = loadAdminAccounts();
-
-    // 查找管理员账户
-    const admin = accounts.find((acc) => acc.username === username);
-    if (!admin) {
-      return res.status(401).json({ message: '用户名或密码错误' });
-    }
-
-    // 验证密码（.env 中直接存储明文密码）
-    if (password !== admin.password) {
-      return res.status(401).json({ message: '用户名或密码错误' });
-    }
-
-    // 生成JWT token
-    const tokenExpiry = remember ? '7d' : '24h'; // 记住我：7天，否则24小时
-    const token = jwt.sign(
-      {
-        adminId: admin.username,
-        username: admin.username,
-        name: admin.name,
-      },
-      JWT_SECRET,
-      { expiresIn: tokenExpiry }
-    );
-
-    res.json({
-      message: '登录成功',
-      token: token,
-      admin: {
-        username: admin.username,
-        name: admin.name,
-      },
-    });
-
-    console.log(`管理员 ${admin.username} 登录成功`);
+    passwordMatches = username === settings.username && await bcrypt.compare(password, settings.passwordHash);
   } catch (error) {
-    console.error('管理员登录错误:', error);
-    res.status(500).json({ message: '服务器内部错误' });
+    console.error('管理员密码哈希格式无效。');
+    return res.status(503).json({ message: '管理员功能尚未配置完成。' });
   }
-});
+  if (!passwordMatches) {
+    return res.status(401).json({ message: '用户名或密码错误。' });
+  }
 
+  const token = jwt.sign(
+    { username: settings.username, name: '协会管理员' },
+    settings.jwtSecret,
+    { expiresIn: remember ? '7d' : '8h' }
+  );
 
-// 验证token
-router.get('/verify', authenticateToken, (req, res) => {
-  res.json({
-    message: 'Token有效',
-    admin: req.admin
+  return res.json({
+    message: '登录成功。',
+    token,
+    admin: { username: settings.username, name: '协会管理员' },
   });
 });
 
-// 管理员注销
-router.post('/logout', authenticateToken, (req, res) => {
-  // 在实际项目中，可以将token加入黑名单
-  res.json({ message: '注销成功' });
-  console.log(`管理员 ${req.admin.username} 注销`);
-});
-
-// 获取管理员信息
-router.get('/profile', authenticateToken, (req, res) => {
-  res.json({
-    admin: req.admin
-  });
-});
-
-// JWT认证中间件
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-  if (!token) {
-    return res.status(401).json({ message: '缺少访问令牌' });
+  const { jwtSecret } = getAdminSettings();
+  if (!jwtSecret) {
+    return res.status(503).json({ message: '管理员功能尚未配置完成。' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: '访问令牌已过期' });
-      }
-      return res.status(403).json({ message: '无效的访问令牌' });
-    }
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+  if (!token) return res.status(401).json({ message: '请先登录。' });
 
-    req.admin = {
-      id: decoded.adminId,
-      username: decoded.username,
-      name: decoded.name
-    };
-    next();
-  });
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    req.admin = { username: decoded.username, name: decoded.name };
+    return next();
+  } catch (error) {
+    return res.status(401).json({ message: '登录已失效，请重新登录。' });
+  }
 }
 
-// 导出认证中间件供其他路由使用
-router.authenticateToken = authenticateToken;
+router.get('/verify', authenticateToken, (req, res) => res.json({ admin: req.admin }));
+router.get('/profile', authenticateToken, (req, res) => res.json({ admin: req.admin }));
+router.post('/logout', authenticateToken, (req, res) => res.json({ message: '已退出登录。' }));
 
+router.authenticateToken = authenticateToken;
 module.exports = router;

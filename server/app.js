@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+require('dotenv').config();
 require('./config/database');
 const competitionsRouter = require('./routes/competitions');
 const trainingsRouter = require('./routes/trainings');
@@ -9,7 +10,6 @@ const registrationRouter = require('./routes/registration');
 const honorsRouter = require('./routes/honors'); // 引入荣誉路由
 const adminRouter = require('./routes/admin'); // 引入管理员路由
 const path = require('path');
-require('dotenv').config(); // 引入并配置dotenv
 
 // 解析请求体
 app.use(bodyParser.json());
