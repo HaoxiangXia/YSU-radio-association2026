@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>协会活动 - 无线电爱好者协会</title>
+  <style>
+    :root {
+      --primary-color: #1a56a7;
+      --secondary-color: #0d3b7a;
+      --accent-color: #e6f2ff;
+      --text-color: #333;
+      --light-text: #fff;
+      --gray-text: #666;
+      --bg-color: #f5f5f5;
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    /* 头部样式 */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      text-align: center;
+      padding: 2.5rem 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .logo {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      position: relative;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 徽章样式 */
+    .association-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .badge-3d {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: spin 10s linear infinite;
+    }
+
+    .badge-front,
+    .badge-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .badge-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge-back {
+      transform: rotateY(180deg);
+    }
+
+    .badge-glow {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26, 86, 167, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotateY(0deg);
+      }
+
+      100% {
+        transform: rotateY(360deg);
+      }
+    }
+
+    /* 导航样式 */
+    .nav {
+      background-color: var(--secondary-color);
+      padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background-color: var(--primary-color);
+    }
+
+    /* 内容容器 */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .page-title {
+      text-align: center;
+      color: var(--primary-color);
+      margin: 2rem 0;
+      font-size: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid var(--accent-color);
+    }
+
+    /* 子栏目入口样式 */
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 3rem 0;
+    }
+
+    .category-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 2rem;
+      width: 400px;
+      max-width: 100%;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .category-card:hover {
+      box-shadow: var(--hover-shadow);
+      transform: translateY(-10px);
+    }
+
+    .category-icon {
+      font-size: 4rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .category-card h2 {
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+    }
+
+    .category-card p {
+      color: var(--gray-text);
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+
+    /* 页脚样式 */
+    .footer {
+      background-color: #1a56a7;
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .footer p {
+      position: relative;
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    /* 回到顶部按钮 */
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+      z-index: 99;
+    }
+
+    #scrollTopBtn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .badge-3d {
+        width: 80px;
+        height: 80px;
+      }
+
+      .logo {
+        font-size: 2rem;
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">无线电爱好者协会</div>
+      <div>挖掘潜质，就在无协</div>
+    </div>
+
+    <!-- 3D徽章 -->
+    <div class="association-badge">
+      <div class="badge-3d">
+        <div class="badge-front">
+          <img src="./image/白底会徽.png" alt="协会徽章" class="badge-image">
+        </div>
+        <div class="badge-back">
+          <img src="./image/白底会徽.png" alt="协会徽章背面" class="badge-image">
+        </div>
+      </div>
+      <div class="badge-glow"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="index.html">首页</a>
+    <a href="departments.html">部门介绍</a>
+    <a href="activities.html" class="active">协会活动</a>
+    <a href="honors.html">荣誉成就</a>
+    <a href="trainings.html">培训教学</a>
+    <a href="registration.html">招新报名</a>
+    <a href="admission.html">录取查询</a>
+  </div>
+
+  <div class="container">
+    <h1 class="page-title">协会活动</h1>
+
+    <div class="categories">
+      <!-- 竞赛活动入口 -->
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <h2>竞赛活动</h2>
+        <p>协会组织的各类科技竞赛，包括嵌入式大赛、DIY达人赛等，展示成员的创新能力和技术水平。</p>
+        <a href="competition-activities.html" class="btn">查看竞赛活动</a>
+      </div>
+
+      <!-- 文娱活动入口 -->
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h2>文娱活动</h2>
+        <p>协会举办的各类文化娱乐活动，包括欢送晚会、科普宣传等，增强成员间交流与协会影响力。</p>
+        <a href="recreational-activities.html" class="btn">查看文娱活动</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 燕山大学无线电爱好者协会 | 联系我们: 郭思源:15371530788</p>
+  </div>
+
+  <!-- 回到顶部按钮 -->
+  <button id="scrollTopBtn" title="回到顶部">↑</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 设置当前导航项为active
+      document.querySelectorAll('.nav a').forEach(link => {
+        if (link.href === window.location.href) {
+          link.classList.add('active');
+        }
+      });
+
+      // 回到顶部功能
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // 滚动时显示/隐藏回到顶部按钮
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 300) {
+          scrollTopBtn.style.display = 'block';
+        } else {
+          scrollTopBtn.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

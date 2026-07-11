@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理员登录 - 无线电爱好者协会</title>
+  <style>
+    /* 基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a56a7, #0d3b7a);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 登录容器 */
+    .login-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #1a56a7, #0d3b7a);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .login-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .login-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .login-subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+    }
+
+    .admin-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    /* 表单样式 */
+    .login-form {
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #444;
+      transition: color 0.3s ease;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: #fff;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #1a56a7;
+      box-shadow: 0 0 0 3px rgba(26, 86, 167, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .form-group.required label:after {
+      content: " *";
+      color: #e53e3e;
+    }
+
+    /* 按钮样式 */
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #1a56a7, #0d3b7a);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(26, 86, 167, 0.3);
+    }
+
+    .btn-login:hover::before {
+      left: 100%;
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* 错误信息样式 */
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .error-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .error-message::before {
+      content: '⚠️';
+      margin-right: 0.3rem;
+      font-size: 0.8rem;
+    }
+
+    /* 记住我 */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0;
+    }
+
+    .remember-me input[type="checkbox"] {
+      margin-right: 0.5rem;
+      transform: scale(1.2);
+      accent-color: #1a56a7;
+    }
+
+    .remember-me label {
+      margin: 0;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    /* 返回首页链接 */
+    .back-home {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .back-home a {
+      color: #1a56a7;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .back-home a:hover {
+      color: #0d3b7a;
+      text-decoration: underline;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 1rem;
+        max-width: none;
+      }
+
+      .login-header {
+        padding: 1.5rem;
+      }
+
+      .login-title {
+        font-size: 1.5rem;
+      }
+
+      .admin-icon {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* 成功信息样式 */
+    .success-message {
+      color: #28a745;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .success-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .success-message::before {
+      content: '✅';
+      margin-right: 0.3rem;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="admin-icon">🔐</div>
+      <div class="login-title">管理员登录</div>
+      <div class="login-subtitle">无线电爱好者协会</div>
+    </div>
+
+    <form id="loginForm" class="login-form">
+      <div class="form-group required">
+        <label for="username">用户名</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+        <div class="error-message" id="username-error"></div>
+      </div>
+
+      <div class="form-group required">
+        <label for="password">密码</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <div class="error-message" id="password-error"></div>
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="remember" name="remember">
+        <label for="remember">记住我</label>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        登录
+      </button>
+
+      <div class="error-message" id="login-error"></div>
+      <div class="success-message" id="login-success"></div>
+
+      <div class="back-home">
+        <a href="index.html">← 返回首页</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const loginForm = document.getElementById('loginForm');
+      const loginBtn = document.getElementById('loginBtn');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const rememberCheckbox = document.getElementById('remember');
+
+      // 检查是否已经登录
+      checkLoginStatus();
+
+      // 表单提交处理
+      loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // 清除之前的错误信息
+        clearErrors();
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // 前端验证
+        if (!username) {
+          showError('username-error', '请输入用户名');
+          return;
+        }
+
+        if (!password) {
+          showError('password-error', '请输入密码');
+          return;
+        }
+
+        // 显示加载状态
+        setLoading(true);
+
+        try {
+          const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+              remember: rememberCheckbox.checked
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // 登录成功
+            showSuccess('login-success', '登录成功，正在跳转...');
+
+            // 保存token
+            if (rememberCheckbox.checked) {
+              localStorage.setItem('adminToken', data.token);
+            } else {
+              sessionStorage.setItem('adminToken', data.token);
+            }
+
+            // 跳转到目标页面或报名信息页面
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUrl = urlParams.get('redirect') || 'registration-info.html';
+            setTimeout(() => {
+              window.location.href = redirectUrl;
+            }, 1500);
+
+          } else {
+            // 登录失败
+            showError('login-error', data.message || '登录失败，请检查用户名和密码');
+          }
+
+        } catch (error) {
+          console.error('登录错误:', error);
+          showError('login-error', '网络错误，请稍后重试');
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      // 检查登录状态
+      function checkLoginStatus() {
+        const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+        if (token) {
+          // 验证token是否有效
+          fetch('/api/admin/verify', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+            .then(response => {
+              if (response.ok) {
+                // token有效，跳转到目标页面或报名信息页面
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectUrl = urlParams.get('redirect') || 'registration-info.html';
+                window.location.href = redirectUrl;
+              }
+            })
+            .catch(error => {
+              console.error('Token验证失败:', error);
+            });
+        }
+      }
+
+      // 显示错误信息
+      function showError(elementId, message) {
+        const errorEl = document.getElementById(elementId);
+        errorEl.textContent = message;
+        errorEl.classList.add('show');
+      }
+
+      // 显示成功信息
+      function showSuccess(elementId, message) {
+        const successEl = document.getElementById(elementId);
+        successEl.textContent = message;
+        successEl.classList.add('show');
+      }
+
+      // 清除错误信息
+      function clearErrors() {
+        const errorElements = document.querySelectorAll('.error-message, .success-message');
+        errorElements.forEach(el => {
+          el.textContent = '';
+          el.classList.remove('show');
+        });
+      }
+
+      // 设置加载状态
+      function setLoading(loading) {
+        loginBtn.disabled = loading;
+        if (loading) {
+          loginBtn.innerHTML = '<span class="loading"></span>登录中...';
+        } else {
+          loginBtn.innerHTML = '登录';
+        }
+      }
+
+      // 输入框获取焦点时清除错误
+      usernameInput.addEventListener('focus', () => clearFieldError('username-error'));
+      passwordInput.addEventListener('focus', () => clearFieldError('password-error'));
+
+      function clearFieldError(elementId) {
+        const errorEl = document.getElementById(elementId);
+        errorEl.textContent = '';
+        errorEl.classList.remove('show');
+      }
+
+      // 回车键登录
+      passwordInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          loginForm.dispatchEvent(new Event('submit'));
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

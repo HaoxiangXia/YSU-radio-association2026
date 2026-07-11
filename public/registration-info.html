@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报名信息管理 - 无线电爱好者协会</title>
+  <style>
+    /* 基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 头部样式 */
+    .header {
+      background: linear-gradient(135deg, #1a56a7, #0d3b7a);
+      color: white;
+      text-align: center;
+      padding: 2.5rem 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .logo {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      position: relative;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-desc {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      position: relative;
+    }
+
+    /* 3D徽章样式 */
+    .association-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .badge-3d {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: spin 10s linear infinite;
+    }
+
+    .badge-front,
+    .badge-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .badge-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge-back {
+      transform: rotateY(180deg);
+    }
+
+    .badge-glow {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26, 86, 167, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotateY(0deg);
+      }
+
+      100% {
+        transform: rotateY(360deg);
+      }
+    }
+
+    /* 导航样式 */
+    .nav {
+      background-color: #0d3b7a;
+      padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex: 1;
+    }
+
+    .nav-admin {
+      position: absolute;
+      right: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #4da6ff;
+      transition: width 0.3s ease;
+    }
+
+    .nav a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav a:hover::after {
+      width: 100%;
+    }
+
+    .nav a.active {
+      color: #4da6ff;
+    }
+
+    /* 容器样式 */
+    .container {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .page-title {
+      text-align: center;
+      color: #1a56a7;
+      margin-bottom: 2.5rem;
+      font-size: 2.2rem;
+      position: relative;
+      padding-bottom: 0.8rem;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: #1a56a7;
+      border-radius: 3px;
+    }
+
+    /* 工具栏样式 */
+    .toolbar {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #1a56a7;
+      box-shadow: 0 0 0 3px rgba(26, 86, 167, 0.15);
+    }
+
+    .filter-select {
+      min-width: 150px;
+    }
+
+    .filter-select select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: #1a56a7;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0d3b7a;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+
+    /* 统计卡片 */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-top: 4px solid #1a56a7;
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      color: #1a56a7;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+      color: #666;
+      margin: 0;
+    }
+
+    /* 表格样式 */
+    .table-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .table-header {
+      background: #f8f9fa;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a56a7;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-info {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .btn-info:hover {
+      background-color: #138496;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    /* 分页样式 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.5rem;
+      background: white;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .pagination button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #dee2e6;
+      background: white;
+      color: #495057;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pagination button:hover {
+      background-color: #e9ecef;
+    }
+
+    .pagination button.active {
+      background-color: #1a56a7;
+      color: white;
+      border-color: #1a56a7;
+    }
+
+    .pagination button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* 模态框样式 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a56a7;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .detail-group {
+      margin-bottom: 1rem;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 0.3rem;
+    }
+
+    .detail-value {
+      color: #333;
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    /* 加载样式 */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #1a56a7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 页脚样式 */
+    .footer {
+      background-color: #1a56a7;
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .badge-3d {
+        width: 80px;
+        height: 80px;
+      }
+
+      .logo {
+        font-size: 2rem;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .nav-admin {
+        position: static;
+        margin-top: 1rem;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrapper {
+        font-size: 0.875rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">无线电爱好者协会</div>
+      <div class="header-desc">报名信息管理系统</div>
+    </div>
+
+    <!-- 3D徽章 -->
+    <div class="association-badge">
+      <div class="badge-3d">
+        <div class="badge-front">
+          <img src="./image/白底会徽.png" alt="协会徽章" class="badge-image">
+        </div>
+        <div class="badge-back">
+          <img src="./image/白底会徽.png" alt="协会徽章背面" class="badge-image">
+        </div>
+      </div>
+      <div class="badge-glow"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="departments.html">部门介绍</a>
+      <a href="activities.html">协会活动</a>
+      <a href="honors.html">荣誉成就</a>
+      <a href="trainings.html">培训教学</a>
+      <a href="registration.html">招新报名</a>
+      <a href="registration-info.html" class="active">报名信息</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 class="page-title">报名信息管理</h1>
+
+    <!-- 统计卡片 -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <h3 id="total-count">-</h3>
+        <p>总报名人数</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="today-count">-</h3>
+        <p>今日新增</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="college-count">-</h3>
+        <p>涉及学院</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="grade-count">-</h3>
+        <p>涉及年级</p>
+      </div>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="搜索姓名、学号、学院...">
+      </div>
+      <div class="filter-select">
+        <select id="college-filter">
+          <option value="">所有学院</option>
+        </select>
+      </div>
+      <div class="filter-select">
+        <select id="grade-filter">
+          <option value="">所有年级</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="refreshData()">
+        🔄 刷新数据
+      </button>
+      <button class="btn btn-success" onclick="exportData()">
+        📥 导出Excel
+      </button>
+    </div>
+
+    <!-- 表格容器 -->
+    <div class="table-container">
+      <div class="table-header">
+        <div class="table-title">报名信息列表</div>
+        <div id="filtered-count">共 0 条记录</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="registration-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>姓名</th>
+              <th>学号</th>
+              <th>学院</th>
+              <th>年级</th>
+              <th>联系电话</th>
+              <th>电子邮箱</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="8" class="loading">正在加载数据...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination" id="pagination">
+        <!-- 分页按钮将通过JavaScript动态生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情模态框 -->
+  <div class="modal" id="detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">报名详情</div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- 详情内容将通过JavaScript动态填充 -->
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 燕山大学无线电爱好者协会 | 联系我们: 郭思源 15371530788</p>
+  </div>
+
+  <script>
+    // 全局变量
+    let allRegistrations = [];
+    let filteredRegistrations = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function () {
+      // 首先检查管理员登录状态
+      checkAdminLogin();
+    });
+
+    // 检查管理员登录状态
+    async function checkAdminLogin() {
+      const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+
+      if (!token) {
+        // 没有token，跳转到登录页面
+        redirectToLogin();
+        return;
+      }
+
+      try {
+        // 验证token是否有效
+        const response = await fetch('/api/admin/verify', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          // token有效，继续加载页面
+          const data = await response.json();
+          console.log('管理员登录验证成功:', data.admin.name);
+
+          // 添加登出功能到导航栏
+          addLogoutButton(data.admin);
+
+          // 开始加载数据
+          loadRegistrations();
+          loadStatistics();
+          setupEventListeners();
+
+        } else {
+          // token无效，清除并跳转到登录页面
+          localStorage.removeItem('adminToken');
+          sessionStorage.removeItem('adminToken');
+          redirectToLogin();
+        }
+
+      } catch (error) {
+        console.error('验证登录状态失败:', error);
+        redirectToLogin();
+      }
+    }
+
+    // 跳转到登录页面
+    function redirectToLogin() {
+      const currentUrl = encodeURIComponent(window.location.pathname);
+      window.location.href = `admin-login.html?redirect=${currentUrl}`;
+    }
+
+    // 添加登出按钮到导航栏
+    function addLogoutButton(admin) {
+      const nav = document.querySelector('.nav');
+      const adminDiv = document.createElement('div');
+      adminDiv.className = 'nav-admin';
+      adminDiv.innerHTML = `
+        <span style="color: #4da6ff; font-weight: 500;">欢迎，${admin.name}</span>
+        <button onclick="logout()" style="
+          background: #dc3545; 
+          color: white; 
+          border: none; 
+          padding: 0.5rem 1rem; 
+          border-radius: 4px; 
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        " onmouseover="this.style.backgroundColor='#c82333'" 
+           onmouseout="this.style.backgroundColor='#dc3545'">
+          登出
+        </button>
+      `;
+      nav.appendChild(adminDiv);
+    }
+
+    // 登出功能
+    async function logout() {
+      try {
+        const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+
+        // 调用登出API
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+      } catch (error) {
+        console.error('登出请求失败:', error);
+      } finally {
+        // 清除本地token
+        localStorage.removeItem('adminToken');
+        sessionStorage.removeItem('adminToken');
+
+        // 跳转到登录页面
+        window.location.href = 'admin-login.html';
+      }
+    }
+
+    // 设置事件监听器
+    function setupEventListeners() {
+      // 搜索框
+      document.getElementById('search-input').addEventListener('input', debounce(filterData, 300));
+
+      // 筛选下拉框
+      document.getElementById('college-filter').addEventListener('change', filterData);
+      document.getElementById('grade-filter').addEventListener('change', filterData);
+
+      // 模态框点击外部关闭
+      document.getElementById('detail-modal').addEventListener('click', function (e) {
+        if (e.target === this) {
+          closeModal();
+        }
+      });
+    }
+
+    // 防抖函数
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // 获取认证头
+    function getAuthHeaders() {
+      const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+      return {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+    }
+
+    // 加载统计数据
+    async function loadStatistics() {
+      try {
+        const response = await fetch('/api/registration/stats', {
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            redirectToLogin();
+            return;
+          }
+          throw new Error('获取统计数据失败');
+        }
+
+        const stats = await response.json();
+
+        document.getElementById('total-count').textContent = stats.total;
+        document.getElementById('today-count').textContent = stats.todayCount;
+        document.getElementById('college-count').textContent = stats.collegeCount;
+        document.getElementById('grade-count').textContent = stats.gradeCount;
+
+      } catch (error) {
+        console.error('加载统计数据失败:', error);
+      }
+    }
+
+    // 加载报名数据
+    async function loadRegistrations() {
+      try {
+        const response = await fetch('/api/registration?limit=1000', {
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            redirectToLogin();
+            return;
+          }
+          throw new Error('获取数据失败');
+        }
+
+        const data = await response.json();
+        // 兼容新旧API格式
+        allRegistrations = data.registrations || data;
+        filteredRegistrations = [...allRegistrations];
+
+        updateFilters();
+        filterData();
+
+      } catch (error) {
+        console.error('加载数据失败:', error);
+        document.getElementById('table-body').innerHTML =
+          '<tr><td colspan="8" style="text-align: center; color: #dc3545;">数据加载失败，请检查网络连接或重新登录</td></tr>';
+      }
+    }
+
+    // 更新筛选选项
+    function updateFilters() {
+      const collegeFilter = document.getElementById('college-filter');
+      const gradeFilter = document.getElementById('grade-filter');
+
+      // 清除现有选项
+      collegeFilter.innerHTML = '<option value="">所有学院</option>';
+      gradeFilter.innerHTML = '<option value="">所有年级</option>';
+
+      // 获取所有唯一的学院和年级
+      const colleges = [...new Set(allRegistrations.map(reg => reg.college))].sort();
+      const grades = [...new Set(allRegistrations.map(reg => reg.grade))].sort();
+
+      // 添加学院选项
+      colleges.forEach(college => {
+        const option = document.createElement('option');
+        option.value = college;
+        option.textContent = college;
+        collegeFilter.appendChild(option);
+      });
+
+      // 添加年级选项
+      grades.forEach(grade => {
+        const option = document.createElement('option');
+        option.value = grade;
+        option.textContent = grade;
+        gradeFilter.appendChild(option);
+      });
+    }
+
+    // 筛选数据
+    function filterData() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const collegeFilter = document.getElementById('college-filter').value;
+      const gradeFilter = document.getElementById('grade-filter').value;
+
+      filteredRegistrations = allRegistrations.filter(reg => {
+        const matchesSearch = !searchTerm ||
+          reg.name.toLowerCase().includes(searchTerm) ||
+          reg.studentId.toLowerCase().includes(searchTerm) ||
+          reg.college.toLowerCase().includes(searchTerm) ||
+          reg.email.toLowerCase().includes(searchTerm);
+
+        const matchesCollege = !collegeFilter || reg.college === collegeFilter;
+        const matchesGrade = !gradeFilter || reg.grade === gradeFilter;
+
+        return matchesSearch && matchesCollege && matchesGrade;
+      });
+
+      currentPage = 1;
+      displayData();
+      displayPagination();
+    }
+
+    // 显示数据
+    function displayData() {
+      const tableBody = document.getElementById('table-body');
+      const filteredCount = document.getElementById('filtered-count');
+
+      // 更新记录数量
+      filteredCount.textContent = `共 ${filteredRegistrations.length} 条记录`;
+
+      if (filteredRegistrations.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #666;">暂无数据</td></tr>';
+        return;
+      }
+
+      // 计算分页数据
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const pageData = filteredRegistrations.slice(startIndex, endIndex);
+
+      // 生成表格行
+      tableBody.innerHTML = pageData.map((reg, index) => `
+        <tr>
+          <td>${startIndex + index + 1}</td>
+          <td>${reg.name}</td>
+          <td>${reg.studentId}</td>
+          <td>${reg.college}</td>
+          <td>${reg.grade}</td>
+          <td>${reg.phone}</td>
+          <td>${reg.email}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-info btn-sm" onclick="viewDetail('${reg._id}')">
+                👁️ 查看
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 显示分页
+    function displayPagination() {
+      const pagination = document.getElementById('pagination');
+      const totalPages = Math.ceil(filteredRegistrations.length / itemsPerPage);
+
+      if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+
+      // 上一页按钮
+      html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">上一页</button>`;
+
+      // 页码按钮
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+          html += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+          html += '<span>...</span>';
+        }
+      }
+
+      // 下一页按钮
+      html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">下一页</button>`;
+
+      pagination.innerHTML = html;
+    }
+
+    // 切换页面
+    function changePage(page) {
+      const totalPages = Math.ceil(filteredRegistrations.length / itemsPerPage);
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        displayData();
+        displayPagination();
+      }
+    }
+
+    // 查看详情
+    function viewDetail(id) {
+      const registration = allRegistrations.find(reg => reg._id === id);
+      if (!registration) return;
+
+      const modalBody = document.getElementById('modal-body');
+      modalBody.innerHTML = `
+        <div class="detail-group">
+          <div class="detail-label">姓名</div>
+          <div class="detail-value">${registration.name}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">学号</div>
+          <div class="detail-value">${registration.studentId}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">学院</div>
+          <div class="detail-value">${registration.college}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">年级</div>
+          <div class="detail-value">${registration.grade}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">联系电话</div>
+          <div class="detail-value">${registration.phone}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">电子邮箱</div>
+          <div class="detail-value">${registration.email}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">相关经验</div>
+          <div class="detail-value">${registration.experience || '无'}</div>
+        </div>
+        <div class="detail-group">
+          <div class="detail-label">加入期望</div>
+          <div class="detail-value">${registration.expectation || '无'}</div>
+        </div>
+        ${registration.createdAt ? `
+        <div class="detail-group">
+          <div class="detail-label">报名时间</div>
+          <div class="detail-value">${new Date(registration.createdAt).toLocaleString('zh-CN')}</div>
+        </div>
+        ` : ''}
+      `;
+
+      document.getElementById('detail-modal').classList.add('show');
+    }
+
+    // 关闭模态框
+    function closeModal() {
+      document.getElementById('detail-modal').classList.remove('show');
+    }
+
+    // 刷新数据
+    function refreshData() {
+      loadRegistrations();
+      loadStatistics();
+    }
+
+    // 导出Excel
+    function exportData() {
+      if (filteredRegistrations.length === 0) {
+        alert('没有可导出的数据');
+        return;
+      }
+
+      // 准备导出数据
+      const exportData = filteredRegistrations.map((reg, index) => ({
+        '序号': index + 1,
+        '姓名': reg.name,
+        '学号': reg.studentId,
+        '学院': reg.college,
+        '年级': reg.grade,
+        '联系电话': reg.phone,
+        '电子邮箱': reg.email,
+        '相关经验': reg.experience || '',
+        '加入期望': reg.expectation || '',
+        '报名时间': reg.createdAt ? new Date(reg.createdAt).toLocaleString('zh-CN') : ''
+      }));
+
+      // 转换为CSV格式
+      const csvContent = convertToCSV(exportData);
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+
+      // 创建下载链接
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `报名信息_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 转换为CSV格式
+    function convertToCSV(data) {
+      if (data.length === 0) return '';
+
+      const headers = Object.keys(data[0]);
+      const csvHeaders = headers.join(',');
+      const csvRows = data.map(row =>
+        headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
+      );
+
+      return [csvHeaders, ...csvRows].join('\n');
+    }
+  </script>
+</body>
+
+</html>
