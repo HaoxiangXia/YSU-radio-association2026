@@ -226,6 +226,29 @@ const competitions = [
       '优秀作品评出一等奖、二等奖和三等奖',
       '学长学姐负责组织现场答辩',
     ],
+    images: [
+      '/image/competition-展望杯嵌入式大赛.jpg',
+      '/image/competition-展望杯2.jpg',
+      '/image/competition-展望杯3.jpg',
+      '/image/competition-展望杯4.jpg',
+    ],
+  },
+  {
+    name: '展望杯嵌入式大赛',
+    year: 2026,
+    date: '2026年5月10日',
+    participants: null,
+    description: '协会年度嵌入式竞赛活动现场记录，展示同学们将创意方案落地为实际作品的过程。',
+    tracks: ['嵌入式方向', '软件方向', 'AI方向'],
+    highlights: [
+      '保留活动现场与作品照片',
+      '为后续赛事展示持续补充素材',
+    ],
+    images: [
+      '/image/competition-展望杯15.jpg',
+      '/image/competition-展望杯16.jpg',
+      '/image/competition-展望杯17.jpg',
+    ],
   },
   {
     name: '大学生电子设计大赛',
@@ -238,6 +261,12 @@ const competitions = [
       '获奖作品将在校园科技展展出',
       '提供专业元器件采购支持',
       '开设赛前技术辅导工作坊',
+    ],
+    images: [
+      '/image/competition-电赛.jpg',
+      '/image/competition-电赛2.jpg',
+      '/image/competition-电赛3.jpg',
+      '/image/competition-电赛4.jpg',
     ],
   },
   {
@@ -252,6 +281,12 @@ const competitions = [
       '设置专属新生组赛道降低参与门槛',
       '优秀者可加入校科创团队',
     ],
+    images: [
+      '/image/competition-指尖风暴大赛.jpg',
+      '/image/competition-指尖2.jpg',
+      '/image/competition-指尖3.jpg',
+      '/image/competition-指尖4.jpg',
+    ],
   },
   {
     name: 'DIY达人赛',
@@ -265,6 +300,12 @@ const competitions = [
       '视觉识别：开发程序实现人脸识别、口罩识别、手势识别等',
       '嵌入式方向：基于MCU或开发板的创新电子作品',
     ],
+    images: [
+      '/image/competition-DIY1.jpg',
+      '/image/competition-DIY2.jpg',
+      '/image/competition-DIY3.jpg',
+      '/image/competition-DIY4.jpg',
+    ],
   },
 ];
 
@@ -276,6 +317,13 @@ const recreationalActivities = [
     participants: '协会成员及即将毕业学长学姐',
     description: '为感谢即将毕业的学长学姐对协会的贡献，增进协会成员间的感情，举办了此次欢送晚会。活动包含才艺表演、经验分享、互动游戏等环节，为毕业生送上最诚挚的祝福。',
     achievements: '参与成员享受了欢愉的同时也收获了学长学姐的经验',
+    images: [
+      '/image/farewell-欢送会.jpg',
+      '/image/farewell-欢送会 (2).jpg',
+      '/image/farewell11.jpg',
+      '/image/farewell12.jpg',
+      '/image/farewell13.jpg',
+    ],
   },
   {
     name: '学长返校与协会成员交流研讨会',
@@ -283,6 +331,12 @@ const recreationalActivities = [
     participants: '协会骨干成员',
     description: '信息科学与工程学院院长齐跃峰、学院党委副书记李浩然、副处级专职辅导员刘学才、团委书记邹楠一起走访调研燕山大学大学生无线电爱好者协会。',
     achievements: '校园新闻报道1次',
+    images: [
+      '/image/science1.jpg',
+      '/image/science2.jpg',
+      '/image/science3.jpg',
+      '/image/science4.jpg',
+    ],
   },
   {
     name: '协会团建活动',
@@ -290,6 +344,11 @@ const recreationalActivities = [
     participants: '协会部分成员',
     description: '为增强协会凝聚力，促进新老成员交流，在北戴河鸽子窝公园组织了秋季团建活动。活动包括无线电测向比赛、技术交流沙龙和团队拓展游戏等环节。',
     achievements: '参与成员欢聚，度过美好而又休闲的时光！',
+    images: [
+      '/image/team1.jpg',
+      '/image/team2.jpg',
+      '/image/team3.jpg',
+    ],
   },
 ];
 

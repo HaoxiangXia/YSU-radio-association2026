@@ -89,10 +89,12 @@
             </div>
 
             <div class="activity-record__details">
-              <div class="info-panel activity-record__metric">
-                <span>参赛人数</span>
-                <strong>${comp.participants} 人</strong>
-              </div>
+              ${comp.participants ? `
+                <div class="info-panel activity-record__metric">
+                  <span>参赛人数</span>
+                  <strong>${comp.participants} 人</strong>
+                </div>
+              ` : ''}
 
               <div class="info-panel activity-record__highlights">
                 <h3>活动亮点</h3>
@@ -103,6 +105,16 @@
                 </ul>
               </div>
             </div>
+
+            ${comp.images?.length ? `
+              <section class="activity-gallery" aria-label="${comp.name}活动图片">
+                ${comp.images.map((image, imageIndex) => `
+                  <button type="button" class="activity-gallery__item" data-image="${image}" data-image-alt="${comp.name}活动现场照片 ${imageIndex + 1}" aria-label="查看${comp.name}活动照片 ${imageIndex + 1}">
+                    <img src="${image}" alt="${comp.name}活动现场照片 ${imageIndex + 1}" loading="lazy" decoding="async">
+                  </button>
+                `).join('')}
+              </section>
+            ` : ''}
           </div>
         </article>
       `).join('');

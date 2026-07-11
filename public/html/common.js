@@ -54,13 +54,15 @@ function initImageViewer() {
   if (!viewer) return;
   
   const viewerImg = viewer.querySelector('img');
-  
-  document.querySelectorAll('[data-image]').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      viewerImg.src = el.dataset.image;
-      viewer.classList.add('open');
-    });
+
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-image]');
+    if (!trigger) return;
+
+    event.preventDefault();
+    viewerImg.src = trigger.dataset.image;
+    viewerImg.alt = trigger.dataset.imageAlt || '活动图片预览';
+    viewer.classList.add('open');
   });
   
   viewer.addEventListener('click', () => {

@@ -119,11 +119,30 @@
   overflow: hidden;
 }
 
-.overview-media video {
+.overview-media .association-media-placeholder,
+.overview-media .association-media-placeholder img {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.overview-media .association-media-placeholder {
+  position: relative;
+}
+
+.overview-media .association-media-placeholder img {
   object-fit: cover;
+}
+
+.overview-media .association-media-placeholder figcaption {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.66);
+  color: #fff;
+  font-size: 0.75rem;
 }
 
 .overview-stats {

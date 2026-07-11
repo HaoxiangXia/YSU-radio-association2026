@@ -820,6 +820,30 @@
   overflow: hidden;
 }
 
+.association-media-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.association-media-placeholder img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.association-media-placeholder figcaption {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.66);
+  color: #fff;
+  font-size: 0.75rem;
+}
+
 .about-association-page .about-assoc-intro__stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1643,10 +1667,10 @@
         <div class="card about-assoc-intro">
           <div class="about-assoc-intro__media">
             <div class="rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
-              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
-                <source src="/image/招新视频.mp4" type="video/mp4">
-                <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
-              </video>
+              <figure class="association-media-placeholder">
+                <img src="/image/farewell11.jpg" alt="无线电爱好者协会成员活动合影" fetchpriority="high">
+                <figcaption>招新宣传视频待补充</figcaption>
+              </figure>
             </div>
             <div class="about-assoc-intro__stats">
               <div class="stat-card">
