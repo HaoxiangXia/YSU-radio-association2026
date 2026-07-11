@@ -305,6 +305,12 @@
   opacity: 1;
 }
 
+@media (hover: none) {
+  .department-card__media-control {
+    opacity: 1;
+  }
+}
+
 .department-card__media-control--previous { left: 0.65rem; }
 .department-card__media-control--next { right: 0.65rem; }
 

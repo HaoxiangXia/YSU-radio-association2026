@@ -6,11 +6,33 @@ function initNav() {
   const mobileMenu = document.querySelector('.mobile-menu');
   
   if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('open');
-      const isOpen = mobileMenu.classList.contains('open');
+    const setMenuOpen = (isOpen) => {
+      mobileMenu.classList.toggle('open', isOpen);
       menuBtn.setAttribute('aria-expanded', String(isOpen));
       menuBtn.setAttribute('aria-label', isOpen ? '关闭菜单' : '打开菜单');
+      mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+    };
+
+    setMenuOpen(false);
+
+    menuBtn.addEventListener('click', () => {
+      setMenuOpen(!mobileMenu.classList.contains('open'));
+    });
+
+    mobileMenu.addEventListener('click', (event) => {
+      if (event.target.closest('a')) setMenuOpen(false);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!mobileMenu.classList.contains('open')) return;
+      if (!event.target.closest('.nav')) setMenuOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        setMenuOpen(false);
+        menuBtn.focus();
+      }
     });
   }
   
@@ -34,6 +56,10 @@ function initNav() {
 function initScrollTop() {
   const scrollTopBtn = document.querySelector('.scrollTopBtn');
   if (!scrollTopBtn) return;
+
+  if (!scrollTopBtn.getAttribute('aria-label')) {
+    scrollTopBtn.setAttribute('aria-label', '回到页面顶部');
+  }
   
   window.addEventListener('scroll', () => {
     if (window.scrollY > 300) {
@@ -54,19 +80,55 @@ function initImageViewer() {
   if (!viewer) return;
   
   const viewerImg = viewer.querySelector('img');
+  if (!viewerImg) return;
+
+  let opener = null;
+  viewer.setAttribute('role', 'dialog');
+  viewer.setAttribute('aria-modal', 'true');
+  viewer.setAttribute('aria-label', '图片预览');
+  viewer.setAttribute('aria-hidden', 'true');
+  viewer.tabIndex = -1;
+
+  let closeButton = viewer.querySelector('.image-viewer__close');
+  if (!closeButton) {
+    closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'image-viewer__close';
+    closeButton.setAttribute('aria-label', '关闭图片预览');
+    closeButton.textContent = '×';
+    viewer.append(closeButton);
+  }
+
+  const closeViewer = () => {
+    if (!viewer.classList.contains('open')) return;
+    viewer.classList.remove('open');
+    viewer.setAttribute('aria-hidden', 'true');
+    opener?.focus();
+  };
+
+  const openViewer = (trigger) => {
+    opener = trigger;
+    viewerImg.src = trigger.dataset.image;
+    viewerImg.alt = trigger.dataset.imageAlt || '活动图片预览';
+    viewer.classList.add('open');
+    viewer.setAttribute('aria-hidden', 'false');
+    window.requestAnimationFrame(() => closeButton.focus());
+  };
 
   document.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-image]');
     if (!trigger) return;
 
     event.preventDefault();
-    viewerImg.src = trigger.dataset.image;
-    viewerImg.alt = trigger.dataset.imageAlt || '活动图片预览';
-    viewer.classList.add('open');
+    openViewer(trigger);
   });
   
-  viewer.addEventListener('click', () => {
-    viewer.classList.remove('open');
+  viewer.addEventListener('click', (event) => {
+    if (event.target === viewer || event.target === closeButton) closeViewer();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeViewer();
   });
 }
 
