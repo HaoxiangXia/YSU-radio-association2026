@@ -225,7 +225,6 @@
     function renderDepartmentCard(dept, index, prefix) {
       const stat1Value = dept.stats.activities || dept.stats.projects || dept.stats.models || dept.stats.softwares || dept.stats.events;
       const stat2Value = dept.stats.years || dept.stats.awards || dept.stats.printers || dept.stats.websites || dept.stats.honors;
-      const paddedIndex = String(index + 1).padStart(2, '0');
       const galleryImages = dept.images || [];
       const firstImage = galleryImages[0];
       const galleryData = JSON.stringify(galleryImages).replace(/"/g, '&quot;');
@@ -233,62 +232,65 @@
       return `
         <article class="department-card" data-department-index="${prefix}-${index}">
           <div class="department-card__media" data-images="${galleryData}">
-            <button type="button" class="department-card__preview" data-image="${firstImage.src}" data-image-alt="${firstImage.alt}" aria-label="查看${firstImage.alt}完整图片">
-              <img class="department-card__photo" src="${firstImage.src}" alt="${firstImage.alt}" loading="lazy">
-            </button>
-            <button type="button" class="department-card__media-control department-card__media-control--previous" data-gallery-direction="-1" aria-label="查看上一张图片">‹</button>
-            <button type="button" class="department-card__media-control department-card__media-control--next" data-gallery-direction="1" aria-label="查看下一张图片">›</button>
-            <span class="department-card__media-count" aria-live="polite">1 / ${galleryImages.length}</span>
-            <div class="department-card__identity">
-              <h3 class="department-card__name">${dept.name}</h3>
-              <span class="department-card__index">${paddedIndex}</span>
+            <div class="department-card__gallery">
+              <button type="button" class="department-card__preview" data-image="${firstImage.src}" data-image-alt="${firstImage.alt}" aria-label="查看${firstImage.alt}完整图片">
+                <img class="department-card__photo" src="${firstImage.src}" alt="${firstImage.alt}" loading="lazy">
+              </button>
+              <button type="button" class="department-card__media-control department-card__media-control--previous" data-gallery-direction="-1" aria-label="查看上一张图片">‹</button>
+              <button type="button" class="department-card__media-control department-card__media-control--next" data-gallery-direction="1" aria-label="查看下一张图片">›</button>
+              <span class="department-card__media-count" aria-live="polite">1 / ${galleryImages.length}</span>
+            </div>
+            <div class="department-card__meta">
+              <div class="department-card__identity">
+                <h3 class="department-card__name">${dept.name}</h3>
+                <div class="department-card__tags">
+                  ${dept.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+              </div>
+              <div class="department-card__metrics">
+                <div>
+                  <strong>${dept.stats.members}</strong>
+                  <span>部门成员</span>
+                </div>
+                <div>
+                  <strong>${stat1Value}</strong>
+                  <span>${dept.statLabel1}</span>
+                </div>
+                <div>
+                  <strong>${stat2Value}</strong>
+                  <span>${dept.statLabel2}</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="department-card__content">
-            <div class="department-card__tags">
-              ${dept.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
-            </div>
             <p class="department-card__desc">${dept.description}</p>
-          <button type="button" class="department-card__toggle" aria-expanded="false" aria-controls="dept-detail-${prefix}-${index}">
-            <span>了解详情</span>
-            <span class="department-card__toggle-icon" aria-hidden="true">↓</span>
-          </button>
-          <div class="department-card__detail" id="dept-detail-${prefix}-${index}" aria-hidden="true">
-            <div class="department-card__metrics">
-              <div>
-                <strong>${dept.stats.members}</strong>
-                <span>部门成员</span>
-              </div>
-              <div>
-                <strong>${stat1Value}</strong>
-                <span>${dept.statLabel1}</span>
-              </div>
-              <div>
-                <strong>${stat2Value}</strong>
-                <span>${dept.statLabel2}</span>
-              </div>
-            </div>
-            <div class="department-card__lists">
-              <div class="department-card__list">
-                <h4>主要职责</h4>
-                <ul>
-                  ${dept.responsibilities.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
-                </ul>
-              </div>
-              <div class="department-card__list">
-                <h4>部门特色</h4>
-                <ul>
-                  ${dept.features.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
-                </ul>
-              </div>
-              <div class="department-card__list">
-                <h4>学习内容</h4>
-                <ul>
-                  ${dept.learn.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
-                </ul>
+            <button type="button" class="department-card__toggle" aria-expanded="false" aria-controls="dept-detail-${prefix}-${index}">
+              <span>了解详情</span>
+              <span class="department-card__toggle-icon" aria-hidden="true">↓</span>
+            </button>
+            <div class="department-card__detail" id="dept-detail-${prefix}-${index}" aria-hidden="true">
+              <div class="department-card__lists">
+                <div class="department-card__list">
+                  <h4>主要职责</h4>
+                  <ul>
+                    ${dept.responsibilities.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </div>
+                <div class="department-card__list">
+                  <h4>部门特色</h4>
+                  <ul>
+                    ${dept.features.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </div>
+                <div class="department-card__list">
+                  <h4>学习内容</h4>
+                  <ul>
+                    ${dept.learn.slice(0, 4).map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </article>
       `;
