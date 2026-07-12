@@ -59,7 +59,7 @@ db.exec(`
 `);
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS registrations (
+  CREATE TABLE IF NOT EXISTS membership_applications (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     studentId TEXT NOT NULL,
@@ -67,7 +67,7 @@ db.exec(`
     grade TEXT NOT NULL,
     phone TEXT NOT NULL,
     email TEXT NOT NULL,
-    experience TEXT NOT NULL,
+    self_introduction TEXT NOT NULL,
     expectation TEXT,
     createdAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updatedAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
