@@ -93,16 +93,6 @@
   margin-bottom: 1rem;
 }
 
-.site-page.training-page .training-section__heading > span,
-.site-page.training-page .training-cta__eyebrow {
-  display: block;
-  margin-bottom: 0.45rem;
-  color: var(--page-accent);
-  font-size: 0.67rem;
-  font-weight: 750;
-  letter-spacing: 0.15em;
-}
-
 .site-page.training-page .training-section__heading .card-title {
   margin-bottom: 0;
   font-size: clamp(1.25rem, 2.5vw, 1.7rem);
@@ -174,21 +164,18 @@
 
 .site-page.training-page .training-cta {
   overflow: hidden;
-  border-color: rgba(125, 211, 252, 0.14);
-  background: #071a36;
-}
-
-.site-page.training-page .training-cta .training-cta__eyebrow {
-  color: #67e8f9;
+  border-color: rgba(37, 99, 235, 0.18);
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 52%, #ecfeff 100%);
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.08);
 }
 
 .site-page.training-page .training-cta .card-title {
-  color: #f8fafc;
+  color: #102a5a;
   font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 .site-page.training-page .training-cta p {
-  color: rgba(226, 232, 240, 0.76);
+  color: #526b8e;
 }
   </style>
 </head>
@@ -206,7 +193,6 @@
     <!-- 培训体系概述 -->
     <section class="card card-section mb-6 training-section training-overview">
       <div class="training-section__heading">
-        <span>01 / LEARNING SYSTEM</span>
         <h2 class="card-title">培训体系</h2>
       </div>
       <p class="text-gray-600 leading-relaxed mb-4">
@@ -227,7 +213,6 @@
     <!-- 培训时间线 -->
     <section class="card card-section mb-6 training-section training-roadmap">
       <div class="training-section__heading">
-        <span>02 / ROADMAP</span>
         <h2 class="card-title">培训时间线</h2>
       </div>
       <div class="timeline" id="training-timeline">
@@ -238,7 +223,6 @@
     <!-- 课程安排 -->
     <section class="card card-section mb-6 training-section training-schedule">
       <div class="training-section__heading">
-        <span>03 / WEEKLY SCHEDULE</span>
         <h2 class="card-title">每周课程安排</h2>
       </div>
       <div class="overflow-x-auto">
@@ -259,7 +243,6 @@
     <!-- 往期培训 -->
     <section class="card card-section mb-6 training-section training-archive">
       <div class="training-section__heading">
-        <span>04 / ARCHIVE</span>
         <h2 class="card-title">往期培训</h2>
       </div>
       <div id="past-trainings">
@@ -269,7 +252,6 @@
 
     <!-- 报名号召 -->
     <section class="card card-section cta-card text-center p-8 training-cta">
-      <span class="training-cta__eyebrow">START YOUR PRACTICE</span>
       <h2 class="card-title">加入我们</h2>
       <p class="text-gray-600 mb-6">对技术充满热情？想要学习新技能？加入无线电爱好者协会，开启你的技术之旅！</p>
       <a href="/html/registration.html" class="btn-solid">立即报名</a>

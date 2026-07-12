@@ -10,3 +10,12 @@ public/image/*.mp4
 ~$*.xlsx
 AGENTS.md
 CONTEXT.md
+PLAN.md
+artifacts/
+scripts/baseline-allowlist.json
+scripts/check.js
+scripts/smoke.js
+scripts/screenshots.js
+.agent
+.codex
+.codex-remote-attachments

@@ -1,5 +1,7 @@
 # 无线电爱好者协会信息展示系统
 
+> 当前招新网站开发分支是 `lucian`；`master` 仅保留上一年度归档版本，`dev` 为独立的 FastAPI 重构尝试，请勿直接合并或基于 `master` 开发。
+
 > 燕山大学无线电爱好者协会（无协）官方信息展示与招新管理系统
 
 [![Bun](https://img.shields.io/badge/Bun-1.3+-000000?style=flat&logo=bun&logoColor=white)](https://bun.sh/)
@@ -50,7 +52,7 @@
 | 后端 | Bun + Express 4.18 |
 | 数据库 | SQLite 3（bun:sqlite） |
 | 认证 | JWT（JSON Web Token）+ bcrypt |
-| 导出 | CSV（前端生成并下载） |
+| 导出 | CSV（由后端接口生成并下载） |
 
 ---
 
@@ -59,7 +61,7 @@
 ### 对外展示（访客）
 
 - **首页** — 固定单屏落地页，协会口号、入口动画、快捷入口
-- **关于协会** — 协会概况、招新视频、协会数据、部门介绍
+- **关于协会** — 协会概况、活动影像、协会数据、部门介绍
 - **协会活动** — 竞赛活动、文娱活动等综合入口
 - **竞赛活动** — 历年竞赛记录（展望杯、DIY 达人赛、指尖风暴大赛）
 - **文娱活动** — 休闲娱乐活动展示
@@ -79,11 +81,9 @@
 ## 项目结构
 
 ```
-radio-association/
+YSU-radio-association2026/
 ├── package.json                  # 项目配置与依赖
 ├── .env                          # 环境变量（端口号、JWT 密钥等）
-├── AGENTS.md                     # 项目规范与开发约定
-├── CONTEXT.md                    # 领域术语表
 ├── README.md                     # 项目说明
 ├── server/                       # 后端服务
 │   ├── app.js                    # Express 应用入口
@@ -124,7 +124,6 @@ radio-association/
 │   │   ├── common.js             # 公共脚本（导航、页脚、交互）
 │   │   ├── data.js               # 静态数据
 │   │   └── home-effects.js       # 首页粒子背景动画
-│   ├── images/                   # 图片资源（会徽、Hero 背景等）
 │   ├── image/                    # 图片与视频资源
 │   └── favicon.ico               # 网站图标
 ├── backup/                       # 备份目录
@@ -145,7 +144,7 @@ radio-association/
 
 ```bash
 git clone <repository-url>
-cd radio-association
+cd <repository-directory>
 ```
 
 ### 2. 安装依赖
@@ -159,26 +158,22 @@ bun install
 | 变量 | 必填 | 说明 |
 |------|------|------|
 | `PORT` | 否 | 服务端口号，默认 `5000` |
-| `JWT_SECRET` | 否 | JWT 签名密钥，生产环境必须修改 |
-| `ADMIN_ACCOUNTS` | 否 | 管理员账号列表，格式 `用户名:密码:姓名;...`；默认 `wuxie:513513#:无协管理员` |
+| `DATABASE_PATH` | 否 | SQLite 数据库路径，默认 `server/data/database.sqlite` |
+| `ADMIN_USERNAME` | 是 | 唯一管理员账号 |
+| `ADMIN_PASSWORD_HASH` | 是 | 管理员密码的 bcrypt 哈希 |
+| `JWT_SECRET` | 是 | 足够长的 JWT 签名密钥 |
+| `REGISTRATION_OPEN` | 是 | 是否允许报名；正式开放前保持 `false` |
+| `REGISTRATION_START` / `REGISTRATION_END` | 是 | 使用带时区 ISO 格式的报名起止时间 |
 
-在项目根目录创建 `.env` 文件：
+在项目根目录从示例复制 `.env`（此文件不会提交）：
 
-```env
-PORT=5000
-JWT_SECRET=your-secret-key-change-in-production
-ADMIN_ACCOUNTS=wuxie:513513#:无协管理员;admin2:pass2#:技术负责人
+```powershell
+Copy-Item .env.example .env
 ```
 
-### 4. 初始化数据库
+编辑 `.env`，填写管理员账号、bcrypt 密码哈希和 JWT 密钥。生成密码哈希、报名开关、数据库备份与测试数据清理步骤见 [招新运行说明](docs/RECRUITMENT_OPERATIONS.md)。数据库会在服务首次启动时自动创建。
 
-```bash
-bun server/initDB.js
-```
-
-执行成功后会输出 `Database initialized successfully!`，初始化协会、部门、竞赛、荣誉、培训等基础数据。
-
-### 5. 启动服务
+### 4. 启动服务
 
 ```bash
 bun server/app.js
@@ -186,7 +181,7 @@ bun server/app.js
 
 服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
-### 6. 导出录取名单（可选）
+### 5. 导出录取名单（可选）
 
 ```bash
 bun scripts/export-admissions.js
@@ -202,11 +197,11 @@ bun scripts/export-admissions.js
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/api/association` | 获取协会基本信息 |
 | GET | `/api/departments` | 获取所有部门 |
 | GET | `/api/competitions` | 获取竞赛列表（按年份倒序） |
 | GET | `/api/trainings` | 获取培训记录 |
 | GET | `/api/honors` | 获取荣誉列表 |
+| GET | `/api/registration/status` | 获取当前报名开放状态和时间窗 |
 | POST | `/api/registration` | 提交报名信息 |
 
 ### 管理员接口（需 JWT 认证）
@@ -218,6 +213,9 @@ bun scripts/export-admissions.js
 | GET | `/api/admin/verify` | 验证 Token 有效性 |
 | GET | `/api/admin/profile` | 获取管理员信息 |
 | GET | `/api/registration` | 获取报名列表（分页/搜索/排序） |
+| GET | `/api/registration/options` | 获取筛选选项 |
+| GET | `/api/registration/stats` | 获取报名统计 |
+| GET | `/api/registration/export` | 导出当前筛选结果为 CSV |
 | DELETE | `/api/registration/:id` | 删除指定报名记录 |
 
 ---
@@ -245,8 +243,8 @@ bun scripts/export-admissions.js
 | 脚本 | 命令 | 说明 |
 |------|------|------|
 | start | `bun server/app.js` | 启动生产服务器 |
-| init | `bun server/initDB.js` | 初始化 SQLite 数据库 |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
+| clear-test-registrations | `bun server/scripts/clear-test-registrations.js` | 仅在非生产环境清空测试报名 |
 
 ---
 
@@ -255,7 +253,9 @@ bun scripts/export-admissions.js
 - 管理员密码使用 bcrypt 加密存储
 - API 认证使用 JWT 令牌机制
 - 报名管理接口需要 Bearer Token 认证
-- 生产环境请务必修改 `.env` 中的 `JWT_SECRET` 和默认管理员密码
+- 没有公开默认管理员账号、密码或 JWT 密钥；未配置 `.env` 时后台会拒绝登录
+- 报名接口会在服务端校验时间窗、字段格式、重复学号和提交频率
+- 正式上线前保持数据库备份，并确认 `REGISTRATION_OPEN` 与报名时间窗
 
 ---
 

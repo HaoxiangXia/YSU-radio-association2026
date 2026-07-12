@@ -2304,7 +2304,7 @@ textarea.form-input {
 @media (max-width: 900px) {
   .home-page .nav,
   .site-page .nav {
-    background: rgba(248, 251, 255, 0.98);
+    background: #f8fbff;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -2587,16 +2587,6 @@ textarea.form-input {
   color: var(--site-muted);
   font-size: 0.86rem;
   line-height: 1.7;
-}
-
-.site-page.recruit-page .recruit-form__heading span,
-.site-page.query-page .query-card__eyebrow {
-  display: block;
-  margin-bottom: 0.45rem;
-  color: #2563eb;
-  font-size: 0.67rem;
-  font-weight: 750;
-  letter-spacing: 0.15em;
 }
 
 @media (max-width: 800px) {
