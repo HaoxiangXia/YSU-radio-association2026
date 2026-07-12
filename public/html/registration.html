@@ -17,7 +17,7 @@
 
 .notice-card {
   border-top: 3px solid var(--color-primary);
-  background: linear-gradient(135deg, rgba(239, 246, 255, 0.72), #ffffff 62%);
+  background: #ffffff;
 }
 
 .form-error {
@@ -27,11 +27,8 @@
 }
 
 .site-page .notice-card {
-  border-top-color: transparent;
-  background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(90deg, var(--site-blue), var(--site-cyan), var(--site-violet)) border-box;
-  border-top-width: 3px;
+  border-top: 3px solid var(--site-blue);
+  background: #ffffff;
 }
 
 .site-page .form-error {
@@ -46,21 +43,9 @@
   padding-left: clamp(1.35rem, 3vw, 2.25rem);
 }
 
-.site-page.recruit-page .recruit-notice::before {
-  content: '01';
-  position: absolute;
-  top: 1.35rem;
-  right: 1.5rem;
-  color: rgba(37, 99, 235, 0.14);
-  font-size: 2.25rem;
-  font-weight: 750;
-}
-
 .site-page.recruit-page .recruit-form {
   border-color: rgba(59, 130, 246, 0.2);
-  background:
-    radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.1), transparent 18rem),
-    #ffffff;
+  background: #ffffff;
 }
 
 .site-page.recruit-page .recruit-form__heading {
@@ -171,7 +156,6 @@
     <!-- 成功提示 -->
     <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
       <div class="modal">
-        <div class="text-4xl mb-4">🎉</div>
         <h3 id="success-title">报名成功！</h3>
         <p>感谢你的报名，我们会尽快与你联系确认相关事宜。</p>
         <button type="button" class="btn-solid" id="success-close-button">确定</button>

@@ -1003,7 +1003,7 @@ button:focus-visible {
   left: 0;
   width: 6.75rem;
   height: 2px;
-  background: linear-gradient(90deg, #2563eb 0 38%, #60a5fa 38% 58%, rgba(96, 165, 250, 0.16) 58% 100%);
+  background: #2563eb;
   box-shadow: 0 0 8px rgba(59, 130, 246, 0.16);
 }
 
@@ -1627,7 +1627,7 @@ textarea.form-input {
   padding: 0.85rem 0.65rem;
   border: 1px solid rgba(37, 99, 235, 0.08);
   border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(239, 246, 255, 0.66), #f8fafc);
+  background: #f8fafc;
 }
 
 .stat-value {
@@ -1817,10 +1817,7 @@ textarea.form-input {
   --site-violet: #60a5fa;
   --site-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
   --site-shadow-hover: 0 24px 60px rgba(30, 64, 175, 0.14);
-  background:
-    radial-gradient(circle at 8% 18%, rgba(59, 130, 246, 0.08), transparent 24rem),
-    radial-gradient(circle at 94% 42%, rgba(8, 145, 178, 0.05), transparent 26rem),
-    #f5f8fc;
+  background: #f5f8fc;
   color: var(--site-ink);
 }
 .site-page {
@@ -1841,7 +1838,7 @@ textarea.form-input {
   left: 1.5rem;
   width: min(7rem, 18vw);
   height: 2px;
-  background: linear-gradient(90deg, var(--site-blue), var(--site-cyan), transparent);
+  background: var(--site-blue);
   opacity: 0.72;
 }
 
@@ -1938,7 +1935,7 @@ textarea.form-input {
   overflow: hidden;
   isolation: isolate;
   color: #10233f;
-  background: linear-gradient(125deg, #edf6ff 0%, #e5f1fc 54%, #dcecff 100%);
+  background: #edf6ff;
 }
 
 .site-page .subpage-hero::before {
@@ -2042,15 +2039,13 @@ textarea.form-input {
   left: 0;
   width: 4rem;
   height: 2px;
-  background: linear-gradient(90deg, var(--site-blue), var(--site-cyan));
+  background: var(--site-blue);
 }
 
 .site-page .info-panel {
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 11px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.06), transparent 9rem),
-    rgba(248, 250, 252, 0.82);
+  background: #f5f8fc;
 }
 
 .site-page .tag,
@@ -2190,7 +2185,7 @@ textarea.form-input {
 .site-page .modal {
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 15px;
-  box-shadow: 0 28px 80px rgba(2, 8, 23, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
 /* 页脚与背景形成完整的明暗层次 */
@@ -2198,7 +2193,7 @@ textarea.form-input {
 .site-page .footer {
   margin-top: 0;
   border-top-color: rgba(30, 78, 121, 0.24);
-  background: linear-gradient(180deg, #e7f1fa 0%, #dce9f5 100%);
+  background: #e7f1fa;
 }
 
 .home-page .footer .container,

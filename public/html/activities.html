@@ -33,18 +33,6 @@
   min-height: 18rem;
 }
 
-.site-page .activity-card::after {
-  content: '';
-  position: absolute;
-  right: -4rem;
-  bottom: -5rem;
-  width: 11rem;
-  height: 11rem;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.13), transparent 67%);
-  pointer-events: none;
-}
-
 /* 活动入口：编辑式导航卡，移除 Emoji 原型感 */
 .site-page.activity-page .activity-hub-grid {
   align-items: stretch;
@@ -56,9 +44,7 @@
   min-height: 25rem;
   overflow: hidden;
   border-color: rgba(96, 165, 250, 0.2);
-  background:
-    radial-gradient(circle at 92% 8%, rgba(96, 165, 250, 0.2), transparent 17rem),
-    linear-gradient(145deg, #ffffff, #f5f8ff);
+  background: #ffffff;
   color: var(--site-ink);
   text-decoration: none;
 }
@@ -67,9 +53,7 @@
   --page-accent: #6d4de0;
   --page-accent-soft: rgba(109, 77, 224, 0.1);
   border-color: rgba(109, 77, 224, 0.18);
-  background:
-    radial-gradient(circle at 92% 8%, rgba(139, 92, 246, 0.17), transparent 17rem),
-    linear-gradient(145deg, #ffffff, #f8f6ff);
+  background: #f8f6ff;
 }
 
 .site-page.activity-page .activity-gateway::before {
@@ -79,7 +63,7 @@
   left: 0;
   width: 7.5rem;
   height: 3px;
-  background: linear-gradient(90deg, var(--page-accent), #67e8f9);
+  background: var(--page-accent);
 }
 
 .site-page.activity-page .activity-gateway__body {
