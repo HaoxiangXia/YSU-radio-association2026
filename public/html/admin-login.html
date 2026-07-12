@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>管理员登录 - 无线电爱好者协会</title>
+  <title>招新负责人登录 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
   <style>
@@ -12,13 +12,13 @@
 }
   </style>
 </head>
-<body class="site-page sub-page admin-page admin-login-page">
+<body class="site-page sub-page recruitment-officer-login-page">
   <div id="nav-placeholder"></div>
 
   <header class="subpage-hero subpage-hero--compact">
     <div class="container subpage-hero__inner">
-      <h1>管理员登录</h1>
-      <p>管理员身份验证与报名信息管理入口。</p>
+      <h1>招新负责人登录</h1>
+      <p>招新负责人身份验证与入会申请管理入口。</p>
     </div>
   </header>
 
@@ -60,15 +60,15 @@
   <script>
     // 检查是否已登录（仅当勾选了“记住我”时自动跳转）
     function checkAuth() {
-      const token = localStorage.getItem('admin_token');
+      const token = localStorage.getItem('recruitment_officer_token');
       if (!token) return;
 
-      fetch('/api/admin/verify', {
+      fetch('/api/recruitment-officers/verify', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => {
         if (response.ok) {
-          window.location.href = '/html/registration-info.html';
+          window.location.href = '/html/membership-applications.html';
         }
       })
       .catch(() => {
@@ -96,7 +96,7 @@
         const password = form.elements.password.value.trim();
         const remember = form.elements.remember.checked;
         
-        const response = await fetch('/api/admin/login', {
+        const response = await fetch('/api/recruitment-officers/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password }),
@@ -107,13 +107,13 @@
         if (response.ok && data.token) {
           // 存储 token
           if (remember) {
-            localStorage.setItem('admin_token', data.token);
+            localStorage.setItem('recruitment_officer_token', data.token);
           } else {
-            sessionStorage.setItem('admin_token', data.token);
+            sessionStorage.setItem('recruitment_officer_token', data.token);
           }
           
           // 跳转到管理页面
-          window.location.href = '/html/registration-info.html';
+          window.location.href = '/html/membership-applications.html';
         } else {
           errorDiv.textContent = data.message || '用户名或密码错误';
           errorDiv.style.display = 'block';

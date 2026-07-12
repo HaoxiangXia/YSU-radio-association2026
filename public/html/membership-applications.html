@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>报名信息管理 - 无线电爱好者协会</title>
+  <title>入会申请管理 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
   <style>
@@ -132,22 +132,22 @@
   font-size: 0.875rem;
 }
 
-.admin-filter-card {
+.recruitment-officer-filter-card {
   padding: 1rem;
 }
 
-.admin-table-card {
+.recruitment-officer-table-card {
   overflow: hidden;
   padding: 0;
 }
 
-.admin-table-card .pagination {
+.recruitment-officer-table-card .pagination {
   margin-top: 0;
   padding: 1rem;
   border-top: 1px solid #f3f4f6;
 }
 
-.admin-table-header,
+.recruitment-officer-table-header,
 .modal-header {
   display: flex;
   align-items: center;
@@ -156,7 +156,7 @@
   border-bottom: 1px solid #f3f4f6;
 }
 
-.admin-table-header {
+.recruitment-officer-table-header {
   background: #f9fafb;
 }
 
@@ -191,29 +191,29 @@
 }
 
 /* 管理页只做展示层统一 */
-.site-page.admin-page .admin-filter-card,
-.site-page.admin-page .admin-table-card {
+.site-page.recruitment-officer-page .recruitment-officer-filter-card,
+.site-page.recruitment-officer-page .recruitment-officer-table-card {
   border-color: rgba(148, 163, 184, 0.22);
 }
 
-.site-page.admin-page .admin-table-header {
+.site-page.recruitment-officer-page .recruitment-officer-table-header {
   background: linear-gradient(180deg, #f1f5f9, #f8fafc);
 }
 
-.site-page.admin-page .action-btn {
+.site-page.recruitment-officer-page .action-btn {
   min-height: 2rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 6px;
 }
   </style>
 </head>
-<body class="site-page sub-page admin-page registration-info-page">
+<body class="site-page sub-page recruitment-officer-page membership-applications-page">
   <div id="nav-placeholder"></div>
 
   <header class="subpage-hero subpage-hero--compact">
     <div class="container subpage-hero__inner">
-      <h1>报名信息管理</h1>
-      <p>查看、筛选与管理当前报名信息。</p>
+      <h1>入会申请管理</h1>
+      <p>查看、筛选与管理当前入会申请。</p>
     </div>
   </header>
 
@@ -222,7 +222,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       <div class="stat-card stat-card--accent">
         <div class="stat-value" id="stat-total">-</div>
-        <div class="stat-label">总报名</div>
+        <div class="stat-label">总申请</div>
       </div>
       <div class="stat-card stat-card--accent">
         <div class="stat-value" id="stat-today">-</div>
@@ -239,9 +239,9 @@
     </div>
 
     <!-- 搜索栏 -->
-    <div class="card card-section admin-filter-card mb-6">
+    <div class="card card-section recruitment-officer-filter-card mb-6">
       <div class="search-bar">
-        <input type="text" id="search-input" placeholder="搜索姓名、学号、学院..." aria-label="搜索报名信息">
+        <input type="text" id="search-input" placeholder="搜索姓名、学号、学院..." aria-label="搜索入会申请">
         <select id="college-filter" aria-label="按学院筛选">
           <option value="">所有学院</option>
         </select>
@@ -254,9 +254,9 @@
     </div>
 
     <!-- 数据表格 -->
-    <div class="card card-section admin-table-card">
-      <div class="admin-table-header">
-        <span class="font-semibold text-sm text-gray-700">报名信息列表</span>
+    <div class="card card-section recruitment-officer-table-card">
+      <div class="recruitment-officer-table-header">
+        <span class="font-semibold text-sm text-gray-700">入会申请列表</span>
         <span class="text-sm text-gray-400" id="total-count">共 0 条</span>
       </div>
       <div class="overflow-x-auto">
@@ -285,7 +285,7 @@
     <div id="detail-modal" class="modal-overlay">
       <div class="modal modal--detail">
         <div class="modal-header">
-          <h3 class="font-semibold text-blue-600">报名详情</h3>
+          <h3 class="font-semibold text-blue-600">入会申请详情</h3>
           <button class="icon-button" onclick="closeDetail()" aria-label="关闭详情">&times;</button>
         </div>
         <div class="modal-body" id="detail-content">
@@ -313,7 +313,7 @@
 
     // 获取认证头
     function getAuthHeaders() {
-      const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
       return { 
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -323,23 +323,25 @@
     // 加载数据
     async function loadData() {
       try {
-        const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+        const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
         if (!token) {
           window.location.href = '/html/admin-login.html';
           return;
         }
 
-        const response = await fetch('/api/registration?limit=1000', { 
+        const response = await fetch('/api/membership-applications?limit=1000', { 
           headers: getAuthHeaders() 
         });
         
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem('recruitment_officer_token');
+          sessionStorage.removeItem('recruitment_officer_token');
           window.location.href = '/html/admin-login.html';
           return;
         }
         
         const data = await response.json();
-        allData = data.registrations || data;
+        allData = data.membership_applications || data;
         currentPage = 1;
         
         updateFilters();
@@ -423,8 +425,8 @@
             <td class="text-sm text-gray-600">${item.email}</td>
             <td>
               <div class="action-group">
-                <button class="action-btn view" onclick="viewDetail('${item.studentId}')">详情</button>
-                <button class="action-btn delete" onclick="deleteItem('${item.studentId}')">删除</button>
+                <button class="action-btn view" onclick="viewDetail('${item.id}')">详情</button>
+                <button class="action-btn delete" onclick="deleteItem('${item.id}')">删除</button>
               </div>
             </td>
           </tr>
@@ -469,8 +471,8 @@
     }
 
     // 查看详情
-    function viewDetail(studentId) {
-      const item = allData.find(d => d.studentId === studentId);
+    function viewDetail(id) {
+      const item = allData.find(d => d.id === Number(id));
       if (!item) return;
       
       const detailLabels = {
@@ -480,7 +482,7 @@
         grade: '年级',
         phone: '联系电话',
         email: '电子邮箱',
-        experience: '自我介绍',
+        self_introduction: '自我介绍',
         expectation: '加入期望'
       };
       
@@ -499,14 +501,14 @@
     }
 
     // 删除项目
-    async function deleteItem(studentId) {
-      const item = allData.find(d => d.studentId === studentId);
+    async function deleteItem(id) {
+      const item = allData.find(d => d.id === Number(id));
       if (!item) return;
       
-      if (!confirm(`确定删除 ${item.name} 的报名信息？`)) return;
+      if (!confirm(`确定删除 ${item.name} 的入会申请？`)) return;
       
       try {
-        await fetch(`/api/registration/${studentId}`, { 
+        await fetch(`/api/membership-applications/${id}`, { 
           method: 'DELETE', 
           headers: getAuthHeaders() 
         });
@@ -525,14 +527,14 @@
       const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = '报名信息.csv';
+      link.download = '入会申请.csv';
       link.click();
     }
 
     // 页面加载后初始化
     document.addEventListener('DOMContentLoaded', () => {
       // 检查登录状态
-      const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
       if (!token) {
         window.location.href = '/html/admin-login.html';
         return;

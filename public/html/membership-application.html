@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>招新报名 - 无线电爱好者协会</title>
+  <title>入会申请 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
   <style>
@@ -40,13 +40,13 @@
   font-weight: 500;
 }
 
-/* 报名和查询：仅增强展示层，不改变控件和业务行为 */
-.site-page.recruit-page .recruit-notice {
+/* 入会申请和查询：仅增强展示层，不改变控件和业务行为 */
+.site-page.membership-application-page .membership-application-notice {
   position: relative;
   padding-left: clamp(1.35rem, 3vw, 2.25rem);
 }
 
-.site-page.recruit-page .recruit-notice::before {
+.site-page.membership-application-page .membership-application-notice::before {
   content: '01';
   position: absolute;
   top: 1.35rem;
@@ -56,112 +56,113 @@
   font-weight: 750;
 }
 
-.site-page.recruit-page .recruit-form {
+.site-page.membership-application-page .membership-application-form {
   border-color: rgba(59, 130, 246, 0.2);
   background:
     radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.1), transparent 18rem),
     #ffffff;
 }
 
-.site-page.recruit-page .recruit-form__heading {
+.site-page.membership-application-page .membership-application-form__heading {
   margin-bottom: 1.5rem;
   padding-bottom: 1.25rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.18);
 }
 
-.site-page.recruit-page .recruit-form__heading h2 {
+.site-page.membership-application-page .membership-application-form__heading h2 {
   margin-bottom: 0.4rem;
   color: var(--site-ink);
   font-size: clamp(1.3rem, 2.5vw, 1.65rem);
 }
 
-.site-page.recruit-page .recruit-form__heading p {
+.site-page.membership-application-page .membership-application-form__heading p {
   color: var(--site-muted);
   font-size: 0.82rem;
   line-height: 1.65;
 }
 
-.site-page.recruit-page .recruit-form > div:not(.recruit-form__heading) {
+.site-page.membership-application-page .membership-application-form > div:not(.membership-application-form__heading) {
   padding-bottom: 0.2rem;
 }
   </style>
 </head>
-<body class="site-page sub-page recruit-page">
+<body class="site-page sub-page membership-application-page">
   <div id="nav-placeholder"></div>
 
   <header class="subpage-hero subpage-hero--compact">
     <div class="container subpage-hero__inner">
-      <h1>报名信息</h1>
-      <p>填写报名信息，加入协会的技术实践与校园协作。</p>
+      <h1>入会申请</h1>
+      <p>填写入会申请资料，加入协会的技术实践与校园协作。</p>
     </div>
   </header>
 
-  <main class="page-container page-container--narrow subpage-content recruit-content">
-    <div class="card card-section notice-card mb-6 recruit-notice">
-      <h3 class="font-bold mb-2 text-gray-800">报名须知</h3>
-      <p class="text-gray-500 text-sm">请填写以下信息完成报名，我们会尽快与您联系确认相关事宜</p>
+  <main class="page-container page-container--narrow subpage-content membership-application-content">
+    <div class="card card-section notice-card mb-6 membership-application-notice">
+      <h3 class="font-bold mb-2 text-gray-800">入会申请须知</h3>
+      <p class="text-gray-500 text-sm">请填写以下信息完成入会申请，我们会尽快与您联系确认相关事宜</p>
       <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
     </div>
 
-    <form id="registration-form" class="card form-card space-y-4 recruit-form">
-      <div class="recruit-form__heading">
+    <form id="membership-application-form" class="card form-card space-y-4 membership-application-form">
+      <div class="membership-application-form__heading">
         <span>APPLICATION FORM</span>
-        <h2>填写报名资料</h2>
+        <h2>填写入会申请资料</h2>
         <p>请确保联系方式准确，提交前可再次检查填写内容。</p>
       </div>
       <div>
-        <label for="registration-name" class="form-label">姓名 <span class="text-red-500">*</span></label>
-        <input type="text" id="registration-name" name="name" class="form-input" placeholder="请输入姓名" aria-describedby="error-name" required>
+        <label for="membership-application-name" class="form-label">姓名 <span class="text-red-500">*</span></label>
+        <input type="text" id="membership-application-name" name="name" class="form-input" placeholder="请输入姓名" aria-describedby="error-name" required>
         <div class="form-error" id="error-name"></div>
       </div>
 
       <div>
-        <label for="registration-student-id" class="form-label">学号 <span class="text-red-500">*</span></label>
-        <input type="text" id="registration-student-id" name="studentId" class="form-input" placeholder="请输入学号" aria-describedby="error-studentId" required>
+        <label for="membership-application-student-id" class="form-label">学号 <span class="text-red-500">*</span></label>
+        <input type="text" id="membership-application-student-id" name="studentId" class="form-input" placeholder="请输入学号" aria-describedby="error-studentId" required>
         <div class="form-error" id="error-studentId"></div>
       </div>
 
       <div>
-        <label for="registration-college" class="form-label">学院 <span class="text-red-500">*</span></label>
-        <select id="registration-college" name="college" class="form-input" aria-describedby="error-college" required>
+        <label for="membership-application-college" class="form-label">学院 <span class="text-red-500">*</span></label>
+        <select id="membership-application-college" name="college" class="form-input" aria-describedby="error-college" required>
           <option value="">请选择学院</option>
         </select>
         <div class="form-error" id="error-college"></div>
       </div>
 
       <div>
-        <label for="registration-grade" class="form-label">年级 <span class="text-red-500">*</span></label>
-        <select id="registration-grade" name="grade" class="form-input" aria-describedby="error-grade" required>
+        <label for="membership-application-grade" class="form-label">年级 <span class="text-red-500">*</span></label>
+        <select id="membership-application-grade" name="grade" class="form-input" aria-describedby="error-grade" required>
           <option value="">请选择年级</option>
         </select>
         <div class="form-error" id="error-grade"></div>
       </div>
 
       <div>
-        <label for="registration-phone" class="form-label">手机号码 <span class="text-red-500">*</span></label>
-        <input type="tel" id="registration-phone" name="phone" class="form-input" placeholder="请输入手机号码" aria-describedby="error-phone" required>
+        <label for="membership-application-phone" class="form-label">手机号码 <span class="text-red-500">*</span></label>
+        <input type="tel" id="membership-application-phone" name="phone" class="form-input" placeholder="请输入手机号码" aria-describedby="error-phone" required>
+        <p class="text-gray-500 text-xs mt-1">请确保手机号准确，录取查询时需使用此手机号进行核验</p>
         <div class="form-error" id="error-phone"></div>
       </div>
 
       <div>
-        <label for="registration-email" class="form-label">电子邮箱 <span class="text-red-500">*</span></label>
-        <input type="email" id="registration-email" name="email" class="form-input" placeholder="请输入电子邮箱" aria-describedby="error-email" required>
+        <label for="membership-application-email" class="form-label">电子邮箱 <span class="text-red-500">*</span></label>
+        <input type="email" id="membership-application-email" name="email" class="form-input" placeholder="请输入电子邮箱" aria-describedby="error-email" required>
         <div class="form-error" id="error-email"></div>
       </div>
 
       <div>
-        <label for="registration-experience" class="form-label">自我介绍 <span class="text-red-500">*</span></label>
-        <textarea id="registration-experience" name="experience" class="form-input" rows="4" placeholder="请简单介绍自己，包括技术背景、兴趣爱好等（至少10个字符）" aria-describedby="error-experience" required></textarea>
-        <div class="form-error" id="error-experience"></div>
+        <label for="membership-application-self-introduction" class="form-label">自我介绍 <span class="text-red-500">*</span></label>
+        <textarea id="membership-application-self-introduction" name="self_introduction" class="form-input" rows="4" placeholder="请简单介绍自己，包括技术背景、兴趣爱好等（至少10个字符）" aria-describedby="error-self_introduction" required></textarea>
+        <div class="form-error" id="error-self_introduction"></div>
       </div>
 
       <div>
-        <label for="registration-expectation" class="form-label">加入期望</label>
-        <textarea id="registration-expectation" name="expectation" class="form-input" rows="4" placeholder="请描述你加入协会的期望和目标"></textarea>
+        <label for="membership-application-expectation" class="form-label">加入期望</label>
+        <textarea id="membership-application-expectation" name="expectation" class="form-input" rows="4" placeholder="请描述你加入协会的期望和目标"></textarea>
       </div>
 
       <div class="pt-4">
-        <button type="submit" class="btn-solid w-full" id="submit-btn">提交报名</button>
+        <button type="submit" class="btn-solid w-full" id="submit-btn">提交入会申请</button>
       </div>
     </form>
 
@@ -169,8 +170,8 @@
     <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
       <div class="modal">
         <div class="text-4xl mb-4">🎉</div>
-        <h3 id="success-title">报名成功！</h3>
-        <p>感谢你的报名，我们会尽快与你联系确认相关事宜。</p>
+        <h3 id="success-title">入会申请提交成功！</h3>
+        <p>感谢你的入会申请，我们会尽快与你联系确认相关事宜。</p>
         <button type="button" class="btn-solid" onclick="closeSuccessModal()">确定</button>
       </div>
     </div>
@@ -213,7 +214,7 @@
 
     // 表单验证
     function validateForm() {
-      const form = document.getElementById('registration-form');
+      const form = document.getElementById('membership-application-form');
       const errors = {};
       
       // 清除所有错误
@@ -244,8 +245,8 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = '请输入有效的电子邮箱';
       
       // 验证自我介绍
-      const experience = form.elements.experience.value.trim();
-      if (!experience || experience.length < 10) errors.experience = '自我介绍至少10个字符';
+      const self_introduction = form.elements.self_introduction.value.trim();
+      if (!self_introduction || self_introduction.length < 10) errors.self_introduction = '自我介绍至少10个字符';
       
       // 显示错误
       Object.keys(errors).forEach(key => {
@@ -262,7 +263,7 @@
       
       if (!validateForm()) return;
       
-      const form = document.getElementById('registration-form');
+      const form = document.getElementById('membership-application-form');
       const submitBtn = document.getElementById('submit-btn');
       
       // 禁用提交按钮
@@ -277,11 +278,11 @@
           grade: form.elements.grade.value,
           phone: form.elements.phone.value.trim(),
           email: form.elements.email.value.trim(),
-          experience: form.elements.experience.value.trim(),
+          self_introduction: form.elements.self_introduction.value.trim(),
           expectation: form.elements.expectation.value.trim(),
         };
         
-        const response = await fetch('/api/registration', {
+        const response = await fetch('/api/membership-applications', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
@@ -300,7 +301,7 @@
       } finally {
         // 恢复提交按钮
         submitBtn.disabled = false;
-        submitBtn.textContent = '提交报名';
+        submitBtn.textContent = '提交入会申请';
       }
     }
 
@@ -313,7 +314,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       initFormOptions();
       
-      const form = document.getElementById('registration-form');
+      const form = document.getElementById('membership-application-form');
       if (form) {
         form.addEventListener('submit', handleSubmit);
       }
