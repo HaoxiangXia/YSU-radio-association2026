@@ -1,12 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Node
 node_modules/
+
+# Environment and secrets
 .env
+
+# SQLite database files
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
 server/data/
-public/data/admissions.json
+
+# Generated data and assets
+public/data/admission-results.json
 public/image/*.mp4
+
+# Excel temporary files
 工作簿1.xlsx
 ~$*.xlsx
-AGENTS.md
-CONTEXT.md
+
+docs/
