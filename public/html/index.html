@@ -6,6 +6,7 @@
   <title>无线电爱好者协会 | 燕山大学</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css">
+  <link rel="stylesheet" href="/html/site-intro.css">
   <style>
 .home-page {
   --home-electric-blue: #2563eb;
@@ -156,60 +157,6 @@
   display: none;
 }
 
-.site-intro {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  background: linear-gradient(145deg, #071a36, #041225);
-  color: #ffffff;
-  transition: opacity 800ms ease, transform 800ms ease, visibility 800ms;
-}
-
-.site-intro.is-exiting {
-  opacity: 0;
-  transform: translateY(-18px);
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.site-intro__brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  animation: intro-brand-in 600ms ease both;
-}
-
-.site-intro__brand img {
-  width: 3rem;
-  height: 3rem;
-  padding: 4px;
-  border-radius: 6px;
-  background: #2563eb;
-}
-
-.site-intro__brand span {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.site-intro__tagline {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  animation: intro-brand-in 600ms 120ms ease both;
-}
-
-@keyframes intro-brand-in {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @media (hover: hover) {
   .home-page .hero .hero-btn-primary:hover {
     transform: translateY(-2px);
@@ -289,30 +236,30 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .site-intro {
-    transition: none;
-  }
-
-  .site-intro__brand,
-  .site-intro__tagline {
-    animation: none;
-    opacity: 1;
-  }
-
-  .site-intro.is-exiting {
-    opacity: 0;
-  }
-}
   </style>
 </head>
 <body class="home-page">
-  <div class="site-intro" id="site-intro" aria-hidden="true" style="display: none;">
-    <div class="site-intro__brand">
-      <img src="/image/白底会徽.png" alt="">
-      <span>无线电爱好者协会</span>
+  <div class="site-intro" id="site-intro" hidden>
+    <div class="site-intro__decor" aria-hidden="true">
+      <span class="site-intro__grid"></span>
+      <span class="site-intro__wave site-intro__wave--one"></span>
+      <span class="site-intro__wave site-intro__wave--two"></span>
     </div>
-    <div class="site-intro__tagline">燕山大学 · 技术实践类社团</div>
+    <button class="site-intro__skip" id="site-intro-skip" type="button">跳过</button>
+    <div class="site-intro__content">
+      <div class="site-intro__emblem" aria-hidden="true">
+        <img src="/image/白底会徽.png" alt="">
+        <span class="site-intro__scan"></span>
+      </div>
+      <p class="site-intro__name">燕山大学无线电爱好者协会</p>
+      <div class="site-intro__loading">
+        <p class="site-intro__status" role="status" aria-live="polite">正在加载…</p>
+        <div class="site-intro__progress" id="site-intro-progress" role="progressbar" aria-label="页面加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="site-intro__progress-value"></span>
+        </div>
+        <span class="site-intro__percent" id="site-intro-percent">0%</span>
+      </div>
+    </div>
   </div>
 
   <div id="nav-placeholder"></div>
@@ -344,36 +291,7 @@
   </div>
 
   <script src="/html/common.js"></script>
-  <script>
-    (function () {
-      const intro = document.getElementById('site-intro');
-      if (!intro) return;
-
-      try {
-        if (sessionStorage.getItem('radio-intro-shown')) {
-          intro.remove();
-          return;
-        }
-
-        intro.style.display = '';
-
-        const exit = () => {
-          intro.classList.add('is-exiting');
-          sessionStorage.setItem('radio-intro-shown', '1');
-        };
-
-        if (document.readyState === 'complete') {
-          window.setTimeout(exit, 1400);
-        } else {
-          window.addEventListener('load', () => window.setTimeout(exit, 900), { once: true });
-        }
-
-        intro.addEventListener('transitionend', () => intro.remove(), { once: true });
-      } catch (error) {
-        intro.remove();
-      }
-    })();
-  </script>
+  <script src="/html/site-intro.js"></script>
   <script src="/html/home-effects.js"></script>
 </body>
 </html>
