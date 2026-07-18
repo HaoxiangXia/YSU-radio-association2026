@@ -5,7 +5,7 @@ const stats = [
   { label: '成立年份', value: '1988', suffix: '', icon: 'Calendar' },
   { label: '部门数量', value: '5', suffix: '', icon: 'Radio' },
   { label: '会员人数', value: '200', suffix: '+', icon: 'Users' },
-  { label: '获奖数量', value: '150', suffix: '+', icon: 'Award' },
+  { label: '累计竞赛获奖', value: '250', suffix: '+', icon: 'Award' },
 ];
 
 // 近期活动
@@ -31,7 +31,7 @@ const recentEvents = [
 const topHonors = [
   {
     title: '河北省高校活力团支部TOP10',
-    year: '2024年',
+    year: '2022年',
     description: '共青团河北省委颁发，展现了协会在组织建设方面的卓越成就',
     rank: 6,
   },

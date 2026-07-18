@@ -166,6 +166,84 @@
   background: rgba(255, 255, 255, 0.76);
   box-shadow: 0 8px 22px rgba(30, 64, 175, 0.06);
 }
+
+.site-page.honor-page .honor-certificate-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.site-page.honor-page .honor-certificate {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  color: inherit;
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+  cursor: zoom-in;
+  text-align: left;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.site-page.honor-page .honor-certificate:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37, 99, 235, 0.32);
+  box-shadow: 0 16px 32px rgba(30, 64, 175, 0.12);
+}
+
+.site-page.honor-page .honor-certificate:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}
+
+.site-page.honor-page .honor-certificate__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem;
+  background: #f8fafc;
+}
+
+.site-page.honor-page .honor-certificate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.6rem;
+}
+
+.site-page.honor-page .honor-certificate__meta {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.site-page.honor-page .honor-certificate__meta span {
+  color: #4d75c4;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.site-page.honor-page .honor-certificate__meta strong {
+  color: var(--site-ink);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .site-page.honor-page .honor-certificate-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-page.honor-page .honor-certificate-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
   </style>
 </head>
 <body class="site-page sub-page honor-page">
@@ -183,7 +261,7 @@
     <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6 honor-feature-grid">
         <article class="card card-section honor-feature-card">
           <div class="honor-feature-card__topline">
-            <span>2024年</span>
+            <span>2022年</span>
             <span class="badge badge-red">第6名</span>
           </div>
           <h3>河北省高校活力团支部TOP10</h3>
@@ -211,7 +289,7 @@
     <section class="card card-section mb-6 honor-section honor-ranking">
       <div class="honor-section__heading">
         <div>
-          <span>2024</span>
+          <span>2022</span>
           <h2 class="card-title">河北省高校活力团支部TOP10</h2>
         </div>
         <p>省内高校团支部活力建设榜单</p>
@@ -306,26 +384,62 @@
     <section class="card card-section honor-section honor-stats-panel">
       <div class="honor-section__heading">
         <div>
-          <h2 class="card-title">成就统计</h2>
+          <span>2024–2026</span>
+          <h2 class="card-title">近三年竞赛成果</h2>
         </div>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 honor-stats-grid">
         <div class="stat-card">
-          <div class="stat-value">150+</div>
-          <div class="stat-label">获奖总数</div>
+          <div class="stat-value">50+</div>
+          <div class="stat-label">竞赛获奖</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">30+</div>
           <div class="stat-label">国家级奖项</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">50+</div>
+          <div class="stat-value">25+</div>
           <div class="stat-label">省级奖项</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">70+</div>
-          <div class="stat-label">其他奖项</div>
+          <div class="stat-value">8+</div>
+          <div class="stat-label">项目与论文成果</div>
         </div>
+      </div>
+    </section>
+
+    <section class="card card-section honor-section honor-certificate-section">
+      <div class="honor-section__heading">
+        <div>
+          <span>2024–2026</span>
+          <h2 class="card-title">近三年代表性获奖证书</h2>
+        </div>
+      </div>
+      <div class="honor-certificate-gallery">
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2026-iscc-national-second.png" data-image-alt="2026年ISCC信息安全与对抗技术竞赛国赛二等奖证书" aria-label="查看2026年ISCC信息安全与对抗技术竞赛国赛二等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2026-iscc-national-second.png" alt="2026年ISCC信息安全与对抗技术竞赛国赛二等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2026年 · 国家级</span><strong>ISCC信息安全与对抗技术竞赛国赛二等奖</strong></span>
+        </button>
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2026-business-elite-national-first.jpg" data-image-alt="2026年全国高校商业精英挑战赛创新创业竞赛一等奖证书" aria-label="查看2026年全国高校商业精英挑战赛创新创业竞赛一等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2026-business-elite-national-first.jpg" alt="2026年全国高校商业精英挑战赛创新创业竞赛一等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2026年 · 国家级</span><strong>全国高校商业精英挑战赛创新创业竞赛一等奖</strong></span>
+        </button>
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2026-enterprise-simulation-national-second.jpg" data-image-alt="2026年全国企业竞争模拟大赛二等奖证书" aria-label="查看2026年全国企业竞争模拟大赛二等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2026-enterprise-simulation-national-second.jpg" alt="2026年全国企业竞争模拟大赛二等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2026年 · 国家级</span><strong>全国企业竞争模拟大赛二等奖</strong></span>
+        </button>
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2026-robot-innovation-provincial-first.jpg" data-image-alt="2026年第九届中国高校智能机器人创意大赛省赛一等奖证书" aria-label="查看2026年第九届中国高校智能机器人创意大赛省赛一等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2026-robot-innovation-provincial-first.jpg" alt="2026年第九届中国高校智能机器人创意大赛省赛一等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2026年 · 省级</span><strong>中国高校智能机器人创意大赛省赛一等奖</strong></span>
+        </button>
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2025-raicom-ros-national-first.jpg" data-image-alt="2025年睿抗机器人开发者大赛RAICOM全国总决赛ROS机器人虚实挑战赛一等奖证书" aria-label="查看2025年睿抗机器人开发者大赛RAICOM全国总决赛ROS机器人虚实挑战赛一等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2025-raicom-ros-national-first.jpg" alt="2025年睿抗机器人开发者大赛RAICOM全国总决赛ROS机器人虚实挑战赛一等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2025年 · 国家级</span><strong>睿抗机器人开发者大赛ROS全国一等奖</strong></span>
+        </button>
+        <button class="honor-certificate" type="button" data-image="/image/honors/honor-2025-digital-media-national-first.jpg" data-image-alt="2025年全国大学生数字媒体科技作品及创意竞赛全国总决赛一等奖证书" aria-label="查看2025年全国大学生数字媒体科技作品及创意竞赛全国总决赛一等奖证书">
+          <span class="honor-certificate__image"><img src="/image/honors/honor-2025-digital-media-national-first.jpg" alt="2025年全国大学生数字媒体科技作品及创意竞赛全国总决赛一等奖证书" loading="lazy"></span>
+          <span class="honor-certificate__meta"><span>2025年 · 国家级</span><strong>全国大学生数字媒体科技作品及创意竞赛全国一等奖</strong></span>
+        </button>
       </div>
     </section>
   </main>
