@@ -61,32 +61,20 @@
   margin-top: 0.9rem;
 }
 
-.about-association-page .association-media-placeholder,
-.about-association-page .association-media-placeholder img {
+.about-association-page .association-media,
+.about-association-page .association-media img {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.about-association-page .association-media-placeholder {
+.about-association-page .association-media {
   position: relative;
   aspect-ratio: 16 / 9;
 }
 
-.about-association-page .association-media-placeholder img {
+.about-association-page .association-media img {
   object-fit: cover;
-}
-
-.about-association-page .association-media-placeholder figcaption {
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  margin: 0;
-  padding: 0.35rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.64);
-  color: #fff;
-  font-size: 0.72rem;
 }
 
 .about-association-page .about-section {
@@ -385,8 +373,8 @@
 
 @media (max-width: 440px) {
   .about-association-page .about-assoc-intro { padding: 0.85rem; }
-  .about-association-page .association-media-placeholder { aspect-ratio: 4 / 3; }
-  .about-association-page .association-media-placeholder img { object-position: center; }
+  .about-association-page .association-media { aspect-ratio: 4 / 3; }
+  .about-association-page .association-media img { object-position: center; }
   .about-association-page .department-card__lists { grid-template-columns: minmax(0, 1fr); }
 }
 
