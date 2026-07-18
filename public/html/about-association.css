@@ -91,7 +91,8 @@
 
 .about-association-page .about-section {
   width: min(1160px, calc(100% - 2rem));
-  margin: 0 auto clamp(1.25rem, 3vw, 2rem);
+  /* 父容器已用 gap 统一控制区块间距，避免与这里的下外边距叠加。 */
+  margin: 0 auto;
   padding: clamp(1.25rem, 3.5vw, 2.75rem);
   scroll-margin-top: calc(var(--nav-height) + 1rem);
 }
