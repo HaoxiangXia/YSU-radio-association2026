@@ -1639,6 +1639,7 @@
 }
 
   </style>
+  <link rel="stylesheet" href="/html/about-association.css">
 </head>
 <body class="site-page sub-page about-page about-association-page">
   <div id="nav-placeholder"></div>
@@ -1707,7 +1708,64 @@
         </svg>
       </button>
     </section>
+
+    <section id="overview" class="about-section about-overview card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">ASSOCIATION PROFILE</p>
+          <h2 class="card-title">协会概况</h2>
+          <p class="section-desc">在教学、实践与协作中，陪伴每一位成员成长。</p>
+        </div>
+      </div>
+      <div class="overview-grid">
+        <div class="overview-intro">
+          <p>燕山大学无线电爱好者协会，简称“无协”，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">38个春秋</span>。</p>
+          <p>协会秉承<span class="font-semibold text-gray-800">“厚德、博学、求是”</span>的燕大校训，发扬<span class="font-semibold text-gray-800">“艰苦奋斗、严谨治学、求实创新”</span>的燕大精神，致力于培养和传播科学技术的热情。</p>
+          <p>我们围绕<span class="font-semibold text-gray-800">嵌入式开发与FPGA、人工智能应用与软件开发、机械建模和智能控制</span>开展学习与实践，为每一位热爱科技的同学提供共同成长的平台。</p>
+        </div>
+        <div class="overview-stats" id="overview-stats" aria-label="协会数据统计"></div>
+      </div>
+    </section>
+
+    <section id="departments" class="about-section about-departments card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">DEPARTMENTS</p>
+          <h2 class="card-title">部门介绍</h2>
+          <p class="section-desc">探索五个部门的方向、职责与成长路径。</p>
+        </div>
+      </div>
+      <h3 class="department-group-title">技术部门</h3>
+      <div class="department-grid" id="department-grid-technical"></div>
+      <h3 class="department-group-title">非技术部门</h3>
+      <div class="department-grid" id="department-grid-non-technical"></div>
+    </section>
+
+    <section id="news" class="about-section about-news card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">RECENT UPDATES</p>
+          <h2 class="card-title">最新动态</h2>
+        </div>
+        <a href="/html/activities.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="news-list" id="recent-events"></div>
+    </section>
+
+    <section id="honors" class="about-section about-honors card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">HONORS</p>
+          <h2 class="card-title">荣誉成就</h2>
+        </div>
+        <a href="/html/honors.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="honor-list" id="honors-grid"></div>
+    </section>
   </main>
+
+  <div id="footer-placeholder"></div>
+  <button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
 
   <div class="image-viewer">
     <img src="" alt="查看图片">
@@ -1715,15 +1773,11 @@
 
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
+  <script src="/html/about-association.js"></script>
   <script>
     (function() {
-      const detailUrl = '/html/about-association-detail.html';
-      let redirected = false;
-
       function redirect() {
-        if (redirected) return;
-        redirected = true;
-        window.location.href = detailUrl;
+        // 内容已合并到当前页面；保留空函数以兼容旧的提示元素。
       }
 
       // 首屏滚动提示：下滑后淡出 + 点击跳转
