@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 require('dotenv').config();
 require('./config/database');
 const competitionsRouter = require('./routes/competitions');
@@ -12,8 +11,8 @@ const adminRouter = require('./routes/admin'); // 引入管理员路由
 const path = require('path');
 
 // 解析请求体
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 配置静态文件服务
 app.use(express.static(path.join(__dirname, '../public')));

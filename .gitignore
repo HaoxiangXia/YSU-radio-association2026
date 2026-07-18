@@ -16,6 +16,8 @@ scripts/baseline-allowlist.json
 scripts/check.js
 scripts/smoke.js
 scripts/screenshots.js
+scripts/recruitment-audit.js
+scripts/recruitment-browser-proxy.js
 .agent
 .codex
 .codex-remote-attachments

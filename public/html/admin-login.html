@@ -68,12 +68,12 @@
       .then(response => {
         if (response.ok) {
           window.location.href = '/html/registration-info.html';
+        } else if (response.status === 401) {
+          localStorage.removeItem('admin_token');
+          sessionStorage.removeItem('admin_token');
         }
       })
-      .catch(() => {
-        localStorage.removeItem('admin_token');
-        sessionStorage.removeItem('admin_token');
-      });
+      .catch(() => {});
     }
 
     async function handleLogin(e) {
@@ -90,7 +90,7 @@
       
       try {
         const username = form.elements.username.value.trim();
-        const password = form.elements.password.value.trim();
+        const password = form.elements.password.value;
         const remember = form.elements.remember.checked;
         
         const response = await fetch('/api/admin/login', {

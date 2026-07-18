@@ -355,6 +355,7 @@
     let currentItems = [];
     let pagination = { current: 1, total: 0, count: 0 };
     let searchTimer;
+    let latestLoadRequest = 0;
 
     function getToken() {
       return localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
@@ -490,28 +491,48 @@
       document.getElementById('stat-grades').textContent = stats.gradeCount;
     }
 
-    async function loadData(page = 1, refreshOptions = false) {
+    async function loadData(page = 1) {
       if (!getToken()) {
         window.location.href = '/html/admin-login.html';
         return;
       }
+      const requestId = ++latestLoadRequest;
       currentPage = page;
       setFeedback('正在加载报名信息…');
       const params = new URLSearchParams({ ...readFilters(), page: String(page), limit: String(pageSize) });
       try {
         const response = await handleResponse(await fetch(`/api/registration?${params}`, { headers: getAuthHeaders() }));
         const data = await response.json();
+        if (requestId !== latestLoadRequest) return false;
         currentItems = data.registrations || [];
         pagination = data.pagination || { current: 1, total: 0, count: 0 };
         currentPage = pagination.current || page;
+        if (pagination.total > 0 && currentPage > pagination.total) {
+          return loadData(pagination.total);
+        }
         renderTable();
-        if (refreshOptions) await loadOptions();
         setFeedback(currentItems.length ? '' : '当前没有符合条件的报名信息。');
+        return true;
       } catch (error) {
+        if (requestId !== latestLoadRequest) return false;
         currentItems = [];
         pagination = { current: 1, total: 0, count: 0 };
         renderTable();
         setFeedback(error.message || '加载失败，请稍后重试。', true);
+        return false;
+      }
+    }
+
+    async function loadSupportData() {
+      const [optionsResult, statsResult] = await Promise.allSettled([loadOptions(), loadStats()]);
+      if (optionsResult.status === 'rejected') {
+        document.getElementById('college-filter').title = '筛选项暂时无法更新';
+        document.getElementById('grade-filter').title = '筛选项暂时无法更新';
+      }
+      if (statsResult.status === 'rejected') {
+        ['stat-total', 'stat-today', 'stat-colleges', 'stat-grades'].forEach((id) => {
+          document.getElementById(id).textContent = '-';
+        });
       }
     }
 
@@ -541,7 +562,8 @@
       try {
         const response = await handleResponse(await fetch(`/api/registration/${item.id}`, { method: 'DELETE', headers: getAuthHeaders() }));
         const result = await response.json();
-        await Promise.all([loadData(currentPage, true), loadStats()]);
+        await loadData(currentPage);
+        await loadSupportData();
         setFeedback(result.message || '已删除。');
       } catch (error) {
         setFeedback(error.message || '删除失败，请稍后重试。', true);
@@ -555,7 +577,11 @@
         const blob = await response.blob();
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `报名信息-${new Date().toISOString().slice(0, 10)}.csv`;
+        const now = new Date();
+        const localDate = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+          .map((value, index) => index === 0 ? String(value) : String(value).padStart(2, '0'))
+          .join('-');
+        link.download = `报名信息-${localDate}.csv`;
         link.click();
         URL.revokeObjectURL(link.href);
         setFeedback('CSV 已生成。');
@@ -569,7 +595,7 @@
         window.location.href = '/html/admin-login.html';
         return;
       }
-      document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1, true), loadStats()]));
+      document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData()]));
       document.getElementById('export-button').addEventListener('click', exportCsv);
       document.getElementById('detail-close-button').addEventListener('click', closeDetail);
       document.getElementById('detail-modal').addEventListener('click', (event) => {
@@ -586,12 +612,7 @@
       });
       ['college-filter', 'grade-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => loadData(1)));
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); });
-      try {
-        await Promise.all([loadOptions(), loadStats()]);
-        await loadData();
-      } catch (error) {
-        setFeedback(error.message || '管理员页面初始化失败。', true);
-      }
+      await Promise.all([loadData(), loadSupportData()]);
     });
   </script>
 </body>

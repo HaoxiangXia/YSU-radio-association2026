@@ -2,9 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { getAdminSettings } = require('../config/settings');
-const { rateLimit } = require('../utils/rateLimit');
+const { checkRateLimit, clearRateLimit, recordRateLimit } = require('../utils/rateLimit');
 
 const router = express.Router();
+const loginLimit = 5;
+const loginWindowMs = 10 * 60 * 1000;
 
 function hasValidAdminSettings() {
   const { username, passwordHash, jwtSecret } = getAdminSettings();
@@ -12,7 +14,9 @@ function hasValidAdminSettings() {
 }
 
 router.post('/login', async (req, res) => {
-  const attempt = rateLimit({ key: `admin-login:${req.ip}`, limit: 5, windowMs: 10 * 60 * 1000 });
+  const rateLimitKey = `admin-login:${req.ip}`;
+  const limitOptions = { key: rateLimitKey, limit: loginLimit, windowMs: loginWindowMs };
+  const attempt = checkRateLimit(limitOptions);
   if (!attempt.allowed) {
     res.set('Retry-After', String(attempt.retryAfter));
     return res.status(429).json({ message: '尝试次数过多，请稍后再试。' });
@@ -28,6 +32,7 @@ router.post('/login', async (req, res) => {
     return res.status(503).json({ message: '管理员功能尚未配置完成。' });
   }
   if (!username || !password || username.length > 64 || password.length > 256) {
+    recordRateLimit(limitOptions);
     return res.status(401).json({ message: '用户名或密码错误。' });
   }
 
@@ -39,8 +44,11 @@ router.post('/login', async (req, res) => {
     return res.status(503).json({ message: '管理员功能尚未配置完成。' });
   }
   if (!passwordMatches) {
+    recordRateLimit(limitOptions);
     return res.status(401).json({ message: '用户名或密码错误。' });
   }
+
+  clearRateLimit(rateLimitKey);
 
   const token = jwt.sign(
     { username: settings.username, name: '协会管理员' },

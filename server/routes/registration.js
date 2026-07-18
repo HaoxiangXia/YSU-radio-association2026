@@ -48,6 +48,12 @@ function escapeCsvCell(value) {
   return `"${safeText.replace(/"/g, '""')}"`;
 }
 
+function parseRegistrationId(value) {
+  if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value)) return null;
+  const id = Number(value);
+  return Number.isSafeInteger(id) ? id : null;
+}
+
 router.get('/status', (req, res) => res.json(serializeStatus()));
 
 router.post('/', (req, res) => {
@@ -150,16 +156,16 @@ router.get('/export', authenticateAdmin, (req, res) => {
 });
 
 router.get('/:id', authenticateAdmin, (req, res) => {
-  const id = Number.parseInt(req.params.id, 10);
-  if (!Number.isSafeInteger(id) || id < 1) return res.status(400).json({ message: '无效的报名编号。' });
+  const id = parseRegistrationId(req.params.id);
+  if (id === null) return res.status(400).json({ message: '无效的报名编号。' });
   const registration = Registration.findById(id);
   if (!registration) return res.status(404).json({ message: '未找到报名信息。' });
   return res.json(registration);
 });
 
 router.delete('/:id', authenticateAdmin, (req, res) => {
-  const id = Number.parseInt(req.params.id, 10);
-  if (!Number.isSafeInteger(id) || id < 1) return res.status(400).json({ message: '无效的报名编号。' });
+  const id = parseRegistrationId(req.params.id);
+  if (id === null) return res.status(400).json({ message: '无效的报名编号。' });
   const registration = Registration.deleteById(id);
   if (!registration) return res.status(404).json({ message: '未找到报名信息。' });
   return res.json({ message: '删除成功。' });
