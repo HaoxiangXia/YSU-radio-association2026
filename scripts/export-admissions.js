@@ -2,13 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
 
-function toRecord(name, studentId) {
+function toRecord(name, studentId, phone, department, status) {
   const cleanId = studentId === undefined || studentId === null ? '' : String(studentId).trim();
   if (!cleanId) {
     return null;
   }
   const cleanName = typeof name === 'string' ? name.trim() : name === undefined || name === null ? '' : String(name).trim();
-  return { studentId: cleanId, name: cleanName };
+  const cleanPhone = phone === undefined || phone === null ? '' : String(phone).trim();
+  const cleanDepartment = department === undefined || department === null ? '' : String(department).trim();
+  const cleanStatus = status === undefined || status === null ? '' : String(status).trim();
+  return {
+    studentId: cleanId,
+    name: cleanName,
+    phone: cleanPhone,
+    department: cleanDepartment,
+    status: cleanStatus,
+  };
 }
 
 function readAdmissions(sheet) {
@@ -21,7 +30,7 @@ function readAdmissions(sheet) {
     if (!row || row.length === 0) {
       continue;
     }
-    const record = toRecord(row[0], row[1]);
+    const record = toRecord(row[0], row[1], row[2], row[3], row[4]);
     if (!record) {
       continue;
     }
@@ -39,7 +48,7 @@ function readAdmissions(sheet) {
 
 function main() {
   const defaultInput = path.resolve(__dirname, '../工作簿1.xlsx');
-  const defaultOutput = path.resolve(__dirname, '../public/data/admissions.json');
+  const defaultOutput = path.resolve(__dirname, '../public/data/admission-results.json');
 
   const inputPath = path.resolve(process.argv[2] || defaultInput);
   const outputPath = path.resolve(process.argv[3] || defaultOutput);

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>入会申请 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css">
+  <style>
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.notice-card {
+  border-top: 3px solid var(--color-primary);
+  background: #ffffff;
+}
+
+.form-error {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.site-page .notice-card {
+  border-top: 3px solid var(--site-blue);
+  background: #ffffff;
+}
+
+.site-page .form-error {
+  min-height: 0.5rem;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+/* 入会申请和查询：仅增强展示层，不改变控件和业务行为 */
+.site-page.membership-application-page .membership-application-notice {
+  position: relative;
+  padding-left: clamp(1.35rem, 3vw, 2.25rem);
+}
+
+.site-page.recruit-page .recruit-form {
+  border-color: rgba(59, 130, 246, 0.2);
+  background: #ffffff;
+}
+
+.site-page.membership-application-page .membership-application-form__heading {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.site-page.membership-application-page .membership-application-form__heading h2 {
+  margin-bottom: 0.4rem;
+  color: var(--site-ink);
+  font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+}
+
+.site-page.membership-application-page .membership-application-form__heading p {
+  color: var(--site-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-page.membership-application-page .membership-application-form > div:not(.membership-application-form__heading) {
+  padding-bottom: 0.2rem;
+}
+  </style>
+</head>
+<body class="site-page sub-page membership-application-page">
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero subpage-hero--compact">
+    <div class="container subpage-hero__inner">
+      <h1>入会申请</h1>
+      <p>填写入会申请资料，加入协会的技术实践与校园协作。</p>
+    </div>
+  </header>
+
+  <main class="page-container page-container--narrow subpage-content membership-application-content">
+    <div class="card card-section notice-card mb-6 membership-application-notice">
+      <h3 class="font-bold mb-2 text-gray-800">入会申请须知</h3>
+      <p class="text-gray-500 text-sm">请填写以下信息完成入会申请，我们会尽快与您联系确认相关事宜</p>
+      <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
+      <p id="form-status" class="text-sm mt-3" role="status"></p>
+      <p class="text-gray-500 text-sm mt-2">联系方式：如有疑问，请通过协会招新群或官方渠道联系负责人。</p>
+      <p class="text-gray-500 text-sm mt-1">隐私说明：提交的信息仅用于本次招新联系与筛选，不会用于其他用途。</p>
+    </div>
+
+    <form id="membership-application-form" class="card form-card space-y-4 recruit-form">
+      <div class="recruit-form__heading">
+        <h2>填写入会申请资料</h2>
+        <p>请确保联系方式准确，提交前可再次检查填写内容。</p>
+      </div>
+      <div>
+        <label for="registration-name" class="form-label">姓名 <span class="text-red-500">*</span></label>
+        <input type="text" id="registration-name" name="name" class="form-input" placeholder="请输入姓名" aria-describedby="error-name" minlength="2" maxlength="30" required>
+        <div class="form-error" id="error-name"></div>
+      </div>
+
+      <div>
+        <label for="registration-student-id" class="form-label">学号 <span class="text-red-500">*</span></label>
+        <input type="text" id="registration-student-id" name="studentId" class="form-input" placeholder="请输入12位学号" aria-describedby="error-studentId" inputmode="numeric" pattern="\d{12}" maxlength="12" required>
+        <div class="form-error" id="error-studentId"></div>
+      </div>
+
+      <div>
+        <label for="membership-application-college" class="form-label">学院 <span class="text-red-500">*</span></label>
+        <select id="membership-application-college" name="college" class="form-input" aria-describedby="error-college" required>
+          <option value="">请选择学院</option>
+        </select>
+        <div class="form-error" id="error-college"></div>
+      </div>
+
+      <div>
+        <label for="membership-application-grade" class="form-label">年级 <span class="text-red-500">*</span></label>
+        <select id="membership-application-grade" name="grade" class="form-input" aria-describedby="error-grade" required>
+          <option value="">请选择年级</option>
+        </select>
+        <div class="form-error" id="error-grade"></div>
+      </div>
+
+      <div>
+        <label for="registration-phone" class="form-label">手机号码 <span class="text-red-500">*</span></label>
+        <input type="tel" id="registration-phone" name="phone" class="form-input" placeholder="请输入手机号码" aria-describedby="error-phone" inputmode="numeric" maxlength="11" required>
+        <div class="form-error" id="error-phone"></div>
+      </div>
+
+      <div>
+        <label for="registration-email" class="form-label">电子邮箱 <span class="text-red-500">*</span></label>
+        <input type="email" id="registration-email" name="email" class="form-input" placeholder="请输入电子邮箱" aria-describedby="error-email" maxlength="120" required>
+        <div class="form-error" id="error-email"></div>
+      </div>
+
+      <div>
+        <label for="registration-self-introduction" class="form-label">自我介绍 <span class="text-red-500">*</span></label>
+        <textarea id="registration-self-introduction" name="self_introduction" class="form-input" rows="4" placeholder="请简单介绍自己，包括技术背景、兴趣爱好等（至少10个字符）" aria-describedby="error-self_introduction" minlength="10" maxlength="1000" required></textarea>
+        <div class="form-error" id="error-self_introduction"></div>
+      </div>
+
+      <div>
+        <label for="registration-expectation" class="form-label">加入期望</label>
+        <textarea id="registration-expectation" name="expectation" class="form-input" rows="4" placeholder="请描述你加入协会的期望和目标" maxlength="500"></textarea>
+      </div>
+
+      <div class="pt-4">
+        <button type="submit" class="btn-solid w-full" id="submit-btn">提交入会申请</button>
+      </div>
+    </form>
+
+    <!-- 成功提示 -->
+    <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
+      <div class="modal">
+        <h3 id="success-title">入会申请提交成功！</h3>
+        <p>感谢你的入会申请，我们会尽快与你联系确认相关事宜。</p>
+        <button type="button" class="btn-solid" id="success-close-button">确定</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/data.js"></script>
+  <script src="/html/common.js"></script>
+  <script>
+    function initFormOptions() {
+      const collegeSelect = document.querySelector('select[name="college"]');
+      const gradeSelect = document.querySelector('select[name="grade"]');
+      
+      if (collegeSelect) {
+        colleges.forEach(college => {
+          const option = document.createElement('option');
+          option.value = college;
+          option.textContent = college;
+          collegeSelect.appendChild(option);
+        });
+      }
+      
+      if (gradeSelect) {
+        grades.forEach(grade => {
+          const option = document.createElement('option');
+          option.value = grade;
+          option.textContent = grade;
+          gradeSelect.appendChild(option);
+        });
+      }
+    }
+
+    function validateForm() {
+      const form = document.getElementById('membership-application-form');
+      const errors = {};
+      
+      document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+      
+      const name = form.elements.name.value.trim();
+      if (name.length < 2 || name.length > 30) errors.name = '姓名应为 2 到 30 个字符';
+      
+      const studentId = form.elements.studentId.value.trim();
+      if (!/^\d{12}$/.test(studentId)) errors.studentId = '请输入 12 位数字学号';
+      
+      const college = form.elements.college.value;
+      if (!college) errors.college = '请选择学院';
+      
+      const grade = form.elements.grade.value;
+      if (!grade) errors.grade = '请选择年级';
+      
+      const phone = form.elements.phone.value.trim();
+      if (!/^1[3-9]\d{9}$/.test(phone)) errors.phone = '请输入有效的手机号码';
+      
+      const email = form.elements.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = '请输入有效的电子邮箱';
+      
+      const selfIntroduction = form.elements.self_introduction.value.trim();
+      if (selfIntroduction.length < 10 || selfIntroduction.length > 1000) errors.self_introduction = '自我介绍应为 10 到 1000 个字符';
+      if (form.elements.expectation.value.trim().length > 500) errors.expectation = '加入期望不能超过 500 个字符';
+      
+      // 显示错误
+      Object.keys(errors).forEach(key => {
+        const errorEl = document.getElementById(`error-${key}`);
+        if (errorEl) errorEl.textContent = errors[key];
+      });
+      
+      return Object.keys(errors).length === 0;
+    }
+
+    function setFormStatus(message, isError = true) {
+      const statusElement = document.getElementById('form-status');
+      statusElement.textContent = message;
+      statusElement.className = `text-sm mt-3 ${isError ? 'text-red-600' : 'text-green-600'}`;
+    }
+
+    // 提交表单
+    async function handleSubmit(e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+      
+      const form = document.getElementById('membership-application-form');
+      const submitBtn = document.getElementById('submit-btn');
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = '提交中...';
+      
+      try {
+        const formData = {
+          name: form.elements.name.value.trim(),
+          studentId: form.elements.studentId.value.trim(),
+          college: form.elements.college.value,
+          grade: form.elements.grade.value,
+          phone: form.elements.phone.value.trim(),
+          email: form.elements.email.value.trim(),
+          self_introduction: form.elements.self_introduction.value.trim(),
+          expectation: form.elements.expectation.value.trim(),
+        };
+        
+        const response = await fetch('/api/membership-applications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        
+        const result = await response.json().catch(() => ({}));
+        if (response.ok) {
+          document.getElementById('success-modal').classList.add('open');
+          form.reset();
+          setFormStatus('', false);
+        } else {
+          const detail = result.detail;
+          const message = typeof detail === 'string'
+            ? detail
+            : Array.isArray(detail)
+              ? detail.map((item) => item.msg).join('；')
+              : '提交失败，请稍后再试。';
+          setFormStatus(message);
+        }
+      } catch (error) {
+        setFormStatus('提交失败，请检查网络后重试。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '提交入会申请';
+      }
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('success-modal').classList.remove('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initFormOptions();
+      
+      const form = document.getElementById('membership-application-form');
+      if (form) {
+        form.addEventListener('submit', handleSubmit);
+      }
+      document.getElementById('success-close-button').addEventListener('click', closeSuccessModal);
+    });
+  </script>
+</body>
+</html>

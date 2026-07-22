@@ -1379,7 +1379,7 @@ textarea.form-input {
   color: #6b7280;
 }
 
-.footer-admin-link {
+.footer-recruitment-officer-link {
   display: inline-block;
   margin-top: 0.75rem;
   color: #6b7280;
@@ -2133,7 +2133,7 @@ textarea.form-input {
   background: rgba(219, 234, 254, 0.48);
 }
 
-/* 报名、查询与管理表单 */
+/* 入会申请、查询与管理表单 */
 .site-page .form-card {
   padding: clamp(1.35rem, 3vw, 2.25rem);
 }
@@ -2413,7 +2413,7 @@ textarea.form-input {
     flex-basis: 100%;
   }
 
-  .site-page .admin-table-card {
+  .site-page .recruitment-officer-table-card {
     margin-right: 0;
     margin-left: 0;
   }

@@ -116,17 +116,18 @@
   <header class="subpage-hero subpage-hero--compact">
     <div class="container subpage-hero__inner">
       <h1>录取查询</h1>
-      <p>输入学号查询录取状态，查询结果以协会正式通知为准。</p>
+      <p>输入学号和手机号查询录取结果，查询结果以协会正式通知为准。</p>
     </div>
   </header>
 
   <main class="page-container page-container--narrow subpage-content query-content">
     <section class="card card-section mb-6 query-card">
       <h2 class="card-title">查询录取结果</h2>
-      <p class="text-gray-600 text-sm mb-4">请输入你的学号查询录取结果</p>
+      <p class="text-gray-600 text-sm mb-4">请输入你的学号和入会申请时填写的手机号查询录取结果</p>
       
       <div class="query-form">
         <input type="text" id="student-id-input" class="form-input" placeholder="请输入12位学号" aria-label="学号" maxlength="12">
+        <input type="tel" id="phone-input" class="form-input" placeholder="请输入手机号" aria-label="手机号" maxlength="11">
         <button type="button" class="btn-solid" onclick="checkAdmission()">查询</button>
       </div>
       
@@ -140,7 +141,7 @@
       <ul class="space-y-2 text-sm text-gray-600">
         <li class="flex items-start gap-2">
           <span class="text-blue-400 mt-1">-</span>
-          请输入完整的12位学号进行查询
+          请输入完整的12位学号和入会申请时填写的手机号
         </li>
         <li class="flex items-start gap-2">
           <span class="text-blue-400 mt-1">-</span>
@@ -171,7 +172,7 @@
     // 加载录取数据
     async function loadAdmissions() {
       try {
-        const response = await fetch('/data/admissions.json');
+        const response = await fetch('/data/admission-results.json');
         if (response.ok) {
           const data = await response.json();
           data.forEach(item => {
@@ -181,17 +182,19 @@
       } catch (error) {
         console.log('加载录取数据失败，使用模拟数据');
         // 模拟数据
-        admissions.set('202400010001', { name: '张三', department: '嵌入式部', status: '已录取' });
-        admissions.set('202400010002', { name: '李四', department: '计算机部', status: '已录取' });
-        admissions.set('202400010003', { name: '王五', department: '机械部', status: '待定' });
+        admissions.set('202400010001', { name: '张三', phone: '13800138000', department: '嵌入式部', status: '已录取' });
+        admissions.set('202400010002', { name: '李四', phone: '13800138001', department: '计算机部', status: '已录取' });
+        admissions.set('202400010003', { name: '王五', phone: '13800138002', department: '机械部', status: '未录取' });
       }
     }
 
     // 查询录取结果
     function checkAdmission() {
-      const input = document.getElementById('student-id-input');
+      const studentIdInput = document.getElementById('student-id-input');
+      const phoneInput = document.getElementById('phone-input');
       const resultDiv = document.getElementById('query-result');
-      const studentId = input.value.trim();
+      const studentId = studentIdInput.value.trim();
+      const phone = phoneInput.value.trim();
       
       // 验证学号格式
       if (!/^\d{12}$/.test(studentId)) {
@@ -204,12 +207,23 @@
         return;
       }
       
-      // 查询结果
+      // 验证手机号格式
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-red-600 font-medium">请输入正确的11位手机号</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // 查询结果：必须同时匹配学号和手机号
       const admission = admissions.get(studentId);
       
       resultDiv.style.display = 'block';
       
-      if (admission) {
+      if (admission && admission.phone === phone) {
         const statusColor = admission.status === '已录取' ? 'text-green-600' : 'text-yellow-600';
         const statusBg = admission.status === '已录取' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200';
         
@@ -226,8 +240,8 @@
         resultDiv.innerHTML = `
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div class="text-center">
-              <h3 class="font-bold text-gray-800 mb-2">未找到录取信息</h3>
-              <p class="text-gray-600 text-sm">请检查学号是否正确，或联系协会负责人确认</p>
+              <h3 class="font-bold text-gray-800 mb-2">未找到录取结果</h3>
+              <p class="text-gray-600 text-sm">请检查学号和手机号是否正确，或联系协会负责人确认</p>
             </div>
           </div>
         `;
@@ -239,13 +253,18 @@
       loadAdmissions();
       
       // 回车查询
-      const input = document.getElementById('student-id-input');
-      if (input) {
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            checkAdmission();
-          }
-        });
+      const studentIdInput = document.getElementById('student-id-input');
+      const phoneInput = document.getElementById('phone-input');
+      const triggerQuery = (e) => {
+        if (e.key === 'Enter') {
+          checkAdmission();
+        }
+      };
+      if (studentIdInput) {
+        studentIdInput.addEventListener('keypress', triggerQuery);
+      }
+      if (phoneInput) {
+        phoneInput.addEventListener('keypress', triggerQuery);
       }
     });
   </script>
