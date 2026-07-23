@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # radio-association 一键部署脚本
 # 适用：Ubuntu 22.04 / 阿里云 ECS / 无域名 / 裸机部署
+# 技术栈：FastAPI + Python 3.11+（uv 管理依赖）+ uvicorn + SQLite
 # 用法：chmod +x deploy.sh && ./deploy.sh
 
 set -euo pipefail
@@ -9,7 +10,9 @@ REPO_URL="https://github.com/HaoxiangXia/YSU-radio-association2026.git"
 BRANCH="dev"
 APP_DIR="/var/www/radio-association"
 DEPLOY_USER="deploy"
-BUN_PATH="/root/.bun/bin/bun"
+BUN_PATH="/usr/local/bin/bun"
+UV_PATH="/usr/local/bin/uv"
+DB_PATH="$APP_DIR/backend/data/database.sqlite"
 
 # 颜色
 RED='\033[0;31m'
@@ -35,20 +38,59 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# 检查 bun 是否安装
-if ! command -v bun > /dev/null 2>&1; then
-    if [ -x "$BUN_PATH" ]; then
-        log "Bun 安装在 $BUN_PATH"
-    else
-        error "未找到 Bun，请先安装 Bun: https://bun.sh/docs/installation"
-        exit 1
-    fi
-else
-    BUN_PATH=$(command -v bun)
+# 检查 git
+if ! command -v git > /dev/null 2>&1; then
+    log "安装 git..."
+    apt update
+    apt install -y git
 fi
 
-log "Bun 路径: $BUN_PATH"
-log "Bun 版本: $($BUN_PATH -v)"
+# 安装 uv（Python 包/版本管理器）
+if ! command -v uv > /dev/null 2>&1 && [ ! -x "$UV_PATH" ]; then
+    log "安装 uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # 安装器默认装到 ~/.local/bin，复制到系统路径以便 deploy 用户使用
+    cp "$HOME/.local/bin/uv" "$UV_PATH"
+    chmod +x "$UV_PATH"
+elif command -v uv > /dev/null 2>&1; then
+    UV_PATH=$(command -v uv)
+fi
+
+log "uv 路径: $UV_PATH"
+log "uv 版本: $($UV_PATH --version)"
+
+# 确保 uv 在系统路径下（root 家目录里的 uv 其他用户无法访问）
+if [[ "$UV_PATH" == /root/* || "$UV_PATH" == /home/* ]]; then
+    log "uv 位于用户目录，复制到 /usr/local/bin 以便 deploy 用户使用..."
+    cp "$UV_PATH" /usr/local/bin/uv
+    chmod +x /usr/local/bin/uv
+    UV_PATH="/usr/local/bin/uv"
+fi
+
+# 创建部署用户（提前创建，后续 uv/python 都以该用户安装）
+if ! id "$DEPLOY_USER" > /dev/null 2>&1; then
+    log "创建部署用户: $DEPLOY_USER"
+    useradd -m -s /bin/bash "$DEPLOY_USER"
+    usermod -aG sudo "$DEPLOY_USER"
+fi
+
+# 确保 Python 3.11+ 可用（系统 Python 不满足时通过 uv 安装托管版本）
+if command -v python3 > /dev/null 2>&1 && python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)' 2>/dev/null; then
+    log "Python 3.11+ 已就绪: $(python3 --version)"
+else
+    log "系统 Python 不满足 3.11+，通过 uv 为 $DEPLOY_USER 安装 Python 3.11..."
+    sudo -u "$DEPLOY_USER" "$UV_PATH" python install 3.11
+fi
+
+# 安装 Bun（仅用于 scripts/ 下的数据库初始化与导出脚本，不运行后端）
+if ! command -v bun > /dev/null 2>&1 && [ ! -x "$BUN_PATH" ]; then
+    log "安装 Bun（仅用于 scripts/init-db.js 等脚本）..."
+    curl -fsSL https://bun.sh/install | bash
+    cp "$HOME/.bun/bin/bun" "$BUN_PATH"
+    chmod +x "$BUN_PATH"
+elif command -v bun > /dev/null 2>&1; then
+    BUN_PATH=$(command -v bun)
+fi
 
 # 如果 Bun 在 root 家目录下，其他用户无法访问，复制到系统路径
 if [[ "$BUN_PATH" == /root/.bun/* ]]; then
@@ -58,19 +100,8 @@ if [[ "$BUN_PATH" == /root/.bun/* ]]; then
     BUN_PATH="/usr/local/bin/bun"
 fi
 
-# 检查 git
-if ! command -v git > /dev/null 2>&1; then
-    log "安装 git..."
-    apt update
-    apt install -y git
-fi
-
-# 创建部署用户
-if ! id "$DEPLOY_USER" > /dev/null 2>&1; then
-    log "创建部署用户: $DEPLOY_USER"
-    useradd -m -s /bin/bash "$DEPLOY_USER"
-    usermod -aG sudo "$DEPLOY_USER"
-fi
+log "Bun 路径: $BUN_PATH"
+log "Bun 版本: $($BUN_PATH -v)"
 
 # 创建项目目录
 log "创建项目目录 $APP_DIR"
@@ -93,17 +124,11 @@ fi
 
 cd "$APP_DIR"
 
-# 安装依赖
-log "安装依赖..."
-sudo -u "$DEPLOY_USER" "$BUN_PATH" install
-
-# 初始化数据库
-if [ ! -f "$APP_DIR/server/data/database.sqlite" ]; then
-    log "初始化数据库..."
-    sudo -u "$DEPLOY_USER" "$BUN_PATH" server/initDB.js
-else
-    warn "数据库已存在，跳过初始化。如需重新初始化，请手动运行 bun server/initDB.js"
-fi
+# 安装后端依赖
+log "安装后端依赖（uv sync）..."
+cd "$APP_DIR/backend"
+sudo -u "$DEPLOY_USER" "$UV_PATH" sync
+cd "$APP_DIR"
 
 # 配置环境变量
 ENV_FILE="$APP_DIR/.env"
@@ -116,23 +141,26 @@ if [ ! -f "$ENV_FILE" ]; then
         log "已自动生成 JWT_SECRET"
     fi
 
-    read -rp "请输入招新负责人账号（默认 admin）: " ADMIN_USER
-    ADMIN_USER=${ADMIN_USER:-admin}
+    read -rp "请输入招新负责人账号（默认 admin）: " OFFICER_USER
+    OFFICER_USER=${OFFICER_USER:-admin}
 
-    read -srp "请输入招新负责人密码: " ADMIN_PASS
+    read -srp "请输入招新负责人密码（将自动转换为 PBKDF2 哈希）: " OFFICER_PASS
     echo
-    if [ -z "$ADMIN_PASS" ]; then
+    if [ -z "$OFFICER_PASS" ]; then
         error "招新负责人密码不能为空"
         exit 1
     fi
 
-    read -rp "请输入招新负责人显示名称（默认 招新负责人）: " ADMIN_NAME
-    ADMIN_NAME=${ADMIN_NAME:-管理员}
+    read -rp "请输入招新负责人显示名称（默认 管理员）: " OFFICER_NAME
+    OFFICER_NAME=${OFFICER_NAME:-管理员}
+
+    log "生成密码 PBKDF2 哈希..."
+    OFFICER_HASH=$(cd "$APP_DIR/backend" && sudo -u "$DEPLOY_USER" "$UV_PATH" run python ../scripts/hash-password.py "$OFFICER_PASS")
 
     cat > "$ENV_FILE" <<EOF
-PORT=8000
+PORT=5000
 JWT_SECRET=$JWT_SECRET
-RECRUITMENT_OFFICER_ACCOUNTS=$ADMIN_USER:$ADMIN_PASS:$ADMIN_NAME
+RECRUITMENT_OFFICER_ACCOUNTS=$OFFICER_USER:$OFFICER_HASH:$OFFICER_NAME
 EOF
 
     chown "$DEPLOY_USER":"$DEPLOY_USER" "$ENV_FILE"
@@ -140,6 +168,27 @@ EOF
     log "环境变量已写入 $ENV_FILE"
 else
     warn "$ENV_FILE 已存在，跳过创建"
+fi
+
+# 启动前校验必需的环境变量（缺少任意一个应用都会拒绝启动）
+log "校验必需环境变量..."
+MISSING_VARS=()
+grep -qE '^JWT_SECRET=.+' "$ENV_FILE" || MISSING_VARS+=("JWT_SECRET")
+grep -qE '^RECRUITMENT_OFFICER_ACCOUNTS=.+' "$ENV_FILE" || MISSING_VARS+=("RECRUITMENT_OFFICER_ACCOUNTS")
+if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+    error "$ENV_FILE 缺少必需的环境变量: ${MISSING_VARS[*]}"
+    error "请补全后重新运行本脚本。密码哈希可用以下命令生成："
+    error "  cd $APP_DIR/backend && uv run python ../scripts/hash-password.py"
+    exit 1
+fi
+log "环境变量校验通过"
+
+# 初始化静态数据表（仅当数据库文件不存在时；脚本会破坏性重建这些表，不可重复执行）
+if [ ! -f "$DB_PATH" ]; then
+    log "初始化数据库静态表..."
+    sudo -u "$DEPLOY_USER" "$BUN_PATH" scripts/init-db.js
+else
+    warn "数据库已存在，跳过初始化。如需重建静态表，请手动运行 bun scripts/init-db.js（破坏性操作）"
 fi
 
 # 创建 systemd 服务
@@ -154,9 +203,9 @@ After=network.target
 Type=simple
 User=$DEPLOY_USER
 Group=$DEPLOY_USER
-WorkingDirectory=$APP_DIR
+WorkingDirectory=$APP_DIR/backend
 EnvironmentFile=$APP_DIR/.env
-ExecStart=$BUN_PATH server/app.js
+ExecStart=$UV_PATH run uvicorn app:app --host 0.0.0.0 --port 5000
 Restart=always
 RestartSec=5
 
@@ -181,10 +230,10 @@ fi
 
 # 检查端口
 sleep 1
-if ss -tlnp | grep -q ':8000'; then
-    log "端口 8000 正在监听"
+if ss -tlnp | grep -q ':5000'; then
+    log "端口 5000 正在监听"
 else
-    error "端口 8000 未监听，请检查日志"
+    error "端口 5000 未监听，请检查日志"
     exit 1
 fi
 
@@ -194,9 +243,9 @@ if command -v ufw > /dev/null 2>&1; then
     ufw default deny incoming
     ufw default allow outgoing
     ufw allow 22/tcp
-    ufw allow 8000/tcp
+    ufw allow 5000/tcp
     ufw --force enable
-    log "ufw 防火墙已启用，开放端口: 22, 8000"
+    log "ufw 防火墙已启用，开放端口: 22, 5000"
 else
     warn "ufw 未安装，跳过防火墙配置"
 fi
@@ -205,8 +254,8 @@ fi
 log "配置本地备份..."
 mkdir -p /var/backups/radio-association
 
-# 写入定时任务
-CRON_JOB_BACKUP="0 3 * * * cp $APP_DIR/server/data/database.sqlite /var/backups/radio-association/db-\$(date +\\%Y\\%m\\%d).sqlite"
+# 写入定时任务（每天凌晨 3 点备份，保留 7 天）
+CRON_JOB_BACKUP="0 3 * * * cp $DB_PATH /var/backups/radio-association/db-\$(date +\\%Y\\%m\\%d).sqlite"
 CRON_JOB_CLEAN="0 4 * * * find /var/backups/radio-association -name 'db-*.sqlite' -mtime +7 -delete"
 
 if ! crontab -l 2>/dev/null | grep -q "radio-association"; then
@@ -219,13 +268,13 @@ fi
 # 安全提示
 log "部署完成"
 echo
-log "访问地址: http://$(curl -s http://checkip.aliyun.com || echo '你的服务器IP'):8000"
-log "招新负责人后台: http://$(curl -s http://checkip.aliyun.com || echo '你的服务器IP'):8000/html/membership-applications.html"
+log "访问地址: http://$(curl -s http://checkip.aliyun.com || echo '你的服务器IP'):5000"
+log "招新负责人后台: http://$(curl -s http://checkip.aliyun.com || echo '你的服务器IP'):5000/html/membership-applications.html"
 log "服务状态: systemctl status radio-association"
 log "查看日志: journalctl -u radio-association -f"
 echo
 warn "重要提醒："
-echo "1. 请在阿里云安全组中放行 8000 端口"
+echo "1. 请在阿里云安全组中放行 5000 端口"
 echo "2. 建议禁用 root 密码登录，改用 deploy 用户 + 密钥登录"
 echo "3. 当前未配置 HTTPS，请勿通过公网传输敏感密码"
 echo "4. 如不需要时请停止 VS Code Server 以释放内存"

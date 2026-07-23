@@ -26,13 +26,12 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, stored: str) -> bool:
-    """Verify a password against a stored hash or legacy plaintext string.
+    """Verify a password against a stored PBKDF2-HMAC-SHA256 hash.
 
-    Supports legacy plaintext passwords (no prefix) for backward compatibility.
-    Plaintext passwords should be migrated to PBKDF2 hashes in production.
+    Only hashes in the format produced by `hash_password` are accepted.
     """
     if not stored.startswith("pbkdf2_sha256$"):
-        return hmac.compare_digest(password, stored)
+        return False
 
     _, iterations_b64, salt_b64, key_b64 = stored.split("$", 3)
     salt = base64.b64decode(salt_b64)

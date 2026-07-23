@@ -1,5 +1,7 @@
 # 无线电爱好者协会信息展示系统
 
+> 当前招新网站开发分支是 `lucian`；`master` 仅保留上一年度归档版本，`dev` 为独立的 FastAPI 重构尝试，请勿直接合并或基于 `master` 开发。
+
 > 燕山大学无线电爱好者协会（无协）官方信息展示与招新管理系统
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
@@ -41,7 +43,7 @@
 ┌──────────────────▼───────────────────────────┐
 │             数据库 (Database)                  │
 │               SQLite 3                        │
-│         server/data/database.sqlite           │
+│         backend/data/database.sqlite          │
 └──────────────────────────────────────────────┘
 ```
 
@@ -55,8 +57,6 @@
 | 安全防护 | 登录/提交速率限制（内存固定窗口） |
 | 导出 | CSV（前端生成并下载）、Excel → JSON（脚本） |
 
-`server/` 目录为原 Express/Bun 后端归档，目前保留作参考，计划后端完全稳定后删除。
-
 ---
 
 ## 功能特性
@@ -64,7 +64,7 @@
 ### 对外展示（访客）
 
 - **首页** — 固定单屏落地页，协会口号、入口动画、快捷入口
-- **关于协会** — 协会概况、招新视频、协会数据、部门介绍
+- **关于协会** — 协会概况、活动影像、协会数据、部门介绍
 - **协会活动** — 竞赛活动、文娱活动等综合入口
 - **竞赛活动** — 历年竞赛记录（展望杯、DIY 达人赛、指尖风暴大赛）
 - **文娱活动** — 休闲娱乐活动展示
@@ -85,11 +85,8 @@
 
 ```
 radio-association/
-├── package.json                  # Bun 脚本配置（用于导出脚本）
-├── pyproject.toml                # 后端 Python 项目配置（位于 backend/）
+├── package.json                  # Bun 脚本配置（种子与导出脚本）
 ├── .env                          # 环境变量（端口号、JWT 密钥等）
-├── AGENTS.md                     # 项目规范与开发约定
-├── CONTEXT.md                    # 领域术语表
 ├── README.md                     # 项目说明
 ├── docs/                         # 文档与决策记录
 │   └── adr/
@@ -101,7 +98,7 @@ radio-association/
 │   ├── utils/                    # 安全工具：密码哈希、速率限制
 │   │   └── security.py
 │   ├── config/
-│   │   └── database.py           # SQLite 连接、建表与迁移
+│   │   └── database.py           # SQLite 连接与建表
 │   ├── models/                   # 数据模型
 │   │   ├── association.py
 │   │   ├── competition.py
@@ -117,12 +114,8 @@ radio-association/
 │       ├── honors.py
 │       ├── membership_applications.py
 │       └── trainings.py
-├── server/                       # 原 Express/Bun 后端（归档，即将删除）
-│   ├── app.js
-│   ├── initDB.js
-│   ├── config/database.js
-│   ├── models/
-│   └── routes/
+├── backend/
+│   └── data/                     # SQLite 数据库文件（gitignore）
 ├── public/                       # 前端静态资源
 │   ├── html/                     # 纯 HTML 页面
 │   │   ├── index.html
@@ -160,13 +153,13 @@ radio-association/
 
 - **Python** >= 3.11
 - **uv**（安装方式见 https://docs.astral.sh/uv/getting-started/installation/）
-- **Bun**（仅用于运行 `server/initDB.js` 和 `scripts/export-admissions.js`）
+- **Bun**（仅用于运行 `scripts/init-db.js` 和 `scripts/export-admissions.js`）
 
 ### 1. 克隆项目
 
 ```bash
 git clone <repository-url>
-cd radio-association
+cd <repository-directory>
 ```
 
 ### 2. 安装 Python 依赖
@@ -181,10 +174,11 @@ uv sync
 | 变量 | 必填 | 说明 |
 |------|------|------|
 | `PORT` | 否 | 服务端口号，默认 `5000` |
+| `DATABASE_PATH` | 否 | SQLite 数据库路径，相对路径基于仓库根目录，默认 `backend/data/database.sqlite` |
 | `JWT_SECRET` | **是** | JWT 签名密钥，生产环境必须设置为随机长字符串。未设置时应用启动失败。 |
-| `RECRUITMENT_OFFICER_ACCOUNTS` | **是** | 招新负责人账号列表，格式 `用户名:密码:姓名;...`。旧环境变量 `ADMIN_ACCOUNTS` 仍可作为兼容性回退读取。未设置时应用启动失败。 |
+| `RECRUITMENT_OFFICER_ACCOUNTS` | **是** | 招新负责人账号列表，格式 `用户名:密码:姓名;...`。未设置时应用启动失败。 |
 
-在项目根目录创建 `.env` 文件：
+在项目根目录从示例复制 `.env`（此文件不会提交）：
 
 ```env
 PORT=5000
@@ -194,7 +188,7 @@ RECRUITMENT_OFFICER_ACCOUNTS="wuxie:513513#:无协管理员;admin2:pass2#:技术
 
 > **安全提示**：`JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值。若未设置，应用启动时会直接报错。由于值中可能包含 `#` 等字符，建议用双引号包裹。
 >
-> 密码支持旧版明文（保留兼容性）或 PBKDF2 哈希；推荐使用脚本生成哈希：
+> 密码必须是 PBKDF2 哈希，使用脚本生成：
 >
 > ```bash
 > cd backend && uv run python ../scripts/hash-password.py
@@ -206,10 +200,10 @@ RECRUITMENT_OFFICER_ACCOUNTS="wuxie:513513#:无协管理员;admin2:pass2#:技术
 ### 4. 初始化数据库
 
 ```bash
-bun server/initDB.js
+bun scripts/init-db.js
 ```
 
-执行成功后会初始化协会、部门、竞赛、荣誉、培训等基础数据。
+该脚本会先清空再重新插入协会、部门、竞赛、荣誉、培训等基础数据，属于破坏性操作，仅限首次部署执行。
 
 ### 5. 启动服务
 
@@ -226,7 +220,7 @@ uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000
 
 服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
-### 6. 导出录取名单（可选）
+### 5. 导出录取名单（可选）
 
 Excel 工作簿第一行应为表头，后续行按以下列顺序填写：
 
@@ -254,7 +248,6 @@ bun scripts/export-admissions.js
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/api/association` | 获取协会基本信息 |
 | GET | `/api/departments` | 获取所有部门 |
 | GET | `/api/competitions` | 获取竞赛列表（按年份倒序） |
 | GET | `/api/trainings` | 获取培训记录 |
@@ -299,7 +292,7 @@ bun scripts/export-admissions.js
 |------|------|------|
 | start | `cd backend && uv run uvicorn app:app --host 0.0.0.0 --port 5000` | 启动生产服务器 |
 | dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
-| init | `bun server/initDB.js` | 初始化 SQLite 数据库 |
+| init | `bun scripts/init-db.js` | 初始化 SQLite 数据库（破坏性，仅限首次部署） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 | hash-password | `cd backend && uv run python ../scripts/hash-password.py` | 生成 PBKDF2 密码哈希，用于 `.env` |
 
@@ -307,7 +300,7 @@ bun scripts/export-admissions.js
 
 ## 安全说明
 
-- 招新负责人密码默认使用 PBKDF2-HMAC-SHA256 哈希；旧版明文密码仍可作为兼容性回退使用，但建议尽快迁移为哈希值。
+- 招新负责人密码仅接受 PBKDF2-HMAC-SHA256 哈希，使用 `scripts/hash-password.py` 生成。
 - `JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值，未设置时应用启动失败。
 - API 认证使用 JWT 令牌机制。
 - 入会申请管理接口需要 Bearer Token 认证。

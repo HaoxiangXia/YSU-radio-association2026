@@ -24,12 +24,10 @@ class RecruitmentOfficerInfo(BaseModel):
 
 
 def load_recruitment_officer_accounts():
-    raw = os.environ.get("RECRUITMENT_OFFICER_ACCOUNTS") or os.environ.get(
-        "ADMIN_ACCOUNTS"
-    )
+    raw = os.environ.get("RECRUITMENT_OFFICER_ACCOUNTS")
     if not raw:
         raise RuntimeError(
-            "RECRUITMENT_OFFICER_ACCOUNTS（或兼容性回退 ADMIN_ACCOUNTS）环境变量未设置。"
+            "RECRUITMENT_OFFICER_ACCOUNTS 环境变量未设置。"
         )
 
     accounts = []

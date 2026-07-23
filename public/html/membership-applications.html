@@ -161,14 +161,18 @@
 }
 
 .modal--detail {
+  display: flex;
+  flex-direction: column;
   max-width: 32rem;
   max-height: 80vh;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 0;
   text-align: left;
 }
 
 .modal-body {
+  min-height: 0;
+  overflow-y: auto;
   padding: 1rem;
 }
 
@@ -204,6 +208,44 @@
   min-height: 2rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 6px;
+}
+
+.admin-feedback {
+  min-height: 1.5rem;
+  margin-top: 0.75rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.admin-feedback.is-error { color: #dc2626; }
+
+@media (max-width: 700px) {
+  .registration-info-page .overflow-x-auto { overflow: visible; }
+  .registration-info-page .data-table,
+  .registration-info-page .data-table tbody,
+  .registration-info-page .data-table tr,
+  .registration-info-page .data-table td { display: block; width: 100%; }
+  .registration-info-page .data-table { min-width: 0; }
+  .registration-info-page .data-table thead { display: none; }
+  .registration-info-page .data-table tr {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .registration-info-page .data-table td {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  .registration-info-page .data-table td::before {
+    content: attr(data-label);
+    color: #64748b;
+    font-size: 0.75rem;
+  }
+  .registration-info-page .data-table td[data-label="操作"] { display: block; margin-top: 0.45rem; }
+  .registration-info-page .data-table td[data-label="操作"]::before { display: none; }
 }
   </style>
 </head>
@@ -248,9 +290,11 @@
         <select id="grade-filter" aria-label="按年级筛选">
           <option value="">所有年级</option>
         </select>
-        <button type="button" class="btn-solid btn-sm" onclick="loadData()">刷新</button>
-        <button type="button" class="btn-solid btn-sm" onclick="exportExcel()">导出</button>
+        <button type="button" class="btn-solid btn-sm" id="refresh-button">刷新</button>
+        <button type="button" class="btn-solid btn-sm" id="export-button">导出 CSV</button>
+        <button type="button" class="btn-outline btn-sm" id="logout-button">退出登录</button>
       </div>
+      <p id="admin-feedback" class="admin-feedback" role="status"></p>
     </div>
 
     <!-- 数据表格 -->
@@ -282,11 +326,11 @@
     </div>
 
     <!-- 详情弹窗 -->
-    <div id="detail-modal" class="modal-overlay">
+    <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
       <div class="modal modal--detail">
         <div class="modal-header">
-          <h3 class="font-semibold text-blue-600">入会申请详情</h3>
-          <button class="icon-button" onclick="closeDetail()" aria-label="关闭详情">&times;</button>
+          <h3 id="detail-modal-title" class="font-semibold text-blue-600">入会申请详情</h3>
+          <button class="icon-button" id="detail-close-button" type="button" aria-label="关闭详情">&times;</button>
         </div>
         <div class="modal-body" id="detail-content">
           <!-- 详情内容由 JavaScript 动态生成 -->
@@ -306,258 +350,277 @@
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
   <script>
-    // 全局变量
-    let allData = [];
+    const pageSize = 20;
     let currentPage = 1;
-    const pageSize = 10;
+    let currentItems = [];
+    let pagination = { current: 1, total: 0, count: 0 };
+    let searchTimer;
+    let latestLoadRequest = 0;
 
-    // 获取认证头
+    function getToken() {
+      return localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
+    }
+
     function getAuthHeaders() {
-      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
-      return { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
+      return { Authorization: `Bearer ${getToken()}` };
     }
 
-    // 加载数据
-    async function loadData() {
-      try {
-        const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
-        if (!token) {
-          window.location.href = '/html/admin-login.html';
-          return;
-        }
-
-        const response = await fetch('/api/membership-applications?limit=1000', { 
-          headers: getAuthHeaders() 
-        });
-        
-        if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem('recruitment_officer_token');
-          sessionStorage.removeItem('recruitment_officer_token');
-          window.location.href = '/html/admin-login.html';
-          return;
-        }
-        
-        const data = await response.json();
-        allData = data.membership_applications || data;
-        currentPage = 1;
-        
-        updateFilters();
-        updateStats();
-        renderTable();
-      } catch (error) {
-        console.error('加载数据失败:', error);
-        allData = [];
-        renderTable();
-      }
+    function setFeedback(message = '', isError = false) {
+      const feedback = document.getElementById('admin-feedback');
+      feedback.textContent = message;
+      feedback.classList.toggle('is-error', isError);
     }
 
-    // 更新筛选选项
-    function updateFilters() {
-      const collegeFilter = document.getElementById('college-filter');
-      const gradeFilter = document.getElementById('grade-filter');
-      
-      // 获取所有学院
-      const colleges = [...new Set(allData.map(d => d.college))].sort();
-      collegeFilter.innerHTML = '<option value="">所有学院</option>' + 
-        colleges.map(c => `<option value="${c}">${c}</option>`).join('');
-      
-      // 获取所有年级
-      const grades = [...new Set(allData.map(d => d.grade))].sort();
-      gradeFilter.innerHTML = '<option value="">所有年级</option>' + 
-        grades.map(g => `<option value="${g}">${g}</option>`).join('');
+    function createCell(value, label, className = '') {
+      const cell = document.createElement('td');
+      cell.dataset.label = label;
+      cell.className = className;
+      cell.textContent = value || '-';
+      return cell;
     }
 
-    // 更新统计
-    function updateStats() {
-      const today = new Date().toISOString().slice(0, 10);
-      
-      document.getElementById('stat-total').textContent = allData.length;
-      document.getElementById('stat-today').textContent = allData.filter(d => d.createdAt?.startsWith(today)).length;
-      document.getElementById('stat-colleges').textContent = new Set(allData.map(d => d.college)).size;
-      document.getElementById('stat-grades').textContent = new Set(allData.map(d => d.grade)).size;
-    }
-
-    // 获取筛选后的数据
-    function getFilteredData() {
-      const searchQuery = document.getElementById('search-input').value.toLowerCase();
-      const collegeFilter = document.getElementById('college-filter').value;
-      const gradeFilter = document.getElementById('grade-filter').value;
-      
-      return allData.filter(d => {
-        const matchesSearch = !searchQuery || 
-          d.name.toLowerCase().includes(searchQuery) || 
-          d.studentId.includes(searchQuery) || 
-          d.college.toLowerCase().includes(searchQuery);
-        
-        const matchesCollege = !collegeFilter || d.college === collegeFilter;
-        const matchesGrade = !gradeFilter || d.grade === gradeFilter;
-        
-        return matchesSearch && matchesCollege && matchesGrade;
-      });
-    }
-
-    // 渲染表格
     function renderTable() {
-      const filteredData = getFilteredData();
-      const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
-      const startIndex = (currentPage - 1) * pageSize;
-      const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
-      
-      // 更新总数
-      document.getElementById('total-count').textContent = `共 ${filteredData.length} 条`;
-      
-      // 渲染表格行
-      const tbody = document.getElementById('data-body');
-      if (paginatedData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-400">暂无数据</td></tr>';
-      } else {
-        tbody.innerHTML = paginatedData.map((item, i) => `
-          <tr>
-            <td class="text-sm text-gray-400">${startIndex + i + 1}</td>
-            <td class="font-medium text-sm">${item.name}</td>
-            <td class="text-sm text-gray-600">${item.studentId}</td>
-            <td class="text-sm text-gray-600">${item.college}</td>
-            <td class="text-sm text-gray-600">${item.grade}</td>
-            <td class="text-sm text-gray-600">${item.phone}</td>
-            <td class="text-sm text-gray-600">${item.email}</td>
-            <td>
-              <div class="action-group">
-                <button class="action-btn view" onclick="viewDetail('${item.id}')">详情</button>
-                <button class="action-btn delete" onclick="deleteItem('${item.id}')">删除</button>
-              </div>
-            </td>
-          </tr>
-        `).join('');
-      }
-      
-      // 渲染分页
-      renderPagination(totalPages);
-    }
-
-    // 渲染分页
-    function renderPagination(totalPages) {
-      const pagination = document.getElementById('pagination');
-      if (totalPages <= 1) {
-        pagination.innerHTML = '';
+      const body = document.getElementById('data-body');
+      body.replaceChildren();
+      document.getElementById('total-count').textContent = `共 ${pagination.count} 条`;
+      if (!currentItems.length) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 8;
+        cell.className = 'p-8 text-center text-gray-400';
+        cell.textContent = '暂无符合条件的数据';
+        row.appendChild(cell);
+        body.appendChild(row);
+        renderPagination();
         return;
       }
-      
-      let html = '';
-      
-      // 上一页按钮
-      html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">上一页</button>`;
-      
-      // 页码按钮
-      const startPage = Math.max(1, currentPage - 2);
-      const endPage = Math.min(totalPages, currentPage + 2);
-      
-      for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-      }
-      
-      // 下一页按钮
-      html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">下一页</button>`;
-      
-      pagination.innerHTML = html;
+
+      currentItems.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.appendChild(createCell((currentPage - 1) * pageSize + index + 1, '编号', 'text-sm text-gray-400'));
+        row.appendChild(createCell(item.name, '姓名', 'font-medium text-sm'));
+        row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.college, '学院', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.grade, '年级', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.phone, '联系电话', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.email, '电子邮箱', 'text-sm text-gray-600'));
+
+        const actionCell = document.createElement('td');
+        actionCell.dataset.label = '操作';
+        const actions = document.createElement('div');
+        actions.className = 'action-group';
+        const viewButton = document.createElement('button');
+        viewButton.type = 'button';
+        viewButton.className = 'action-btn view';
+        viewButton.textContent = '详情';
+        viewButton.addEventListener('click', () => viewDetail(item));
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'action-btn delete';
+        deleteButton.textContent = '删除';
+        deleteButton.addEventListener('click', () => deleteItem(item));
+        actions.append(viewButton, deleteButton);
+        actionCell.appendChild(actions);
+        row.appendChild(actionCell);
+        body.appendChild(row);
+      });
+      renderPagination();
     }
 
-    // 跳转到指定页
-    function goToPage(page) {
-      currentPage = page;
-      renderTable();
-    }
-
-    // 查看详情
-    function viewDetail(id) {
-      const item = allData.find(d => d.id === Number(id));
-      if (!item) return;
-      
-      const detailLabels = {
-        name: '姓名',
-        studentId: '学号',
-        college: '学院',
-        grade: '年级',
-        phone: '联系电话',
-        email: '电子邮箱',
-        self_introduction: '自我介绍',
-        expectation: '加入期望'
+    function renderPagination() {
+      const container = document.getElementById('pagination');
+      container.replaceChildren();
+      if (pagination.total <= 1) return;
+      const addButton = (label, page, disabled, active = false) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = disabled;
+        button.classList.toggle('active', active);
+        button.addEventListener('click', () => loadData(page));
+        container.appendChild(button);
       };
-      
+      addButton('上一页', currentPage - 1, currentPage <= 1);
+      const start = Math.max(1, currentPage - 2);
+      const end = Math.min(pagination.total, currentPage + 2);
+      for (let page = start; page <= end; page += 1) addButton(String(page), page, false, page === currentPage);
+      addButton('下一页', currentPage + 1, currentPage >= pagination.total);
+    }
+
+    function readFilters() {
+      return {
+        search: document.getElementById('search-input').value.trim(),
+        college: document.getElementById('college-filter').value,
+        grade: document.getElementById('grade-filter').value,
+      };
+    }
+
+    async function handleResponse(response) {
+      if (response.status === 401) {
+        localStorage.removeItem('recruitment_officer_token');
+        sessionStorage.removeItem('recruitment_officer_token');
+        window.location.href = '/html/admin-login.html';
+        throw new Error('登录已失效');
+      }
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.message || '请求失败');
+      }
+      return response;
+    }
+
+    function updateFilterOptions(id, label, values) {
+      const select = document.getElementById(id);
+      const selected = select.value;
+      select.replaceChildren(new Option(label, ''));
+      values.filter(Boolean).sort().forEach((value) => select.add(new Option(value, value)));
+      select.value = selected;
+    }
+
+    async function loadSupportData() {
+      try {
+        const response = await handleResponse(await fetch('/api/membership-applications/stats', { headers: getAuthHeaders() }));
+        const stats = await response.json();
+        document.getElementById('stat-total').textContent = stats.total;
+        document.getElementById('stat-today').textContent = stats.todayCount;
+        document.getElementById('stat-colleges').textContent = stats.collegeCount;
+        document.getElementById('stat-grades').textContent = stats.gradeCount;
+        updateFilterOptions('college-filter', '所有学院', (stats.collegeStats || []).map((row) => row._id));
+        updateFilterOptions('grade-filter', '所有年级', (stats.gradeStats || []).map((row) => row._id));
+      } catch (error) {
+        ['stat-total', 'stat-today', 'stat-colleges', 'stat-grades'].forEach((id) => {
+          document.getElementById(id).textContent = '-';
+        });
+        document.getElementById('college-filter').title = '筛选项暂时无法更新';
+        document.getElementById('grade-filter').title = '筛选项暂时无法更新';
+      }
+    }
+
+    async function loadData(page = 1) {
+      if (!getToken()) {
+        window.location.href = '/html/admin-login.html';
+        return;
+      }
+      const requestId = ++latestLoadRequest;
+      currentPage = page;
+      setFeedback('正在加载入会申请…');
+      const params = new URLSearchParams({ ...readFilters(), page: String(page), limit: String(pageSize) });
+      try {
+        const response = await handleResponse(await fetch(`/api/membership-applications?${params}`, { headers: getAuthHeaders() }));
+        const data = await response.json();
+        if (requestId !== latestLoadRequest) return false;
+        currentItems = data.membership_applications || [];
+        pagination = data.pagination || { current: 1, total: 0, count: 0 };
+        currentPage = pagination.current || page;
+        if (pagination.total > 0 && currentPage > pagination.total) {
+          return loadData(pagination.total);
+        }
+        renderTable();
+        setFeedback(currentItems.length ? '' : '当前没有符合条件的入会申请。');
+        return true;
+      } catch (error) {
+        if (requestId !== latestLoadRequest) return false;
+        currentItems = [];
+        pagination = { current: 1, total: 0, count: 0 };
+        renderTable();
+        setFeedback(error.message || '加载失败，请稍后重试。', true);
+        return false;
+      }
+    }
+
+    function viewDetail(item) {
+      const labels = { name: '姓名', studentId: '学号', college: '学院', grade: '年级', phone: '联系电话', email: '电子邮箱', self_introduction: '自我介绍', expectation: '加入期望', createdAt: '提交时间' };
       const content = document.getElementById('detail-content');
-      content.innerHTML = Object.entries(detailLabels).map(([key, label]) => `
-        <div class="detail-label">${label}</div>
-        <div class="detail-value">${item[key] || '-'}</div>
-      `).join('');
-      
+      content.replaceChildren();
+      Object.entries(labels).forEach(([key, label]) => {
+        const labelElement = document.createElement('div');
+        labelElement.className = 'detail-label';
+        labelElement.textContent = label;
+        const valueElement = document.createElement('div');
+        valueElement.className = 'detail-value';
+        valueElement.textContent = item[key] || '-';
+        content.append(labelElement, valueElement);
+      });
       document.getElementById('detail-modal').classList.add('open');
     }
 
-    // 关闭详情
     function closeDetail() {
       document.getElementById('detail-modal').classList.remove('open');
     }
 
-    // 删除项目
-    async function deleteItem(id) {
-      const item = allData.find(d => d.id === Number(id));
-      if (!item) return;
-      
-      if (!confirm(`确定删除 ${item.name} 的入会申请？`)) return;
-      
+    async function deleteItem(item) {
+      if (!confirm(`确定删除 ${item.name} 的入会申请？此操作不能撤销。`)) return;
+      setFeedback('正在删除…');
       try {
-        await fetch(`/api/membership-applications/${id}`, { 
-          method: 'DELETE', 
-          headers: getAuthHeaders() 
-        });
-        loadData();
+        const response = await handleResponse(await fetch(`/api/membership-applications/${item.id}`, { method: 'DELETE', headers: getAuthHeaders() }));
+        const result = await response.json();
+        await loadData(currentPage);
+        await loadSupportData();
+        setFeedback(result.message || '已删除。');
       } catch (error) {
-        alert('删除失败');
+        setFeedback(error.message || '删除失败，请稍后重试。', true);
       }
     }
 
-    // 导出 Excel
-    function exportExcel() {
-      const filteredData = getFilteredData();
-      const headers = ['姓名', '学号', '学院', '年级', '联系电话', '电子邮箱'];
-      const rows = filteredData.map(d => [d.name, d.studentId, d.college, d.grade, d.phone, d.email]);
-      const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = '入会申请.csv';
-      link.click();
+    function csvCell(value) {
+      let text = value === null || value === undefined ? '' : String(value);
+      // 防止 Excel 将前导字符解释为公式
+      if (/^[=+\-@]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
     }
 
-    // 页面加载后初始化
-    document.addEventListener('DOMContentLoaded', () => {
-      // 检查登录状态
-      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
-      if (!token) {
+    async function exportCsv() {
+      setFeedback('正在生成 CSV…');
+      try {
+        const params = new URLSearchParams({ ...readFilters(), page: '1', limit: '1000' });
+        const response = await handleResponse(await fetch(`/api/membership-applications?${params}`, { headers: getAuthHeaders() }));
+        const data = await response.json();
+        const items = data.membership_applications || [];
+        const headers = ['姓名', '学号', '学院', '年级', '联系电话', '电子邮箱', '自我介绍', '加入期望', '提交时间'];
+        const rows = items.map((item) => [
+          item.name, item.studentId, item.college, item.grade,
+          item.phone, item.email, item.self_introduction, item.expectation, item.createdAt,
+        ]);
+        const csv = [headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n');
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        const now = new Date();
+        const localDate = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+          .map((value, index) => index === 0 ? String(value) : String(value).padStart(2, '0'))
+          .join('-');
+        link.download = `入会申请-${localDate}.csv`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        setFeedback(`CSV 已生成，共 ${items.length} 条。`);
+      } catch (error) {
+        setFeedback(error.message || '导出失败，请稍后重试。', true);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!getToken()) {
         window.location.href = '/html/admin-login.html';
         return;
       }
-      
-      // 绑定搜索事件
+      document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData()]));
+      document.getElementById('export-button').addEventListener('click', exportCsv);
+      document.getElementById('detail-close-button').addEventListener('click', closeDetail);
+      document.getElementById('detail-modal').addEventListener('click', (event) => {
+        if (event.target === event.currentTarget) closeDetail();
+      });
+      document.getElementById('logout-button').addEventListener('click', () => {
+        localStorage.removeItem('recruitment_officer_token');
+        sessionStorage.removeItem('recruitment_officer_token');
+        window.location.href = '/html/admin-login.html';
+      });
       document.getElementById('search-input').addEventListener('input', () => {
-        currentPage = 1;
-        renderTable();
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadData(1), 250);
       });
-      
-      document.getElementById('college-filter').addEventListener('change', () => {
-        currentPage = 1;
-        renderTable();
-      });
-      
-      document.getElementById('grade-filter').addEventListener('change', () => {
-        currentPage = 1;
-        renderTable();
-      });
-      
-      // 加载数据
-      loadData();
+      ['college-filter', 'grade-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => loadData(1)));
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); });
+      await Promise.all([loadData(), loadSupportData()]);
     });
   </script>
 </body>

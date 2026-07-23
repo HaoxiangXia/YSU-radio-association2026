@@ -58,9 +58,8 @@
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
   <script>
-    // 检查是否已登录（仅当勾选了“记住我”时自动跳转）
     function checkAuth() {
-      const token = localStorage.getItem('recruitment_officer_token');
+      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
       if (!token) return;
 
       fetch('/api/recruitment-officers/verify', {
@@ -69,14 +68,14 @@
       .then(response => {
         if (response.ok) {
           window.location.href = '/html/membership-applications.html';
+        } else if (response.status === 401) {
+          localStorage.removeItem('recruitment_officer_token');
+          sessionStorage.removeItem('recruitment_officer_token');
         }
       })
-      .catch(() => {
-        // token 无效，继续显示登录页面
-      });
+      .catch(() => {});
     }
 
-    // 处理登录
     async function handleLogin(e) {
       e.preventDefault();
       
@@ -84,51 +83,46 @@
       const errorDiv = document.getElementById('error-message');
       const loginBtn = document.getElementById('login-btn');
       
-      // 清除错误
       errorDiv.style.display = 'none';
       
-      // 禁用登录按钮
       loginBtn.disabled = true;
       loginBtn.textContent = '登录中...';
       
       try {
         const username = form.elements.username.value.trim();
-        const password = form.elements.password.value.trim();
+        const password = form.elements.password.value;
         const remember = form.elements.remember.checked;
         
         const response = await fetch('/api/recruitment-officers/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ username, password, remember }),
         });
         
         const data = await response.json();
         
         if (response.ok && data.token) {
-          // 存储 token
           if (remember) {
             localStorage.setItem('recruitment_officer_token', data.token);
+            sessionStorage.removeItem('recruitment_officer_token');
           } else {
             sessionStorage.setItem('recruitment_officer_token', data.token);
+            localStorage.removeItem('recruitment_officer_token');
           }
-          
-          // 跳转到管理页面
           window.location.href = '/html/membership-applications.html';
         } else {
-          errorDiv.textContent = data.message || '用户名或密码错误';
+          errorDiv.textContent = data.detail || data.message || '用户名或密码错误';
           errorDiv.style.display = 'block';
         }
       } catch (error) {
         errorDiv.textContent = '登录失败，请稍后再试';
         errorDiv.style.display = 'block';
       } finally {
-        // 恢复登录按钮
         loginBtn.disabled = false;
         loginBtn.textContent = '登录';
       }
     }
 
-    // 页面加载后初始化
     document.addEventListener('DOMContentLoaded', () => {
       checkAuth();
       

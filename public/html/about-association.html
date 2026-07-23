@@ -329,8 +329,8 @@
   --home-panel-light: #dceafb;
   --home-surface-blue: #f1f6fd;
   --home-line-blue: rgba(37, 99, 235, 0.2);
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
   padding-top: 0;
   background: #f5f8fc;
 }
@@ -386,18 +386,6 @@
   color: #315d88;
   font-size: 0.72rem;
   letter-spacing: 0.2em;
-}
-
-.about-association-page .hero-eyebrow::before {
-  content: "";
-  width: 2.6rem;
-  height: 1px;
-  margin-right: 0.8rem;
-  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan));
-}
-
-.about-association-page .hero-eyebrow span {
-  display: none;
 }
 
 .about-association-page .hero-content h1 {
@@ -496,9 +484,7 @@
 
 .about-association-page .home-news-section {
   border-top: 1px solid #dce8f7;
-  background:
-    radial-gradient(circle at 88% 18%, rgba(96, 165, 250, 0.11), transparent 24rem),
-    var(--home-surface-blue);
+  background: var(--home-surface-blue);
 }
 
 .about-association-page .home-news-section::before,
@@ -509,7 +495,7 @@
   left: 50%;
   width: min(72rem, calc(100% - 2rem));
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.72), transparent);
+  background: rgba(96, 165, 250, 0.35);
   transform: translateX(-50%);
 }
 
@@ -530,10 +516,9 @@
   flex-direction: column;
   overflow: hidden;
   padding: 1.55rem;
+  border-top: 3px solid #2563eb;
   border-color: rgba(59, 130, 246, 0.14);
-  background:
-    linear-gradient(90deg, #2563eb, #67e8f9, rgba(103, 232, 249, 0.08)) top / 100% 3px no-repeat,
-    #ffffff;
+  background: #ffffff;
   color: inherit;
   text-decoration: none;
 }
@@ -596,10 +581,7 @@
 
 .about-association-page .home-honors-section {
   color: #dbeafe;
-  background:
-    radial-gradient(circle at 12% 20%, rgba(37, 99, 235, 0.22), transparent 27rem),
-    radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12), transparent 24rem),
-    linear-gradient(145deg, #071a36, #041225 72%);
+  background: #071a36;
 }
 
 .about-association-page .home-honors-section .more-link {
@@ -625,9 +607,8 @@
   padding: 1.5rem;
   border: 1px solid rgba(147, 197, 253, 0.19);
   border-radius: var(--radius);
-  background:
-    linear-gradient(90deg, #60a5fa, #67e8f9, rgba(103, 232, 249, 0.06)) top / 100% 3px no-repeat,
-    linear-gradient(145deg, rgba(20, 57, 105, 0.78), rgba(6, 29, 62, 0.9));
+  border-top: 3px solid #60a5fa;
+  background: linear-gradient(145deg, rgba(20, 57, 105, 0.78), rgba(6, 29, 62, 0.9));
   box-shadow: 0 14px 34px rgba(1, 8, 22, 0.2);
   transition:
     transform 220ms ease,
@@ -820,6 +801,19 @@
   overflow: hidden;
 }
 
+.association-media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.association-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .about-association-page .about-assoc-intro__stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -829,9 +823,7 @@
 
 /* 第五轮内容层次与进入动效 */
 .about-association-page main {
-  background:
-    radial-gradient(circle at 10% 30%, rgba(139, 124, 255, 0.045), transparent 28rem),
-    #f8faff;
+  background: #f8faff;
 }
 
 @media (max-width: 800px) {
@@ -903,17 +895,13 @@
   left: 0;
   width: 5.5rem;
   height: 2px;
-  background: linear-gradient(90deg, var(--home-electric-blue), var(--home-cyan), transparent);
-  box-shadow: 0 0 12px rgba(101, 228, 255, 0.24);
+  background: var(--home-electric-blue);
 }
 
 .about-association-page .home-news-section {
   isolation: isolate;
   border-top-color: rgba(107, 139, 196, 0.16);
-  background:
-    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
-    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
-    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
+  background: var(--home-surface-blue);
 }
 
 .about-association-page .home-news-section::after {
@@ -1002,10 +990,7 @@
 .about-association-page .home-honors-section {
   isolation: isolate;
   border-top-color: rgba(107, 139, 196, 0.16);
-  background:
-    radial-gradient(circle at 86% 18%, rgba(114, 167, 255, 0.2), transparent 30rem),
-    radial-gradient(circle at 16% 82%, rgba(139, 124, 255, 0.11), transparent 26rem),
-    linear-gradient(150deg, #f3f7ff, #edf3ff 68%, #f7f9ff);
+  background: #f3f7ff;
 }
 
 .about-association-page .home-honors-section::after {
@@ -1315,15 +1300,6 @@
   margin-bottom: 1.3rem;
 }
 
-.site-page.about-association-page .department-card__index {
-  display: block;
-  margin-bottom: 0.45rem;
-  color: var(--page-accent);
-  font-size: 0.68rem;
-  font-weight: 750;
-  letter-spacing: 0.15em;
-}
-
 .site-page.about-association-page .department-card__heading .card-title {
   margin: 0;
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -1438,16 +1414,15 @@
 
 .about-association-page .home-about-section.about-landing {
   display: flex;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   flex-direction: column;
   justify-content: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  padding: 5.5rem 1rem 5.5rem;
+  width: 100%;
+  margin: 0;
+  padding: calc(var(--nav-height) + 2rem) 1rem 3rem;
   background: linear-gradient(125deg, #eef7ff 0%, #e4f1fc 48%, #d8eaf8 100%);
   isolation: isolate;
-  overflow: hidden;
   z-index: 1;
 }
 
@@ -1467,6 +1442,8 @@
 }
 
 .about-landing-inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
@@ -1485,12 +1462,15 @@
   font-weight: 720;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .about-landing-header p {
   color: #52657d;
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
 }
 
 /* 下方内容覆盖首屏 */
@@ -1560,7 +1540,8 @@
 
 @media (max-height: 800px) {
   .about-association-page .home-about-section.about-landing {
-    padding: 4rem 1rem 4rem;
+    justify-content: flex-start;
+    padding: calc(var(--nav-height) + 1.5rem) 1rem 2.5rem;
   }
 
   .about-landing-header {
@@ -1582,6 +1563,10 @@
   .about-association-page .about-assoc-intro {
     padding: 1.5rem;
   }
+
+  .scroll-cue {
+    display: none;
+  }
 }
 
 @media (max-width: 800px) {
@@ -1590,9 +1575,8 @@
   }
 
   .about-association-page .home-about-section.about-landing {
-    height: auto;
-    min-height: 100dvh;
-    padding: 4.5rem 0.75rem 5rem;
+    min-height: 100svh;
+    padding: calc(var(--nav-height) + 1.5rem) 0.75rem 3rem;
   }
 
   .about-landing-inner {
@@ -1614,7 +1598,7 @@
 
 @media (max-width: 480px) {
   .about-association-page .home-about-section.about-landing {
-    padding: 4.25rem 0.6rem 4.5rem;
+    padding: calc(var(--nav-height) + 1.25rem) 0.6rem 2.5rem;
   }
 
   .about-landing-inner {
@@ -1626,7 +1610,25 @@
   }
 }
 
+/* 此规则必须位于旧版双列样式之后，避免移动端被后续声明重新撑宽。 */
+@media (max-width: 800px) {
+  .about-association-page .about-assoc-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .about-association-page .about-assoc-intro__media,
+  .about-association-page .about-assoc-intro__body {
+    min-width: 0;
+  }
+
+  .about-association-page .about-assoc-intro__body p {
+    overflow-wrap: anywhere;
+  }
+}
+
   </style>
+  <link rel="stylesheet" href="/html/about-association.css">
 </head>
 <body class="site-page sub-page about-page about-association-page">
   <div id="nav-placeholder"></div>
@@ -1643,10 +1645,9 @@
         <div class="card about-assoc-intro">
           <div class="about-assoc-intro__media">
             <div class="rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center aspect-video">
-              <video controls preload="none" aria-label="协会招新视频" class="w-full h-full object-cover" poster="/images/hero-bg.jpg">
-                <source src="/image/招新视频.mp4" type="video/mp4">
-                <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
-              </video>
+              <figure class="association-media">
+                <img src="/image/farewell11.jpg" alt="无线电爱好者协会成员活动合影" fetchpriority="high">
+              </figure>
             </div>
             <div class="about-assoc-intro__stats">
               <div class="stat-card">
@@ -1662,8 +1663,8 @@
                 <div class="stat-label">会员人数</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">150+</div>
-                <div class="stat-label">获奖数量</div>
+                <div class="stat-value">250+</div>
+                <div class="stat-label">累计竞赛获奖</div>
               </div>
             </div>
           </div>
@@ -1695,7 +1696,64 @@
         </svg>
       </button>
     </section>
+
+    <section id="overview" class="about-section about-overview card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">ASSOCIATION PROFILE</p>
+          <h2 class="card-title">协会概况</h2>
+          <p class="section-desc">在教学、实践与协作中，陪伴每一位成员成长。</p>
+        </div>
+      </div>
+      <div class="overview-grid">
+        <div class="overview-intro">
+          <p>燕山大学无线电爱好者协会，简称“无协”，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">38个春秋</span>。</p>
+          <p>协会秉承<span class="font-semibold text-gray-800">“厚德、博学、求是”</span>的燕大校训，发扬<span class="font-semibold text-gray-800">“艰苦奋斗、严谨治学、求实创新”</span>的燕大精神，致力于培养和传播科学技术的热情。</p>
+          <p>我们围绕<span class="font-semibold text-gray-800">嵌入式开发与FPGA、人工智能应用与软件开发、机械建模和智能控制</span>开展学习与实践，为每一位热爱科技的同学提供共同成长的平台。</p>
+        </div>
+        <div class="overview-stats" id="overview-stats" aria-label="协会数据统计"></div>
+      </div>
+    </section>
+
+    <section id="departments" class="about-section about-departments card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">DEPARTMENTS</p>
+          <h2 class="card-title">部门介绍</h2>
+          <p class="section-desc">探索五个部门的方向、职责与成长路径。</p>
+        </div>
+      </div>
+      <h3 class="department-group-title">技术部门</h3>
+      <div class="department-grid" id="department-grid-technical"></div>
+      <h3 class="department-group-title">非技术部门</h3>
+      <div class="department-grid" id="department-grid-non-technical"></div>
+    </section>
+
+    <section id="news" class="about-section about-news card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">RECENT UPDATES</p>
+          <h2 class="card-title">最新动态</h2>
+        </div>
+        <a href="/html/activities.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="news-list" id="recent-events"></div>
+    </section>
+
+    <section id="honors" class="about-section about-honors card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">HONORS</p>
+          <h2 class="card-title">荣誉成就</h2>
+        </div>
+        <a href="/html/honors.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="honor-list" id="honors-grid"></div>
+    </section>
   </main>
+
+  <div id="footer-placeholder"></div>
+  <button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
 
   <div class="image-viewer">
     <img src="" alt="查看图片">
@@ -1703,15 +1761,11 @@
 
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
+  <script src="/html/about-association.js"></script>
   <script>
     (function() {
-      const detailUrl = '/html/about-association-detail.html';
-      let redirected = false;
-
       function redirect() {
-        if (redirected) return;
-        redirected = true;
-        window.location.href = detailUrl;
+        // 内容已合并到当前页面；保留空函数以兼容旧的提示元素。
       }
 
       // 首屏滚动提示：下滑后淡出 + 点击跳转
@@ -1730,10 +1784,18 @@
         scrollCue.addEventListener('click', () => redirect());
       }
 
-      // 桌面滚轮
+      function pageCanScroll() {
+        return document.documentElement.scrollHeight > window.innerHeight + 2;
+      }
+
+      function isAtPageBottom() {
+        return window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      }
+
+      // 桌面滚轮：内容因缩放或大字体变高时，先允许浏览器自然滚动。
       window.addEventListener('wheel', (e) => {
-        if (e.deltaY > 30) redirect();
-      }, { once: true });
+        if (e.deltaY > 30 && (!pageCanScroll() || isAtPageBottom())) redirect();
+      });
 
       // 移动触控
       let touchStartY = 0;
@@ -1742,7 +1804,7 @@
       }, { passive: true });
       window.addEventListener('touchend', (e) => {
         const deltaY = touchStartY - e.changedTouches[0].clientY;
-        if (deltaY > 50) redirect();
+        if (deltaY > 50 && (!pageCanScroll() || isAtPageBottom())) redirect();
       }, { passive: true });
     })();
   </script>

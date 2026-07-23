@@ -3,10 +3,14 @@ import sqlite3
 from contextlib import contextmanager
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATA_DIR = os.path.join(BASE_DIR, 'server', 'data')
-DB_PATH = os.path.join(DATA_DIR, 'database.sqlite')
 
-os.makedirs(DATA_DIR, exist_ok=True)
+_configured_path = os.environ.get('DATABASE_PATH')
+if _configured_path:
+    DB_PATH = _configured_path if os.path.isabs(_configured_path) else os.path.join(BASE_DIR, _configured_path)
+else:
+    DB_PATH = os.path.join(BASE_DIR, 'backend', 'data', 'database.sqlite')
+
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 
 @contextmanager
@@ -34,21 +38,6 @@ def init_database():
     with get_db_connection() as conn:
         conn.execute('PRAGMA journal_mode = WAL')
         conn.execute('PRAGMA foreign_keys = ON')
-
-        # Migration: rename legacy tables to membership_applications.
-        # If multiple legacy tables exist, we rename the most recent one
-        # (`applications`) and leave the older one (`registrations`) as an
-        # orphan so no data is silently lost.
-        existing = {row[0] for row in conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table'"
-        ).fetchall()}
-        if 'membership_applications' not in existing:
-            if 'applications' in existing:
-                conn.execute('ALTER TABLE applications RENAME TO membership_applications')
-                conn.commit()
-            elif 'registrations' in existing:
-                conn.execute('ALTER TABLE registrations RENAME TO membership_applications')
-                conn.commit()
 
         conn.executescript('''
             CREATE TABLE IF NOT EXISTS association (
@@ -112,14 +101,6 @@ def init_database():
             );
         ''')
         conn.commit()
-
-        # Rename legacy `experience` column to canonical `self_introduction`.
-        columns = {row[1] for row in conn.execute(
-            "PRAGMA table_info(membership_applications)"
-        ).fetchall()}
-        if 'experience' in columns and 'self_introduction' not in columns:
-            conn.execute('ALTER TABLE membership_applications RENAME COLUMN experience TO self_introduction')
-            conn.commit()
 
 
 # Initialize schema on module import (at startup)

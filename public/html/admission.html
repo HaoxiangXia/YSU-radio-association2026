@@ -82,9 +82,7 @@
   position: relative;
   overflow: hidden;
   border-top: 3px solid #2563eb;
-  background:
-    radial-gradient(circle at 94% 12%, rgba(96, 165, 250, 0.14), transparent 16rem),
-    #ffffff;
+  background: #ffffff;
 }
 
 .site-page.query-page .query-card .card-title {
@@ -124,7 +122,6 @@
 
   <main class="page-container page-container--narrow subpage-content query-content">
     <section class="card card-section mb-6 query-card">
-      <span class="query-card__eyebrow">RESULT LOOKUP</span>
       <h2 class="card-title">查询录取结果</h2>
       <p class="text-gray-600 text-sm mb-4">请输入你的学号和入会申请时填写的手机号查询录取结果</p>
       
@@ -233,7 +230,6 @@
         resultDiv.innerHTML = `
           <div class="${statusBg} border rounded-lg p-4">
             <div class="text-center">
-              <div class="text-3xl mb-2">${admission.status === '已录取' ? '🎉' : '⏳'}</div>
               <h3 class="font-bold text-gray-800 mb-2">${admission.name}同学</h3>
               <p class="${statusColor} font-medium mb-2">${admission.status}</p>
               ${admission.department ? `<p class="text-gray-600 text-sm">录取部门：${admission.department}</p>` : ''}
@@ -244,7 +240,6 @@
         resultDiv.innerHTML = `
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div class="text-center">
-              <div class="text-3xl mb-2">😢</div>
               <h3 class="font-bold text-gray-800 mb-2">未找到录取结果</h3>
               <p class="text-gray-600 text-sm">请检查学号和手机号是否正确，或联系协会负责人确认</p>
             </div>

@@ -1,0 +1,384 @@
+/* 关于协会：单页自然滚动布局 */
+.about-association-page {
+  background: #f6f9fe;
+}
+
+.about-association-page .page-container.subpage-content {
+  padding: 0 0 clamp(2.5rem, 7vw, 5rem);
+}
+
+.about-association-page .home-about-section.about-landing {
+  min-height: 0 !important;
+  justify-content: flex-start;
+  padding: calc(var(--nav-height) + clamp(1.75rem, 4vw, 3.5rem)) 1rem clamp(2.5rem, 5vw, 4rem) !important;
+}
+
+.about-association-page .about-landing-inner {
+  max-width: 1160px;
+}
+
+.about-association-page .about-landing-header {
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+.about-association-page .about-assoc-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: center;
+  padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+.about-association-page .about-assoc-intro__media,
+.about-association-page .about-assoc-intro__body,
+.about-association-page .overview-grid > * {
+  min-width: 0;
+}
+
+.about-association-page .about-assoc-intro__body {
+  display: grid;
+  align-content: center;
+  gap: 0.75rem;
+}
+
+.about-association-page .about-assoc-intro__body p {
+  margin: 0 !important;
+  color: #415673;
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.about-association-page .about-assoc-intro__body p:nth-of-type(n + 2),
+.about-association-page .about-assoc-intro__stats .stat-card:nth-child(n + 3),
+.about-association-page .scroll-cue {
+  display: none;
+}
+
+.about-association-page .about-assoc-intro__stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+.about-association-page .association-media,
+.about-association-page .association-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.about-association-page .association-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.about-association-page .association-media img {
+  object-fit: cover;
+}
+
+.about-association-page .about-section {
+  width: min(1160px, calc(100% - 2rem));
+  /* 父容器已用 gap 统一控制区块间距，避免与这里的下外边距叠加。 */
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3.5vw, 2.75rem);
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
+}
+
+.about-association-page .section-eyebrow {
+  margin: 0 0 0.4rem;
+  color: #4d7bc6;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.about-association-page .section-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+.about-association-page .card-title {
+  margin: 0;
+  color: #10233f;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  line-height: 1.2;
+}
+
+.about-association-page .section-desc {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  line-height: 1.7;
+}
+
+.about-association-page .more-link {
+  flex: 0 0 auto;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.about-association-page .more-link:hover,
+.about-association-page .more-link:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.about-association-page .overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.about-association-page .overview-intro {
+  color: #475569;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.85;
+}
+
+.about-association-page .overview-intro p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.about-association-page .overview-intro p + p {
+  margin-top: 1rem;
+}
+
+.about-association-page .overview-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.about-association-page .overview-stat-card {
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eff6ff, #f9fbff);
+  text-align: center;
+}
+
+.about-association-page .overview-stat-card strong {
+  display: block;
+  color: #2563eb;
+  font-size: clamp(1.55rem, 3vw, 2.05rem);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.about-association-page .overview-stat-card span {
+  display: block;
+  margin-top: 0.4rem;
+  color: #64748b;
+  font-size: clamp(0.75rem, 1vw, 0.85rem);
+  line-height: 1.45;
+}
+
+.about-association-page .department-group-title {
+  margin: clamp(1.75rem, 4vw, 2.5rem) 0 1rem;
+  color: #315d88;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.about-association-page .department-group-title:first-of-type {
+  margin-top: 0;
+}
+
+.about-association-page .department-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.about-association-page .department-card {
+  display: grid;
+  grid-template-columns: minmax(17rem, 34%) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(36, 74, 118, 0.05);
+}
+
+.about-association-page .department-card__media {
+  display: grid;
+  grid-template-rows: auto auto;
+  min-width: 0;
+  background: #eaf3ff;
+}
+
+.about-association-page .department-card__gallery {
+  position: relative;
+}
+
+.about-association-page .department-card__preview {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.about-association-page .department-card__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.about-association-page .department-card__media-control,
+.about-association-page .department-card__media-count {
+  position: absolute;
+  z-index: 1;
+}
+
+.about-association-page .department-card__media-control {
+  top: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0 0.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.58);
+  color: #fff;
+  font-size: 1.55rem;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: opacity 160ms ease, background-color 160ms ease;
+}
+
+.about-association-page .department-card__media-control--previous { left: 0.7rem; }
+.about-association-page .department-card__media-control--next { right: 0.7rem; }
+.about-association-page .department-card__media:hover .department-card__media-control,
+.about-association-page .department-card__media-control:focus-visible { opacity: 1; }
+
+.about-association-page .department-card__media-count {
+  top: 0.7rem;
+  right: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.62);
+  color: #fff;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.about-association-page .department-card__identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.about-association-page .department-card__name {
+  margin: 0;
+  color: #10233f;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+}
+
+.about-association-page .department-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.about-association-page .department-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid rgba(37, 99, 235, 0.1);
+  background: rgba(239, 246, 255, 0.7);
+}
+
+.about-association-page .department-card__metrics > div { min-width: 0; text-align: center; }
+.about-association-page .department-card__metrics strong { display: block; color: #2563eb; font-size: clamp(1.05rem, 2vw, 1.3rem); overflow-wrap: anywhere; }
+.about-association-page .department-card__metrics span { display: block; margin-top: 0.25rem; color: #64748b; font-size: 0.72rem; line-height: 1.4; overflow-wrap: anywhere; }
+
+.about-association-page .department-card__content { min-width: 0; padding: clamp(1.25rem, 3vw, 2rem); }
+.about-association-page .department-card__desc { margin: 0; color: #475569; font-size: 0.95rem; line-height: 1.75; overflow-wrap: anywhere; }
+.about-association-page .department-card__toggle { display: none; }
+.about-association-page .department-card__detail { display: block; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid rgba(37, 99, 235, 0.1); }
+.about-association-page .department-card__lists { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.about-association-page .department-card__list h4 { margin: 0 0 0.6rem; color: #1e40af; font-size: 0.82rem; }
+.about-association-page .department-card__list ul { margin: 0; padding: 0; list-style: none; }
+.about-association-page .department-card__list li { position: relative; padding-left: 0.85rem; color: #475569; font-size: 0.82rem; line-height: 1.65; overflow-wrap: anywhere; }
+.about-association-page .department-card__list li + li { margin-top: 0.35rem; }
+.about-association-page .department-card__list li::before { content: ""; position: absolute; top: 0.48rem; left: 0; width: 0.3rem; height: 0.3rem; border-radius: 50%; background: #60a5fa; }
+
+.about-association-page .news-list,
+.about-association-page .honor-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.about-association-page .news-card,
+.about-association-page .honor-card {
+  display: block;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+}
+
+.about-association-page .news-card h3,
+.about-association-page .honor-card h3 { margin: 0 0 0.55rem; color: #1e293b; font-size: 1rem; line-height: 1.55; overflow-wrap: anywhere; }
+.about-association-page .news-card p,
+.about-association-page .honor-card p { margin: 0; color: #64748b; font-size: 0.88rem; line-height: 1.65; overflow-wrap: anywhere; }
+.about-association-page .news-card__meta { margin-bottom: 0.55rem; color: #64748b; font-size: 0.76rem; }
+.about-association-page .honor-card__year { display: inline-block; margin-top: 0.8rem; padding: 0.22rem 0.55rem; border-radius: 999px; background: rgba(37, 99, 235, 0.08); color: #2563eb; font-size: 0.72rem; font-weight: 650; }
+
+@media (max-width: 959px) {
+  .about-association-page .about-assoc-intro,
+  .about-association-page .overview-grid { grid-template-columns: minmax(0, 1fr); }
+  .about-association-page .about-assoc-intro__body { order: -1; }
+  .about-association-page .department-card { grid-template-columns: minmax(0, 1fr); }
+  .about-association-page .department-card__media-control { opacity: 1; }
+  .about-association-page .department-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-association-page .department-card__content { padding: 1.25rem; }
+  .about-association-page .department-card__detail { display: none; }
+  .about-association-page .department-card__toggle { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 1rem; padding: 0; border: 0; background: transparent; color: #2563eb; font: inherit; font-size: 0.86rem; font-weight: 650; cursor: pointer; }
+  .about-association-page .department-card.is-expanded .department-card__detail { display: block; }
+  .about-association-page .department-card.is-expanded .department-card__toggle-icon { transform: rotate(180deg); }
+  .about-association-page .department-card__toggle-icon { transition: transform 180ms ease; }
+}
+
+@media (max-width: 700px) {
+  .about-association-page .home-about-section.about-landing { padding-right: 0.75rem !important; padding-left: 0.75rem !important; }
+  .about-association-page .about-landing-inner { padding: 0; }
+  .about-association-page .about-section { width: min(100% - 1.5rem, 1160px); }
+  .about-association-page .section-header { align-items: flex-start; flex-direction: column; }
+  .about-association-page .overview-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-association-page .department-grid,
+  .about-association-page .news-list,
+  .about-association-page .honor-list { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 440px) {
+  .about-association-page .about-assoc-intro { padding: 0.85rem; }
+  .about-association-page .association-media { aspect-ratio: 4 / 3; }
+  .about-association-page .association-media img { object-position: center; }
+  .about-association-page .department-card__lists { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-association-page .department-card__media-control,
+  .about-association-page .department-card__toggle-icon { transition: none; }
+}

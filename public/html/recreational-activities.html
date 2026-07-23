@@ -73,6 +73,16 @@
                 <p>${activity.achievements}</p>
               </div>
             </div>
+
+            ${activity.images?.length ? `
+              <section class="activity-gallery" aria-label="${activity.name}活动图片">
+                ${activity.images.map((image, imageIndex) => `
+                  <button type="button" class="activity-gallery__item" data-image="${image}" data-image-alt="${activity.name}活动现场照片 ${imageIndex + 1}" aria-label="查看${activity.name}活动照片 ${imageIndex + 1}">
+                    <img src="${image}" alt="${activity.name}活动现场照片 ${imageIndex + 1}" loading="lazy" decoding="async">
+                  </button>
+                `).join('')}
+              </section>
+            ` : ''}
           </div>
         </article>
       `).join('');

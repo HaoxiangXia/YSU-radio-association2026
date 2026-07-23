@@ -15,7 +15,7 @@ node_modules/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-server/data/
+backend/data/
 
 # Generated data and assets
 public/data/admission-results.json
@@ -24,5 +24,16 @@ public/image/*.mp4
 # Excel temporary files
 工作簿1.xlsx
 ~$*.xlsx
-
-docs/
+AGENTS.md
+CONTEXT.md
+PLAN.md
+artifacts/
+scripts/baseline-allowlist.json
+scripts/check.js
+scripts/smoke.js
+scripts/screenshots.js
+scripts/recruitment-audit.js
+scripts/recruitment-browser-proxy.js
+.agent/
+.codex/
+.codex-remote-attachments/
