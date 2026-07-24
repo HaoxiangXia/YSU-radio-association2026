@@ -14,7 +14,7 @@
   function renderDepartmentCard(department, index, prefix) {
     const images = Array.isArray(department.images) && department.images.length
       ? department.images
-      : [{ src: '/image/farewell11.jpg', alt: `${department.name}活动照片` }];
+      : [{ src: '/image/activities/farewell/photo-03.jpg', alt: `${department.name}活动照片` }];
     const firstImage = images[0];
     const galleryData = JSON.stringify(images).replace(/"/g, '&quot;');
     const statOne = department.stats.activities || department.stats.projects || department.stats.models || department.stats.softwares || department.stats.events || '-';

@@ -138,7 +138,7 @@ function getNavHTML() {
     <nav class="nav">
       <div class="container">
         <a href="/html/index.html" class="nav-logo">
-          <img src="/image/白底会徽.png" alt="会徽">
+          <img src="/image/brand/association-emblem-white.png" alt="会徽">
           <span>无线电爱好者协会</span>
         </a>
         <div class="nav-links">

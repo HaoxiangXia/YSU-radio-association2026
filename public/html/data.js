@@ -53,9 +53,9 @@ const departments = [
     name: '组织部',
     category: 'non-technical',
     images: [
-      { src: '/image/team2.jpg', alt: '组织部成员交流活动现场' },
-      { src: '/image/team1.jpg', alt: '协会成员团建活动合影' },
-      { src: '/image/team3.jpg', alt: '协会成员户外活动合影' },
+      { src: '/image/activities/team-building/photo-02.jpg', alt: '组织部成员交流活动现场' },
+      { src: '/image/activities/team-building/photo-01.jpg', alt: '协会成员团建活动合影' },
+      { src: '/image/activities/team-building/photo-03.jpg', alt: '协会成员户外活动合影' },
     ],
     description: '组织部是协会的核心协调部门，负责统筹各项活动的策划与执行，是连接各部门的重要纽带。无论是大型竞赛还是日常活动，组织部都在其中发挥着关键的组织协调作用。',
     responsibilities: [
@@ -90,10 +90,10 @@ const departments = [
     name: '嵌入式部',
     category: 'technical',
     images: [
-      { src: '/image/enbeded11.jpg', alt: '嵌入式部制作的无线通信与传感装置' },
-      { src: '/image/enbeded12.jpg', alt: '嵌入式部制作的智能小车' },
-      { src: '/image/enbeded13.jpg', alt: '嵌入式部智能小车控制模块' },
-      { src: '/image/enbeded15.jpg', alt: '嵌入式部传感器与开发板项目' },
+      { src: '/image/departments/embedded/project-01.jpg', alt: '嵌入式部制作的无线通信与传感装置' },
+      { src: '/image/departments/embedded/project-02.jpg', alt: '嵌入式部制作的智能小车' },
+      { src: '/image/departments/embedded/project-03.jpg', alt: '嵌入式部智能小车控制模块' },
+      { src: '/image/departments/embedded/project-04.jpg', alt: '嵌入式部传感器与开发板项目' },
     ],
     description: '嵌入式部专注于嵌入式系统开发与应用，是协会的核心技术部门之一，致力于培养成员的软硬件结合能力。部门配备了多种主流开发板和实验设备，为成员提供良好的实践环境。',
     responsibilities: [
@@ -128,10 +128,10 @@ const departments = [
     name: '机械部',
     category: 'technical',
     images: [
-      { src: '/image/mechanical11.jpg', alt: '机械部制作的机器人结构装置' },
-      { src: '/image/mechanical1.jpg', alt: '机械部制作的三维打印龙模型' },
-      { src: '/image/mechanical2.jpg', alt: '机械部制作的金属打印龙模型' },
-      { src: '/image/mechanical4.jpg', alt: '机械部制作的三维打印飞鸟模型' },
+      { src: '/image/departments/mechanical/project-01.jpg', alt: '机械部制作的机器人结构装置' },
+      { src: '/image/departments/mechanical/project-02.jpg', alt: '机械部制作的三维打印龙模型' },
+      { src: '/image/departments/mechanical/project-03.jpg', alt: '机械部制作的金属打印龙模型' },
+      { src: '/image/departments/mechanical/project-04.jpg', alt: '机械部制作的三维打印飞鸟模型' },
     ],
     description: '机械部专注于机械设计与制造，为协会的各类项目提供结构设计支持，是技术实现的重要保障。部门拥有3D打印机等先进设备，能够将设计理念快速转化为实物模型。',
     responsibilities: [
@@ -166,8 +166,8 @@ const departments = [
     name: '计算机部',
     category: 'technical',
     images: [
-      { src: '/image/competition-程序设计大赛.jpg', alt: '计算机部成员参加大学生程序设计竞赛' },
-      { src: '/image/competition-创客大赛.jpg', alt: '计算机部成员参加大学生创新创业竞赛' },
+      { src: '/image/competitions/misc/programming-contest.jpg', alt: '计算机部成员参加大学生程序设计竞赛' },
+      { src: '/image/competitions/misc/maker-contest.jpg', alt: '计算机部成员参加大学生创新创业竞赛' },
     ],
     description: '计算机部专注于软件与算法开发，为协会提供软件开发和信息技术支持，推动智能化技术应用。部门成员参与从算法设计到应用开发的全流程工作，技术覆盖面广。',
     responsibilities: [
@@ -203,9 +203,9 @@ const departments = [
     name: '团支部',
     category: 'non-technical',
     images: [
-      { src: '/image/league2.jpg', alt: '无线电爱好者协会团支部主题学习海报' },
-      { src: '/image/league1.jpg', alt: '团支部成员开展主题学习活动' },
-      { src: '/image/team1.jpg', alt: '协会成员参与集体活动' },
+      { src: '/image/activities/youth-league/photo-02.jpg', alt: '无线电爱好者协会团支部主题学习海报' },
+      { src: '/image/activities/youth-league/photo-01.jpg', alt: '团支部成员开展主题学习活动' },
+      { src: '/image/activities/team-building/photo-01.jpg', alt: '协会成员参与集体活动' },
     ],
     description: '团支部是协会的思想引领核心，负责协会的思想政治工作和团员管理，促进协会健康发展。同时也承担着协会文化建设和对外宣传的重要职责。',
     responsibilities: [
@@ -253,10 +253,10 @@ const competitions = [
       '学长学姐负责组织现场答辩',
     ],
     images: [
-      '/image/competition-展望杯嵌入式大赛.jpg',
-      '/image/competition-展望杯2.jpg',
-      '/image/competition-展望杯3.jpg',
-      '/image/competition-展望杯4.jpg',
+      '/image/competitions/zhanwang-cup/photo-01.jpg',
+      '/image/competitions/zhanwang-cup/photo-02.jpg',
+      '/image/competitions/zhanwang-cup/photo-03.jpg',
+      '/image/competitions/zhanwang-cup/photo-04.jpg',
     ],
   },
   {
@@ -271,9 +271,9 @@ const competitions = [
       '为后续赛事展示持续补充素材',
     ],
     images: [
-      '/image/competition-展望杯15.jpg',
-      '/image/competition-展望杯16.jpg',
-      '/image/competition-展望杯17.jpg',
+      '/image/competitions/zhanwang-cup/photo-05.jpg',
+      '/image/competitions/zhanwang-cup/photo-06.jpg',
+      '/image/competitions/zhanwang-cup/photo-07.jpg',
     ],
   },
   {
@@ -289,10 +289,10 @@ const competitions = [
       '开设赛前技术辅导工作坊',
     ],
     images: [
-      '/image/competition-电赛.jpg',
-      '/image/competition-电赛2.jpg',
-      '/image/competition-电赛3.jpg',
-      '/image/competition-电赛4.jpg',
+      '/image/competitions/electronic-design/photo-01.jpg',
+      '/image/competitions/electronic-design/photo-02.jpg',
+      '/image/competitions/electronic-design/photo-03.jpg',
+      '/image/competitions/electronic-design/photo-04.jpg',
     ],
   },
   {
@@ -308,10 +308,10 @@ const competitions = [
       '优秀者可加入校科创团队',
     ],
     images: [
-      '/image/competition-指尖风暴大赛.jpg',
-      '/image/competition-指尖2.jpg',
-      '/image/competition-指尖3.jpg',
-      '/image/competition-指尖4.jpg',
+      '/image/competitions/fingertip-storm/photo-01.jpg',
+      '/image/competitions/fingertip-storm/photo-02.jpg',
+      '/image/competitions/fingertip-storm/photo-03.jpg',
+      '/image/competitions/fingertip-storm/photo-04.jpg',
     ],
   },
   {
@@ -327,10 +327,10 @@ const competitions = [
       '嵌入式方向：基于MCU或开发板的创新电子作品',
     ],
     images: [
-      '/image/competition-DIY1.jpg',
-      '/image/competition-DIY2.jpg',
-      '/image/competition-DIY3.jpg',
-      '/image/competition-DIY4.jpg',
+      '/image/competitions/diy/photo-01.jpg',
+      '/image/competitions/diy/photo-02.jpg',
+      '/image/competitions/diy/photo-03.jpg',
+      '/image/competitions/diy/photo-04.jpg',
     ],
   },
 ];
@@ -344,11 +344,11 @@ const recreationalActivities = [
     description: '为感谢即将毕业的学长学姐对协会的贡献，增进协会成员间的感情，举办了此次欢送晚会。活动包含才艺表演、经验分享、互动游戏等环节，为毕业生送上最诚挚的祝福。',
     achievements: '参与成员享受了欢愉的同时也收获了学长学姐的经验',
     images: [
-      '/image/farewell-欢送会.jpg',
-      '/image/farewell-欢送会 (2).jpg',
-      '/image/farewell11.jpg',
-      '/image/farewell12.jpg',
-      '/image/farewell13.jpg',
+      '/image/activities/farewell/photo-01.jpg',
+      '/image/activities/farewell/photo-02.jpg',
+      '/image/activities/farewell/photo-03.jpg',
+      '/image/activities/farewell/photo-04.jpg',
+      '/image/activities/farewell/photo-05.jpg',
     ],
   },
   {
@@ -358,10 +358,10 @@ const recreationalActivities = [
     description: '信息科学与工程学院院长齐跃峰、学院党委副书记李浩然、副处级专职辅导员刘学才、团委书记邹楠一起走访调研燕山大学大学生无线电爱好者协会。',
     achievements: '校园新闻报道1次',
     images: [
-      '/image/science1.jpg',
-      '/image/science2.jpg',
-      '/image/science3.jpg',
-      '/image/science4.jpg',
+      '/image/activities/alumni-visit/photo-01.jpg',
+      '/image/activities/alumni-visit/photo-02.jpg',
+      '/image/activities/alumni-visit/photo-03.jpg',
+      '/image/activities/alumni-visit/photo-04.jpg',
     ],
   },
   {
@@ -371,9 +371,9 @@ const recreationalActivities = [
     description: '为增强协会凝聚力，促进新老成员交流，在北戴河鸽子窝公园组织了秋季团建活动。活动包括无线电测向比赛、技术交流沙龙和团队拓展游戏等环节。',
     achievements: '参与成员欢聚，度过美好而又休闲的时光！',
     images: [
-      '/image/team1.jpg',
-      '/image/team2.jpg',
-      '/image/team3.jpg',
+      '/image/activities/team-building/photo-01.jpg',
+      '/image/activities/team-building/photo-02.jpg',
+      '/image/activities/team-building/photo-03.jpg',
     ],
   },
 ];
