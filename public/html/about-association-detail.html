@@ -1794,14 +1794,16 @@
         },
       });
 
-      gsap.from('.news-card, .honor-card', {
+      // 最新动态由 data.js 在页面加载时插入；不对它应用初始透明动画，
+      // 以免滚动触发器未执行时整组卡片不可见。
+      gsap.from('.honor-card', {
         y: 18,
         opacity: 0,
         duration: 0.5,
         ease: 'power2.out',
         stagger: 0.06,
         scrollTrigger: {
-          trigger: '#recent-events',
+          trigger: '#honors',
           start: 'top 85%',
           toggleActions: 'play none none reverse',
         },
