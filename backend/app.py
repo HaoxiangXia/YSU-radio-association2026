@@ -20,6 +20,7 @@ from routes import (
     competitions,
     departments,
     honors,
+    ops,
     recruitment,
     recruitment_officers,
     trainings,
@@ -52,6 +53,7 @@ app.include_router(recruitment.router, prefix="/api/recruitment", tags=["recruit
 app.include_router(admissions.router, prefix="/api/admissions", tags=["admissions"])
 app.include_router(membership_applications.router, prefix="/api/membership-applications", tags=["membership-applications"])
 app.include_router(recruitment_officers.router, prefix="/api/recruitment-officers", tags=["recruitment-officers"])
+app.include_router(ops.router, tags=["operations"])
 
 # Static files (must be mounted after API routes so /api/* takes precedence)
 app.mount("/", StaticFiles(directory="../public", html=True), name="static")

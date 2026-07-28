@@ -1,0 +1,35 @@
+[Unit]
+Description=YSU Radio Association web application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=radio-association
+Group=radio-association
+WorkingDirectory=/opt/radio-association/current/backend
+EnvironmentFile=/etc/radio-association/app.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/radio-association/current/backend/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 5000 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ReadWritePaths=/var/lib/radio-association
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

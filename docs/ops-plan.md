@@ -1,420 +1,82 @@
-# `radio-association` 生产环境运维方案（定稿）
+# `radio-association` 预生产部署与运维方案
 
-> 适用服务器：阿里云 ECS / Ubuntu 22.04 LTS / 2 vCPU / 1.6 GB RAM / 40 GB SSD
-> 访问方式：无域名，使用 `http://47.95.247.186:5000`
-> 代码仓库：`https://github.com/HaoxiangXia/YSU-radio-association2026/tree/dev`
-
----
+> 本文是当前部署基线。旧的公网 `:5000`、运行目录 `git pull/reset` 和直接复制 SQLite 文件方案已经停用。
 
-## 1. 决策确认
+## 当前边界
 
-| 项 | 决策 |
-|---|---|
-| 域名 | 暂不使用 |
-| HTTPS | 暂不使用（IP 无法申请免费证书，等域名+备案后再配） |
-| 访问入口 | `http://47.95.247.186:5000` |
-| 部署方式 | 裸机 + systemd + uv + uvicorn（不用 Docker，省内存） |
-| 应用栈 | FastAPI + Python 3.11+，入口 `backend/app.py` |
-| 反向代理 | 暂不使用 Nginx（省内存），uvicorn 直接监听 5000 端口 |
-| 静态文件 | 由 FastAPI StaticFiles 服务（`public/` 目录），`/` 重定向到 `/html/index.html`，与 API 同源，无需 CORS |
-| 数据库 | 本地 SQLite（`backend/data/database.sqlite`，Python 标准库 sqlite3，WAL 模式，启动时自动建表） |
-| 备份 | 本地每日自动备份，保留 7 天 |
-| 其他服务 | 保留 VS Code Server，但需监控内存 |
+- 今天只建立预生产环境，不开放公网 80、443、5000。
+- Uvicorn 只监听 `127.0.0.1:5000`，Nginx 预演入口只监听 `127.0.0.1:8080`。
+- 验证通过 SSH 隧道完成；备案、域名和 HTTPS 就绪后再设计公网入口。
+- 入会申请和录取查询使用安全默认配置，保持关闭。
+- SSH 密码认证的关闭是独立高风险步骤，必须在密钥新连接、控制台救援和快照均确认后另行执行。
 
----
+## 目录与权限
 
-## 2. 架构图
+| 路径 | 用途 | 主要权限 |
+| --- | --- | --- |
+| `/opt/radio-association/releases/<SHA>` | 不可变代码发布目录 | `root:radio-association`，服务只读 |
+| `/opt/radio-association/current` | 当前发布的原子符号链接 | root 管理 |
+| `/opt/radio-association/previous` | 上一健康发布 | root 管理 |
+| `/etc/radio-association/app.env` | 密钥、账号及私有路径 | `root:root 600` |
+| `/etc/radio-association/recruitment.json` | 当前招新业务配置 | `root:radio-association 640` |
+| `/var/lib/radio-association/data/database.sqlite` | 生产数据库 | `radio-association 640` |
+| `/var/lib/radio-association/private/admissions.json` | 私有录取名单 | `root:radio-association 640` |
+| `/var/backups/radio-association/` | 本机一致性备份 | root 管理，保留 14 天 |
 
-```
-用户浏览器
-    │
-    ▼
-阿里云安全组（开放 5000 端口）
-    │
-    ▼
-uvicorn / FastAPI 应用（backend/app.py，监听 0.0.0.0:5000）
-    │        ├── 静态文件：public/（/ 重定向到 /html/index.html）
-    │        └── API：/api/*
-    ▼
-SQLite 数据库文件（backend/data/database.sqlite）
-```
+应用使用无登录 shell、无 sudo 权限的 `radio-association` 系统用户运行。systemd 启用了只读系统、最小地址族、空 capability 等限制。
 
----
+## 首次准备
 
-## 3. 资源评估
+1. 用户先在阿里云控制台确认远程连接或救援能力并创建修改前快照。
+2. 将本机 SSH 公钥导入服务器，建立一条新的密钥连接。
+3. 运行只读盘点，确认没有未知业务或 80、443、5000 端口冲突。
+4. 提交并通过 CI 后，以明确的 40 位 commit SHA 运行 `Bootstrap`。
+5. 在服务器根据 `/etc/radio-association/app.env.example` 创建 `app.env`；真实密钥和账号不得出现在聊天、Git 或命令参数中。
+6. 运行 `Deploy`，再用 SSH 隧道访问本机 `http://127.0.0.1:8080`。
 
-当前服务器资源：
+完整可复制命令见 [OPERATIONS_QUICK_REFERENCE.md](OPERATIONS_QUICK_REFERENCE.md)。
 
-| 资源 | 总量 | 当前已用 | 可用 |
-|---|---|---|---|
-| CPU | 2 vCPU | - | 充足 |
-| 内存 | 1.6 GB | 1.1 GB | 紧张 |
-| 磁盘 | 40 GB | 5.6 GB | 充足 |
-| Swap | 0 | 0 | 无 |
+## 发布与自动回滚
 
-应用运行时估算：
+Windows 入口使用 `git archive <SHA>` 生成不含 Git 历史的源码归档，计算 SHA-256 后上传。服务器端 `radioctl deploy`：
 
-| 组件 | 内存占用 |
-|---|---|
-| 系统基础 | ~400-600 MB |
-| VS Code Server | ~100-200 MB（你已保留） |
-| FastAPI / uvicorn 应用 | ~80-150 MB |
-| 剩余缓冲 | ~150-350 MB |
+1. 校验 commit SHA、归档校验和、必需文件和运行配置；
+2. 在新的 staging 目录解压，拒绝归档内的符号链接；
+3. 执行 `uv sync --frozen --no-dev`；
+4. 使用新版本代码校验招新配置；
+5. 使用 SQLite Backup API 创建部署前备份；
+6. 原子切换 `current`，重启服务并检查 `/healthz`；
+7. 健康检查失败时自动切回原版本。
 
-**结论**：够用但紧张，因此采用最精简方案。后续如升级至 2GB 或 4GB，可加 Nginx 和 Docker。
+服务器运行目录没有 Git 仓库，也不会执行 `pull`、`checkout` 或 `reset`。发布目录不会被自动批量清理，避免误删仍需保留的回滚版本。
 
----
+## 统一运维入口
 
-## 4. 安全加固
+`radioctl deploy/rollback/backup/restore/configure/admissions` 共用 `flock -n` 非阻塞排他锁，避免发布、恢复和配置更新互相踩踏。
 
-### 4.1 创建部署用户
+- `configure`：先用当前版本 Pydantic 模型校验，再备份旧文件、原子替换、重启和健康检查；失败恢复旧配置。
+- `admissions`：先校验全部字段与重复学号，再原子替换；文件始终位于私有目录。
+- `restore`：必须显式传入 `--confirm`；校验 SHA-256 和 `PRAGMA quick_check`，停止服务，使用 Backup API 生成恢复前安全备份并恢复，最后重新健康检查。
+- `rollback`：切换到指定 SHA 或 `previous`，执行数据库备份和健康检查；失败自动切回。
 
-不要用 root 运行应用。
+## 备份
 
-```bash
-useradd -m -s /bin/bash deploy
-usermod -aG sudo deploy
-passwd deploy
-```
+systemd timer 每天北京时间 03:00 触发，带随机延迟和错过补跑。备份工具使用 Python `sqlite3.Connection.backup()`，随后执行：
 
-### 4.2 项目目录权限
+- `PRAGMA quick_check`；
+- SHA-256 伴随文件；
+- 本机 14 天清理；
+- 成功状态写入 `/var/lib/radio-association/state/backup-status.json`。
 
-```bash
-mkdir -p /var/www/radio-association
-chown -R deploy:deploy /var/www/radio-association
-```
+`/ops/backupz` 在最近一次成功备份超过 30 小时后返回 503。配置 `OSS_BACKUP_URI` 时，`radioctl` 还会通过 `ossutil` 上传并验证对象；OSS Bucket 必须为私有、开启服务端加密，并使用生命周期规则保留 90 天。凭据只通过服务器本地受限配置提供。
 
-### 4.3 SSH 加固（建议立刻执行）
+## 验收
 
-```bash
-# 关闭 root 密码登录，改为用 deploy 用户登录
-sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
-sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-systemctl restart sshd
-```
+- `systemctl is-active radio-association nginx` 均成功；
+- `ss -ltnp` 仅显示 `127.0.0.1:5000` 与 `127.0.0.1:8080`；
+- `/livez`、`/healthz`、`/ops/backupz` 返回预期状态；
+- SSH 隧道下首页、申请关闭、负责人鉴权、CSV、录取查询关闭均符合配置；
+- 手动备份、临时恢复演练和代码回滚均有成功证据；
+- 阿里云安全组与服务器防火墙未开放公网 Web 端口。
 
-> 注意：执行前先确保 `deploy` 用户可以登录，否则会被锁在外面。
-
-### 4.4 启用防火墙
-
-```bash
-ufw default deny incoming
-ufw default allow outgoing
-ufw allow 22/tcp
-ufw allow 5000/tcp
-ufw enable
-```
-
-> 80/443 不开放，因为无域名且未备案。
-
-### 4.5 阿里云安全组
-
-在阿里云控制台的安全组中，放行：
-
-| 端口 | 协议 | 来源 | 用途 |
-|---|---|---|---|
-| 22 | TCP | 你的 IP | SSH |
-| 5000 | TCP | 0.0.0.0/0 | 应用访问 |
-
----
-
-## 5. 部署实施步骤
-
-### 5.1 安装 Git（如果未安装）
-
-```bash
-apt update
-apt install -y git
-```
-
-### 5.2 安装 uv 和 Python 3.11+
-
-```bash
-# 安装 uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Ubuntu 22.04 自带 Python 3.10，不满足要求，用 uv 安装托管的 3.11
-sudo -u deploy /usr/local/bin/uv python install 3.11
-```
-
-> 若 uv 装在 root 家目录（`~/.local/bin/uv`），请复制到 `/usr/local/bin/uv` 以便 deploy 用户使用。
-
-### 5.3 安装 Bun（仅用于运维脚本）
-
-后端不依赖 Bun，但数据库静态表初始化脚本（`scripts/init-db.js`）和招新结果导出脚本（`scripts/export-admissions.js`）是 Bun 脚本，仍需安装：
-
-```bash
-curl -fsSL https://bun.sh/install | bash
-# 同样复制到系统路径
-cp ~/.bun/bin/bun /usr/local/bin/bun
-```
-
-### 5.4 克隆项目
-
-```bash
-cd /var/www
-sudo -u deploy git clone -b dev https://github.com/HaoxiangXia/YSU-radio-association2026.git radio-association
-cd radio-association
-```
-
-### 5.5 安装后端依赖
-
-```bash
-cd /var/www/radio-association/backend
-sudo -u deploy uv sync
-cd ..
-```
-
-### 5.6 环境变量
-
-创建 `/var/www/radio-association/.env`：
-
-```env
-JWT_SECRET=你的随机长字符串
-RECRUITMENT_OFFICER_ACCOUNTS=用户名:密码PBKDF2哈希:姓名
-# 可选：
-# PORT=5000
-# DATABASE_PATH=backend/data/database.sqlite
-```
-
-- `JWT_SECRET`：**必需**，缺少时应用拒绝启动。生成方式：
-
-  ```bash
-  openssl rand -base64 32
-  ```
-
-- `RECRUITMENT_OFFICER_ACCOUNTS`：**必需**，缺少时应用拒绝启动。格式为 `用户名:密码哈希:姓名`，多个账号用 `;` 分隔。密码必须是 PBKDF2 哈希，**严禁明文**，生成方式：
-
-  ```bash
-  cd /var/www/radio-association/backend
-  sudo -u deploy uv run python ../scripts/hash-password.py
-  ```
-
-  按提示输入密码，将输出的哈希填入 `.env`。
-
-- `PORT`：可选，默认 5000。
-- `DATABASE_PATH`：可选，默认 `backend/data/database.sqlite`；相对路径基于仓库根目录解析。
-
-> 认证采用 JWT，登录接口为 `POST /api/recruitment-officers/login`，登录与报名提交接口内置内存固定窗口限流，无需额外配置。
-
-```bash
-chown deploy:deploy /var/www/radio-association/.env
-chmod 600 /var/www/radio-association/.env
-```
-
-### 5.7 初始化数据库静态表
-
-数据库 Schema 会在应用启动时自动创建，但协会信息、部门、比赛、荣誉、培训等**静态查询表**需要手动灌入初始数据：
-
-```bash
-cd /var/www/radio-association
-sudo -u deploy bun scripts/init-db.js
-```
-
-> 该脚本是**破坏性操作**：会删除并重新插入上述静态表。**仅在首次部署（数据库文件尚不存在）时运行，生产环境不要反复执行。**
-
-### 5.8 导出招新结果查询数据（可选）
-
-如需开放录取结果查询，将 Excel 导出为前端读取的 JSON：
-
-```bash
-cd /var/www/radio-association
-sudo -u deploy bun scripts/export-admissions.js
-```
-
-输出到 `public/data/admission-results.json`。
-
-### 5.9 创建 systemd 服务
-
-创建 `/etc/systemd/system/radio-association.service`：
-
-```ini
-[Unit]
-Description=Radio Association Web App
-After=network.target
-
-[Service]
-Type=simple
-User=deploy
-Group=deploy
-WorkingDirectory=/var/www/radio-association/backend
-EnvironmentFile=/var/www/radio-association/.env
-ExecStart=/usr/local/bin/uv run uvicorn app:app --host 0.0.0.0 --port 5000
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
-
-> 开发调试时可在命令后追加 `--reload`，生产环境不要加。
-
-启用并启动：
-
-```bash
-systemctl daemon-reload
-systemctl enable radio-association
-systemctl start radio-association
-```
-
-### 5.10 验证
-
-```bash
-systemctl status radio-association
-journalctl -u radio-association -n 50
-ss -tlnp | grep 5000
-```
-
-浏览器访问：`http://47.95.247.186:5000`
-
----
-
-## 6. 数据库备份方案
-
-### 6.1 本地定时备份
-
-创建备份目录：
-
-```bash
-mkdir -p /var/backups/radio-association
-```
-
-添加 cron 任务：
-
-```bash
-# 编辑 crontab
-crontab -e
-
-# 添加以下内容（每天凌晨 3 点备份，凌晨 4 点清理 7 天前的备份）
-0 3 * * * cp /var/www/radio-association/backend/data/database.sqlite /var/backups/radio-association/db-$(date +\%Y\%m\%d).sqlite
-0 4 * * * find /var/backups/radio-association -name 'db-*.sqlite' -mtime +7 -delete
-```
-
-> 更严谨的做法是先 `systemctl stop radio-association` 再复制、完成后启动，或使用 SQLite 在线备份；日常低峰期直接 `cp` 即可接受。
-
-### 6.2 异地备份（可选）
-
-如果你后续买了阿里云 OSS，可以加一条：
-
-```bash
-# 需要先安装并配置 aliyun CLI
-0 5 * * * aliyun oss cp /var/backups/radio-association/db-$(date +\%Y\%m\%d).sqlite oss://your-bucket/radio-association-backups/
-```
-
-> 异地备份的意思是：把数据库文件复制到另一个地方（如云存储），防止服务器硬盘损坏或误删导致数据丢失。
-
----
-
-## 7. 监控与日志
-
-### 7.1 日志查看
-
-```bash
-# 实时查看应用日志
-journalctl -u radio-association -f
-
-# 查看最近 100 条
-journalctl -u radio-association -n 100
-```
-
-### 7.2 资源监控
-
-```bash
-# 查看内存
-top
-free -h
-
-# 查看端口监听
-ss -tlnp
-
-# 查看磁盘
-df -h
-```
-
-### 7.3 建议配置阿里云云监控
-
-在阿里云控制台添加：
-
-- CPU 使用率 > 80% 告警
-- 内存使用率 > 85% 告警
-- 磁盘使用率 > 80% 告警
-- 网络入流量异常告警
-
-告警通知方式：短信/邮件/钉钉。
-
----
-
-## 8. 更新与回滚
-
-### 8.1 更新应用
-
-```bash
-cd /var/www/radio-association
-sudo -u deploy git pull origin dev
-cd backend
-sudo -u deploy uv sync
-cd ..
-systemctl restart radio-association
-```
-
-### 8.2 回滚
-
-```bash
-cd /var/www/radio-association
-sudo -u deploy git log --oneline -5
-sudo -u deploy git reset --hard <commit-hash>
-cd backend
-sudo -u deploy uv sync
-systemctl restart radio-association
-```
-
----
-
-## 9. 应急预案
-
-| 场景 | 处理步骤 |
-|---|---|
-| 应用无法访问 | 1. `systemctl status radio-association`<br>2. `journalctl -u radio-association -n 100`<br>3. 检查端口 `ss -tlnp \| grep 5000`<br>4. 检查安全组和防火墙 |
-| 应用启动即退出 | 大概率是 `.env` 缺少 `JWT_SECRET` 或 `RECRUITMENT_OFFICER_ACCOUNTS`，应用会拒绝启动；补全后 `systemctl restart radio-association` |
-| 数据库损坏 | 1. 停止应用<br>2. 从 `/var/backups/radio-association/` 找最新备份<br>3. 复制覆盖 `backend/data/database.sqlite`<br>4. 启动应用 |
-| 静态表数据丢失/错乱 | 重新运行 `bun scripts/init-db.js`（该脚本只删除并重建静态表，不影响报名等业务数据） |
-| 内存耗尽 | 1. `free -h` 确认<br>2. 检查是否有异常进程<br>3. 重启 VS Code Server 或应用<br>4. 必要时升级服务器配置 |
-| 服务器被入侵 | 1. 修改所有密码<br>2. 检查异常用户和定时任务<br>3. 从备份恢复数据<br>4. 重装系统（严重时） |
-| 5000 端口被占用 | 修改 `.env` 中的 `PORT` 及 systemd 单元里的 `--port`，并同步防火墙规则 |
-
----
-
-## 10. 后续升级建议
-
-当以下条件满足时，建议升级到标准架构：
-
-| 条件 | 升级项 |
-|---|---|
-| 购买了域名并完成 ICP 备案 | 加 Nginx 反向代理到 5000 端口 + Let's Encrypt HTTPS |
-| 内存升级到 2GB 或更高 | 使用 Docker + docker-compose 部署 |
-| 访问量长期超过 500 并发 | 考虑升级到 4GB 内存，或使用 uvicorn 多 worker / 多实例 |
-| 数据非常重要 | 接入阿里云 OSS 异地备份 |
-| 频繁更新 | 配置 GitHub Actions 自动部署 |
-
----
-
-## 11. 一键部署脚本
-
-已配套提供 `scripts/deploy.sh`，在服务器上以 root 执行即可自动完成大部分步骤（安装 uv/Python 3.11+/Bun、克隆代码、`uv sync`、写 systemd 单元、配置防火墙与每日备份）。
-
-```bash
-# 上传脚本到服务器后执行
-chmod +x deploy.sh
-./deploy.sh
-```
-
-脚本会提示你输入：
-
-- JWT_SECRET（回车自动生成）
-- 招新负责人账号、密码和显示名称（密码会自动转换为 PBKDF2 哈希写入 `.env`）
-
-脚本启动服务前会校验 `.env` 中 `JWT_SECRET` 和 `RECRUITMENT_OFFICER_ACCOUNTS` 是否已配置，缺失时会中止并提示补全。
-
----
-
-*方案生成时间：2026-07-22*
+服务器尚未实际执行前，以上仅代表工具与目标设计，不代表部署、备份或回滚已经在生产主机验证。

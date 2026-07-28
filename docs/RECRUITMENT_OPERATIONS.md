@@ -20,12 +20,14 @@ RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$100000$...:无协负责人"
 
 ## 数据备份与导出
 
-每次调整环境变量或正式上线前，先停止服务，然后备份数据库：
+生产服务器统一使用 SQLite Backup API，不直接复制 WAL 模式下的活动数据库：
 
 ```bash
-mkdir -p local-backups
-cp backend/data/database.sqlite "local-backups/database-$(date +%Y%m%d-%H%M%S).sqlite"
+sudo radioctl backup
+curl --fail http://127.0.0.1:5000/ops/backupz
 ```
+
+备份会执行完整性检查、生成 SHA-256 校验文件并保留成功时间。本地开发数据库如需备份，也应停止服务或使用 `scripts/ops/sqlite_backup.py`。
 
 招新负责人页面的“导出 CSV”会导出当前搜索与筛选条件下的全部入会申请，并处理逗号、换行、引号和公式开头字符。
 

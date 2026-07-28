@@ -290,11 +290,13 @@ bun scripts/export-admissions.js
 
 | 脚本 | 命令 | 说明 |
 |------|------|------|
-| start | `cd backend && uv run uvicorn app:app --host 0.0.0.0 --port 5000` | 启动生产服务器 |
+| start | `cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000` | 启动仅本机监听的服务 |
 | dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
 | init | `bun scripts/init-db.js` | 初始化 SQLite 数据库（破坏性，仅限首次部署） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 | hash-password | `cd backend && uv run python ../scripts/hash-password.py` | 生成 PBKDF2 密码哈希，用于 `.env` |
+
+生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [预生产运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
 
 ---
 
@@ -305,7 +307,7 @@ bun scripts/export-admissions.js
 - API 认证使用 JWT 令牌机制。
 - 入会申请管理接口需要 Bearer Token 认证。
 - 登录和入会申请提交均带有简单的内存速率限制，生产环境如需多进程部署请接入 Redis 等共享存储。
-- 生产环境请务必修改 `.env` 中的 `JWT_SECRET` 和默认招新负责人密码。
+- 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人密码哈希。
 
 ---
 
