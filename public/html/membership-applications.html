@@ -220,18 +220,18 @@
 .admin-feedback.is-error { color: #dc2626; }
 
 @media (max-width: 700px) {
-  .registration-info-page .overflow-x-auto { overflow: visible; }
-  .registration-info-page .data-table,
-  .registration-info-page .data-table tbody,
-  .registration-info-page .data-table tr,
-  .registration-info-page .data-table td { display: block; width: 100%; }
-  .registration-info-page .data-table { min-width: 0; }
-  .registration-info-page .data-table thead { display: none; }
-  .registration-info-page .data-table tr {
+  .membership-applications-page .overflow-x-auto { overflow: visible; }
+  .membership-applications-page .data-table,
+  .membership-applications-page .data-table tbody,
+  .membership-applications-page .data-table tr,
+  .membership-applications-page .data-table td { display: block; width: 100%; }
+  .membership-applications-page .data-table { min-width: 0; }
+  .membership-applications-page .data-table thead { display: none; }
+  .membership-applications-page .data-table tr {
     padding: 0.85rem 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
-  .registration-info-page .data-table td {
+  .membership-applications-page .data-table td {
     display: grid;
     grid-template-columns: 5.5rem minmax(0, 1fr);
     gap: 0.5rem;
@@ -239,13 +239,13 @@
     border: 0;
     overflow-wrap: anywhere;
   }
-  .registration-info-page .data-table td::before {
+  .membership-applications-page .data-table td::before {
     content: attr(data-label);
     color: #64748b;
     font-size: 0.75rem;
   }
-  .registration-info-page .data-table td[data-label="操作"] { display: block; margin-top: 0.45rem; }
-  .registration-info-page .data-table td[data-label="操作"]::before { display: none; }
+  .membership-applications-page .data-table td[data-label="操作"] { display: block; margin-top: 0.45rem; }
+  .membership-applications-page .data-table td[data-label="操作"]::before { display: none; }
 }
   </style>
 </head>
@@ -464,7 +464,7 @@
       }
       if (!response.ok) {
         const result = await response.json().catch(() => ({}));
-        throw new Error(result.message || '请求失败');
+        throw new Error(result.detail || result.message || '请求失败');
       }
       return response;
     }
@@ -562,39 +562,30 @@
       }
     }
 
-    function csvCell(value) {
-      let text = value === null || value === undefined ? '' : String(value);
-      // 防止 Excel 将前导字符解释为公式
-      if (/^[=+\-@]/.test(text)) text = `'${text}`;
-      return `"${text.replace(/"/g, '""')}"`;
-    }
-
     async function exportCsv() {
+      const exportButton = document.getElementById('export-button');
       setFeedback('正在生成 CSV…');
+      exportButton.disabled = true;
       try {
-        const params = new URLSearchParams({ ...readFilters(), page: '1', limit: '1000' });
-        const response = await handleResponse(await fetch(`/api/membership-applications?${params}`, { headers: getAuthHeaders() }));
-        const data = await response.json();
-        const items = data.membership_applications || [];
-        const headers = ['姓名', '学号', '学院', '年级', '联系电话', '电子邮箱', '自我介绍', '加入期望', '提交时间'];
-        const rows = items.map((item) => [
-          item.name, item.studentId, item.college, item.grade,
-          item.phone, item.email, item.self_introduction, item.expectation, item.createdAt,
-        ]);
-        const csv = [headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n');
-        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const params = new URLSearchParams(readFilters());
+        const response = await handleResponse(await fetch(
+          `/api/membership-applications/export.csv?${params}`,
+          { headers: getAuthHeaders() },
+        ));
+        const blob = await response.blob();
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        const now = new Date();
-        const localDate = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
-          .map((value, index) => index === 0 ? String(value) : String(value).padStart(2, '0'))
-          .join('-');
-        link.download = `入会申请-${localDate}.csv`;
+        const disposition = response.headers.get('Content-Disposition') || '';
+        const filenameMatch = disposition.match(/filename="([^"]+)"/);
+        link.download = filenameMatch?.[1] || 'membership-applications.csv';
         link.click();
         URL.revokeObjectURL(link.href);
-        setFeedback(`CSV 已生成，共 ${items.length} 条。`);
+        const count = response.headers.get('X-Export-Count');
+        setFeedback(count === null ? 'CSV 已生成。' : `CSV 已生成，共 ${count} 条。`);
       } catch (error) {
         setFeedback(error.message || '导出失败，请稍后重试。', true);
+      } finally {
+        exportButton.disabled = false;
       }
     }
 

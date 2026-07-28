@@ -89,8 +89,8 @@ def login(req: LoginRequest, request: Request):
     if not req.username or not req.password:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "用户名和密码不能为空")
 
-    client_key = get_client_ip(dict(request.headers))
-    if not login_limiter.is_allowed(client_key):
+    client_key = get_client_ip(request)
+    if login_limiter.is_blocked(client_key):
         raise HTTPException(
             status.HTTP_429_TOO_MANY_REQUESTS,
             "登录尝试过于频繁，请稍后再试",
@@ -99,8 +99,10 @@ def login(req: LoginRequest, request: Request):
     accounts = load_recruitment_officer_accounts()
     officer = next((a for a in accounts if a["username"] == req.username), None)
     if not officer or not verify_password(req.password, officer["password"]):
+        login_limiter.record_failure(client_key)
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "用户名或密码错误")
 
+    login_limiter.clear(client_key)
     expires_delta = timedelta(days=7) if req.remember else timedelta(hours=24)
     now = datetime.now(timezone.utc)
     payload = {

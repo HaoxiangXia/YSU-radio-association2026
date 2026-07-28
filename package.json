@@ -7,11 +7,19 @@
     "start": "cd backend && uv run uvicorn app:app --host 0.0.0.0 --port 5000",
     "dev": "cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000",
     "export:admissions": "bun scripts/export-admissions.js",
-    "init": "bun scripts/init-db.js"
+    "init": "bun scripts/init-db.js",
+    "check:sensitive": "bun scripts/check-sensitive-files.js",
+    "check:source": "bun scripts/check-source.js",
+    "check:python": "cd backend && uv run --frozen python -m compileall -q app.py config models routes utils tests",
+    "test:api": "cd backend && uv run --frozen pytest -q",
+    "test:e2e": "playwright test",
+    "verify": "bun run check:sensitive && bun run check:source && bun run check:python && bun run test:api",
+    "verify:release": "bun run verify && bun run test:e2e"
   },
   "dependencies": {
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0"
   }
 }

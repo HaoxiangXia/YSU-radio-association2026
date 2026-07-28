@@ -10,6 +10,7 @@ node_modules/
 
 # Environment and secrets
 .env
+config/recruitment.local.json
 
 # SQLite database files
 *.sqlite
@@ -28,6 +29,7 @@ AGENTS.md
 CONTEXT.md
 PLAN.md
 artifacts/
+playwright-report/
 scripts/baseline-allowlist.json
 scripts/check.js
 scripts/smoke.js

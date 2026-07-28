@@ -73,6 +73,40 @@ def find_all(
     return {"membership_applications": [dict(row) for row in rows], "total": total}
 
 
+def find_all_for_export(
+    db: sqlite3.Connection,
+    college: str | None = None,
+    grade: str | None = None,
+    search: str | None = None,
+):
+    conditions = []
+    params = []
+
+    if college:
+        conditions.append("college = ?")
+        params.append(college)
+    if grade:
+        conditions.append("grade = ?")
+        params.append(grade)
+    if search:
+        like = f"%{search}%"
+        conditions.append("(name LIKE ? OR studentId LIKE ? OR college LIKE ? OR email LIKE ?)")
+        params.extend([like, like, like, like])
+
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    rows = db.execute(
+        f"""
+        SELECT name, studentId, college, grade, phone, email,
+               self_introduction, expectation, createdAt
+        FROM membership_applications
+        {where}
+        ORDER BY createdAt DESC
+        """,
+        tuple(params),
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
 def find_by_id(db: sqlite3.Connection, id: int):
     row = db.execute("SELECT * FROM membership_applications WHERE id = ?", (id,)).fetchone()
     return dict(row) if row else None
