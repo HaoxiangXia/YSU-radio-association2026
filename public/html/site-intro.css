@@ -320,7 +320,6 @@
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
-  border-radius: 50%;
   filter: drop-shadow(0 0.7rem 1.1rem rgba(47, 116, 178, 0.15));
 }
 
