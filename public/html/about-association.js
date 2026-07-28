@@ -140,12 +140,24 @@
 
   function renderRecentEvents() {
     const container = document.getElementById('recent-events');
-    if (!container || typeof recentEvents === 'undefined' || !Array.isArray(recentEvents)) return;
-    container.innerHTML = recentEvents.map((event) => `
-      <a href="/html/activities.html" class="news-card">
-        <div class="news-card__meta">${event.date}</div>
-        <h3>${event.title}</h3>
-        <p>${event.description}</p>
+    if (
+      !container
+      || typeof recentCompetitionIds === 'undefined'
+      || !Array.isArray(recentCompetitionIds)
+      || typeof competitions === 'undefined'
+      || !Array.isArray(competitions)
+    ) return;
+
+    const competitionById = new Map(competitions.map((competition) => [competition.id, competition]));
+    const recentCompetitions = recentCompetitionIds
+      .map((competitionId) => competitionById.get(competitionId))
+      .filter(Boolean);
+
+    container.innerHTML = recentCompetitions.map((competition) => `
+      <a href="/html/competition-activities.html#${competition.id}" class="news-card">
+        <div class="news-card__meta">${competition.date}</div>
+        <h3>${competition.name}</h3>
+        <p>${competition.description}</p>
       </a>
     `).join('');
   }

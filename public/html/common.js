@@ -4,6 +4,13 @@
 function initNav() {
   const menuBtn = document.querySelector('.menu-btn');
   const mobileMenu = document.querySelector('.mobile-menu');
+  const introReplayBtn = document.querySelector('.intro-replay-btn');
+
+  if (introReplayBtn) {
+    introReplayBtn.addEventListener('click', () => {
+      window.location.assign('/html/index.html');
+    });
+  }
   
   if (menuBtn && mobileMenu) {
     const setMenuOpen = (isOpen) => {
@@ -134,6 +141,16 @@ function initImageViewer() {
 
 // 生成导航栏 HTML
 function getNavHTML() {
+  const introReplayControl = document.body.classList.contains('home-page')
+    ? `
+          <button type="button" class="intro-replay-btn" aria-label="重播首页动画" title="重播首页动画">
+            <svg class="intro-replay-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7"></path>
+            </svg>
+            <span class="intro-replay-btn__label">重播动画</span>
+          </button>`
+    : '';
+
   return `
     <nav class="nav">
       <div class="container">
@@ -141,22 +158,25 @@ function getNavHTML() {
           <img src="/image/brand/association-emblem-white.png" alt="会徽">
           <span>无线电爱好者协会</span>
         </a>
-        <div class="nav-links">
-          <a href="/html/index.html">首页</a>
-          <a href="/html/about-association.html">关于协会</a>
-          <a href="/html/activities.html">协会活动</a>
-          <a href="/html/honors.html">荣誉成就</a>
-          <a href="/html/trainings.html">培训教学</a>
-          <a href="/html/membership-application.html">入会申请</a>
-          <a href="/html/admission.html">录取查询</a>
+        <div class="nav-actions">
+          <div class="nav-links">
+            <a href="/html/index.html">首页</a>
+            <a href="/html/about-association.html">关于协会</a>
+            <a href="/html/activities.html">协会活动</a>
+            <a href="/html/honors.html">荣誉成就</a>
+            <a href="/html/trainings.html">培训教学</a>
+            <a href="/html/membership-application.html">入会申请</a>
+            <a href="/html/admission.html">录取查询</a>
+          </div>
+          ${introReplayControl}
+          <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-navigation" aria-label="打开菜单">
+            <span class="menu-btn__icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
         </div>
-        <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-navigation" aria-label="打开菜单">
-          <span class="menu-btn__icon" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </button>
       </div>
       <div class="mobile-menu" id="mobile-navigation">
         <a href="/html/index.html">首页</a>

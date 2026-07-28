@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  const INTRO_KEY = 'radio-intro-shown-v3';
   const FOCUS_COMPLETE_MS = 3700;
   const FORCE_EXIT_MS = 5000;
   const EXIT_DURATION_MS = 460;
@@ -35,26 +34,11 @@
     if (!intro) return;
 
     const query = new URLSearchParams(window.location.search);
-    const forcePlay = query.get('intro') === '1';
     const forceSkip = query.get('intro') === '0';
 
     if (forceSkip) {
-      try {
-        sessionStorage.setItem(INTRO_KEY, '1');
-      } catch (error) {
-        // Storage may be unavailable in privacy-restricted contexts.
-      }
       removeIntro(intro);
       return;
-    }
-
-    try {
-      if (!forcePlay && sessionStorage.getItem(INTRO_KEY) === '1') {
-        removeIntro(intro);
-        return;
-      }
-    } catch (error) {
-      // Continue without session persistence when storage is unavailable.
     }
 
     const canvas = document.getElementById('site-intro-canvas');
@@ -102,14 +86,6 @@
         phase: Math.random() * Math.PI * 2,
         brightness: 0.38 + Math.random() * 0.62,
       });
-    }
-
-    function markShown() {
-      try {
-        sessionStorage.setItem(INTRO_KEY, '1');
-      } catch (error) {
-        // Storage may be unavailable in privacy-restricted contexts.
-      }
     }
 
     function setProgress(value) {
@@ -266,7 +242,6 @@
       leaving = true;
       exitStartedAt = performance.now();
       window.clearTimeout(forceExitTimer);
-      markShown();
       intro.classList.remove('is-waiting');
       intro.classList.add('is-leaving');
       intro.setAttribute('aria-hidden', 'true');

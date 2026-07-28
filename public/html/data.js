@@ -8,23 +8,11 @@ const stats = [
   { label: '累计竞赛获奖', value: '250', suffix: '+', icon: 'Award' },
 ];
 
-// 近期活动
-const recentEvents = [
-  {
-    title: '展望杯嵌入式大赛',
-    date: '2025年5月',
-    description: '协会年度重要赛事，旨在激发学生对嵌入式系统的兴趣与创新能力',
-  },
-  {
-    title: 'DIY达人赛',
-    date: '2025年6月',
-    description: '展示学生动手能力的平台，鼓励创新思维和实践能力',
-  },
-  {
-    title: '指尖风暴大赛',
-    date: '2025年11月',
-    description: '专注于电路设计与制作的竞赛，提升学生的专业技能',
-  },
+// 最新动态引用的竞赛记录，内容统一从 competitions 读取
+const recentCompetitionIds = [
+  'zhanwang-cup-2026',
+  'electronic-design-2025',
+  'diy-2024',
 ];
 
 // 协会荣誉
@@ -241,6 +229,7 @@ const departments = [
 // 竞赛活动
 const competitions = [
   {
+    id: 'zhanwang-cup-2024',
     name: '展望杯嵌入式大赛',
     year: 2024,
     date: '2024年5月8日',
@@ -260,6 +249,7 @@ const competitions = [
     ],
   },
   {
+    id: 'zhanwang-cup-2026',
     name: '展望杯嵌入式大赛',
     year: 2026,
     date: '2026年5月10日',
@@ -277,6 +267,7 @@ const competitions = [
     ],
   },
   {
+    id: 'electronic-design-2025',
     name: '大学生电子设计大赛',
     year: 2025,
     date: '2025年7月30日',
@@ -296,6 +287,7 @@ const competitions = [
     ],
   },
   {
+    id: 'fingertip-storm-2023',
     name: '指尖风暴大赛',
     year: 2023,
     date: '2023年11月18日',
@@ -315,6 +307,7 @@ const competitions = [
     ],
   },
   {
+    id: 'diy-2024',
     name: 'DIY达人赛',
     year: 2024,
     date: '2024年12月6日',

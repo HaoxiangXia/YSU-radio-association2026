@@ -36,6 +36,22 @@
   border-radius: 50%;
   background: var(--page-accent);
 }
+
+.site-page.activity-page .activity-record[id] {
+  scroll-margin-top: calc(var(--nav-height) + 1.25rem);
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.site-page.activity-page .activity-record[id]:focus {
+  outline: none;
+}
+
+.site-page.activity-page .activity-record[id]:target {
+  border-color: rgba(37, 99, 235, 0.48);
+  box-shadow:
+    0 20px 48px rgba(37, 99, 235, 0.14),
+    0 0 0 3px rgba(96, 165, 250, 0.12);
+}
   </style>
 </head>
 <body class="site-page sub-page activity-page competition-page">
@@ -73,7 +89,7 @@
       if (!container) return;
       
       container.innerHTML = competitions.map((comp, index) => `
-        <article class="card card-section activity-record activity-record--competition">
+        <article id="${comp.id}" class="card card-section activity-record activity-record--competition" tabindex="-1">
           <div class="activity-record__rail">
             <span class="activity-record__index">${String(index + 1).padStart(2, '0')}</span>
             <span class="activity-record__date">${comp.date}</span>
@@ -119,8 +135,43 @@
       `).join('');
     }
 
+    function focusCompetitionFromHash() {
+      if (!window.location.hash) return;
+
+      const resetInvalidHash = () => {
+        if (document.activeElement?.matches('.activity-record')) {
+          document.activeElement.blur();
+        }
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      };
+
+      let targetId = '';
+      try {
+        targetId = decodeURIComponent(window.location.hash.slice(1));
+      } catch (error) {
+        resetInvalidHash();
+        return;
+      }
+
+      const target = document.getElementById(targetId);
+      if (!target) {
+        resetInvalidHash();
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ block: 'start', behavior: 'auto' });
+        target.focus({ preventScroll: true });
+      });
+    }
+
     // 页面加载后渲染
-    document.addEventListener('DOMContentLoaded', renderCompetitions);
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCompetitions();
+      focusCompetitionFromHash();
+      window.addEventListener('hashchange', focusCompetitionFromHash);
+      window.addEventListener('load', focusCompetitionFromHash, { once: true });
+    });
   </script>
 </body>
 </html>
