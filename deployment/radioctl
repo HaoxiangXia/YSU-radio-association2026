@@ -147,17 +147,17 @@ command_deploy() {
     python3 "$EXTRACT_TOOL" "$archive" "$staging"
     [[ -f "$staging/backend/pyproject.toml" ]] || fail "归档缺少 backend/pyproject.toml"
     [[ -f "$staging/backend/uv.lock" ]] || fail "归档缺少 backend/uv.lock"
-
-    (
-        cd "$staging/backend"
-        uv sync --frozen --no-dev --python 3.11
-    )
-    validate_release_config "$staging"
     printf '%s\n' "$commit" >"$staging/RELEASE_COMMIT"
     printf '%s\n' "$actual_checksum" >"$staging/RELEASE_ARCHIVE_SHA256"
-    chown -R root:"$APP_USER" "$staging"
-    chmod -R g-w,o-w "$staging"
     mv "$staging" "$release"
+
+    (
+        cd "$release/backend"
+        uv sync --frozen --no-dev --python 3.11
+    )
+    validate_release_config "$release"
+    chown -R root:"$APP_USER" "$release"
+    chmod -R g-w,o-w "$release"
 
     backup_database "predeploy"
     if [[ -L "$CURRENT_LINK" ]]; then

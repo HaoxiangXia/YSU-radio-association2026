@@ -63,6 +63,8 @@ uv python install 3.11
 if ! id "$APP_USER" >/dev/null 2>&1; then
     useradd --system --home-dir "$STATE_ROOT" --shell /usr/sbin/nologin "$APP_USER"
 fi
+chown -R root:"$APP_USER" "$UV_PYTHON_INSTALL_DIR"
+chmod -R g+rX,o-rwx "$UV_PYTHON_INSTALL_DIR"
 
 install -d -o root -g "$APP_USER" -m 0750 \
     "$APP_ROOT" "$APP_ROOT/releases" "$CONFIG_DIR" "$STATE_ROOT"
