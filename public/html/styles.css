@@ -2706,15 +2706,6 @@ textarea.form-input {
     text-align: center;
   }
 
-  .site-page.training-page .training-archive-item > div:first-child {
-    display: block;
-  }
-
-  .site-page.training-page .training-archive-item > div:first-child > span {
-    display: block;
-    margin-top: 0.35rem;
-  }
-
   .site-page.query-page .query-form {
     grid-template-columns: 1fr;
     padding: 0.65rem;

@@ -382,8 +382,8 @@ const trainingTimeline = [
   },
 ];
 
-// 培训课程表
-const courseSchedule = [
+// 培训课程表（第一学期）
+const courseScheduleSemester1 = [
   { week: '第1周', content: '无线电基础与应用初探' },
   { week: '第2周', content: 'C语言环境配置与基础复习（数组前）' },
   { week: '第3周', content: 'C语言数组进阶、函数与指针基础（结合嵌入式案例）' },
@@ -398,40 +398,14 @@ const courseSchedule = [
   { week: '第12周', content: '结构设计实操' },
 ];
 
-// 往期培训
-const pastTrainings = [
-  {
-    title: '嵌入式系统开发进阶',
-    date: '2024年6月15日 14:00-16:00',
-    location: '信息楼513',
-    instructor: '牛钦',
-    description: '深入讲解嵌入式系统开发的高级技巧，包括RTOS实时操作系统、低功耗设计和硬件加速等内容。',
-    target: '已完成基础嵌入式培训或具有同等水平的学员',
-  },
-  {
-    title: 'SolidWorks建模',
-    date: '2024年6月22日 10:00-12:00',
-    location: '信息楼513',
-    instructor: '岑文杰',
-    description: '掌握三维建模的核心逻辑、草图绘制、特征创建及模型装配等基础技能，快速入门 SolidWorks 软件的使用。',
-    target: '对建模感兴趣的所有同学，无需基础',
-  },
-];
-
-// 技能标签
-const skillTags = [
-  'C语言编程', '嵌入式开发', '焊接技术', 'SolidWorks建模',
-  'PCB设计', 'Linux操作系统', 'Web开发', '人工智能基础',
-  '信号处理', '射频电路设计',
-];
-
-// 培训统计
-const trainingStats = [
-  { label: '2024年度培训场次', value: '23场' },
-  { label: '线下焊接实训', value: '4场' },
-  { label: '2023-2024学年参与人数', value: '480人' },
-  { label: '寒假SW教学参与', value: '312人' },
-  { label: '认证讲师人数', value: '18人' },
+// 培训课程表（第二学期）
+const courseScheduleSemester2 = [
+  { week: '第1周', content: '电机驱动（例TB6612）与编码器读取、模块式开发' },
+  { week: '第2周', content: '控制入门与PID闭环（vofa）' },
+  { week: '第3周', content: '状态机编程与调试功能' },
+  { week: '第4周', content: 'MPU6050数据的读取与处理' },
+  { week: '第5周', content: '绘制最小系统板及打板下单' },
+  { week: '第6周', content: '焊接' },
 ];
 
 // 学院列表

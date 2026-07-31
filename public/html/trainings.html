@@ -98,24 +98,6 @@
   font-size: clamp(1.25rem, 2.5vw, 1.7rem);
 }
 
-.site-page.training-page .training-overview {
-  background: #ffffff;
-}
-
-.site-page.training-page .training-stats .stat-card {
-  border-top: 2px solid rgba(8, 127, 140, 0.48);
-}
-
-.site-page.training-page .training-stats .stat-value {
-  color: var(--page-accent);
-}
-
-.site-page.training-page .training-skills .tag {
-  border-color: rgba(8, 127, 140, 0.17);
-  background: rgba(236, 254, 255, 0.76);
-  color: #0f6973;
-}
-
 .site-page.training-page .training-roadmap .timeline-item {
   padding: 0.2rem 0 1.55rem 2rem;
 }
@@ -190,26 +172,6 @@
   </header>
 
   <main class="page-container subpage-content training-content">
-    <!-- 培训体系概述 -->
-    <section class="card card-section mb-6 training-section training-overview">
-      <div class="training-section__heading">
-        <h2 class="card-title">培训体系</h2>
-      </div>
-      <p class="text-gray-600 leading-relaxed mb-4">
-        协会建立了完善的培训体系，从基础入门到高级进阶，涵盖嵌入式开发、编程、机械设计等多个方向。通过系统的课程安排和实践项目，帮助成员快速成长。
-      </p>
-      
-      <!-- 培训统计 -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6 training-stats" id="training-stats">
-        <!-- 统计内容由 JavaScript 动态生成 -->
-      </div>
-      
-      <!-- 技能标签 -->
-      <div class="flex flex-wrap gap-2 training-skills" id="skill-tags">
-        <!-- 技能标签由 JavaScript 动态生成 -->
-      </div>
-    </section>
-
     <!-- 培训时间线 -->
     <section class="card card-section mb-6 training-section training-roadmap">
       <div class="training-section__heading">
@@ -225,6 +187,32 @@
       <div class="training-section__heading">
         <h2 class="card-title">每周课程安排</h2>
       </div>
+      <p class="text-gray-600 leading-relaxed">
+        2026-2027学年<br>
+        coming soon
+      </p>
+    </section>
+
+    <!-- 往期培训 -->
+    <section class="card card-section mb-6 training-section training-archive">
+      <div class="training-section__heading">
+        <h2 class="card-title">往期培训</h2>
+      </div>
+      <h3 class="font-bold text-gray-800 mb-2">第一学期</h3>
+      <div class="overflow-x-auto mb-4">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 5rem;">周次</th>
+              <th>课程内容</th>
+            </tr>
+          </thead>
+          <tbody id="course-schedule-1">
+            <!-- 课程内容由 JavaScript 动态生成 -->
+          </tbody>
+        </table>
+      </div>
+      <h3 class="font-bold text-gray-800 mb-2">第二学期</h3>
       <div class="overflow-x-auto">
         <table class="data-table">
           <thead>
@@ -233,28 +221,11 @@
               <th>课程内容</th>
             </tr>
           </thead>
-          <tbody id="course-schedule">
+          <tbody id="course-schedule-2">
             <!-- 课程内容由 JavaScript 动态生成 -->
           </tbody>
         </table>
       </div>
-    </section>
-
-    <!-- 往期培训 -->
-    <section class="card card-section mb-6 training-section training-archive">
-      <div class="training-section__heading">
-        <h2 class="card-title">往期培训</h2>
-      </div>
-      <div id="past-trainings">
-        <!-- 往期培训内容由 JavaScript 动态生成 -->
-      </div>
-    </section>
-
-    <!-- 入会申请号召 -->
-    <section class="card card-section cta-card text-center p-8 training-cta">
-      <h2 class="card-title">加入我们</h2>
-      <p class="text-gray-600 mb-6">对技术充满热情？想要学习新技能？加入无线电爱好者协会，开启你的技术之旅！</p>
-      <a href="/html/membership-application.html" class="btn-solid">提交入会申请</a>
     </section>
   </main>
 
@@ -269,29 +240,6 @@
   <script src="/html/data.js"></script>
   <script src="/html/common.js"></script>
   <script>
-    // 渲染培训统计
-    function renderTrainingStats() {
-      const container = document.getElementById('training-stats');
-      if (!container) return;
-      
-      container.innerHTML = trainingStats.map(stat => `
-        <div class="stat-card">
-          <div class="stat-value">${stat.value}</div>
-          <div class="stat-label">${stat.label}</div>
-        </div>
-      `).join('');
-    }
-
-    // 渲染技能标签
-    function renderSkillTags() {
-      const container = document.getElementById('skill-tags');
-      if (!container) return;
-      
-      container.innerHTML = skillTags.map(tag => `
-        <span class="tag">${tag}</span>
-      `).join('');
-    }
-
     // 渲染培训时间线
     function renderTrainingTimeline() {
       const container = document.getElementById('training-timeline');
@@ -308,10 +256,15 @@
 
     // 渲染课程安排
     function renderCourseSchedule() {
-      const tbody = document.getElementById('course-schedule');
+      renderScheduleTable('course-schedule-1', courseScheduleSemester1);
+      renderScheduleTable('course-schedule-2', courseScheduleSemester2);
+    }
+
+    function renderScheduleTable(id, schedule) {
+      const tbody = document.getElementById(id);
       if (!tbody) return;
       
-      tbody.innerHTML = courseSchedule.map(item => `
+      tbody.innerHTML = schedule.map(item => `
         <tr>
           <td class="font-medium text-gray-800">${item.week}</td>
           <td class="text-gray-600">${item.content}</td>
@@ -319,34 +272,10 @@
       `).join('');
     }
 
-    // 渲染往期培训
-    function renderPastTrainings() {
-      const container = document.getElementById('past-trainings');
-      if (!container) return;
-      
-      container.innerHTML = pastTrainings.map(training => `
-        <article class="info-panel training-archive-item">
-          <div class="flex items-start justify-between mb-2">
-            <h3 class="font-bold text-gray-800">${training.title}</h3>
-            <span class="text-sm text-gray-500">${training.date}</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-2">${training.description}</p>
-          <div class="training-archive-item__meta">
-            <span><strong>地点</strong>${training.location}</span>
-            <span><strong>讲师</strong>${training.instructor}</span>
-            <span><strong>对象</strong>${training.target}</span>
-          </div>
-        </article>
-      `).join('');
-    }
-
     // 页面加载后渲染
     document.addEventListener('DOMContentLoaded', () => {
-      renderTrainingStats();
-      renderSkillTags();
       renderTrainingTimeline();
       renderCourseSchedule();
-      renderPastTrainings();
     });
   </script>
 </body>
