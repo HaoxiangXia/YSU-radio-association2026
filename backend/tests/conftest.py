@@ -93,7 +93,6 @@ def make_application(student_id: str = "202600000002", **overrides) -> dict:
         "self_introduction": "这是用于自动化测试的自我介绍内容。",
         "expectation": "希望学习无线电相关知识。",
         "privacyAccepted": True,
-        "crossBorderAccepted": True,
     }
     application.update(overrides)
     return application

@@ -60,6 +60,8 @@ def test_sqlite_backup_includes_wal_and_restores(tmp_path):
     checksum = sqlite_backup.backup_database(source, backup)
     assert checksum == sqlite_backup.verify_checksum(backup)
     assert backup.with_suffix(".sqlite.sha256").is_file()
+    assert not list(backup.parent.glob(".*.tmp-wal"))
+    assert not list(backup.parent.glob(".*.tmp-shm"))
 
     safety_backup, restored_checksum = sqlite_backup.restore_database(
         backup,
@@ -68,6 +70,8 @@ def test_sqlite_backup_includes_wal_and_restores(tmp_path):
     )
     assert safety_backup is None
     assert len(restored_checksum) == 64
+    assert not list(tmp_path.glob(".restored.sqlite.restore.*.tmp-wal"))
+    assert not list(tmp_path.glob(".restored.sqlite.restore.*.tmp-shm"))
     with sqlite3.connect(restored) as restored_connection:
         assert restored_connection.execute(
             "SELECT value FROM records"

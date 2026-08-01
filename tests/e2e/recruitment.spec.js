@@ -42,6 +42,20 @@ async function expectMinimumTouchTarget(locator) {
 }
 
 
+async function expectFormControlsUsePageFont(page, selector) {
+  const fonts = await page.locator(selector).evaluateAll((controls) => ({
+    page: getComputedStyle(document.body).fontFamily,
+    controls: controls.map((control) => getComputedStyle(control).fontFamily),
+    placeholders: controls
+      .filter((control) => control.matches("input, textarea"))
+      .map((control) => getComputedStyle(control, "::placeholder").fontFamily),
+  }));
+
+  expect(fonts.controls).toEqual(fonts.controls.map(() => fonts.page));
+  expect(fonts.placeholders).toEqual(fonts.placeholders.map(() => fonts.page));
+}
+
+
 function fakeApplicant(testInfo, offset = 0) {
   const projectOffsets = {
     "desktop-chromium": 0,
@@ -75,6 +89,7 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
   await page.goto("/html/membership-application.html");
   await expect(page.locator("#submit-btn")).toBeEnabled();
   await expect(page.locator("#application-notice")).toContainText("开放入会申请");
+  await expectFormControlsUsePageFont(page, "#membership-application-form .form-input");
 
   await page.locator("#registration-name").fill("自动化申请人");
   await page.locator("#registration-student-id").fill(applicant.studentId);
@@ -91,7 +106,9 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
     .fill("这是 Playwright 自动化测试使用的自我介绍内容。");
   await page.locator("#registration-expectation").fill("希望参与协会技术活动。");
   await page.locator("#privacy-accepted").check();
-  await page.locator("#cross-border-accepted").check();
+  await expect(page.locator('#membership-application-form input[type="checkbox"]')).toHaveCount(1);
+  await expect(page.locator("#submission-reminder")).toContainText("请确保填写内容真实、准确、完整");
+  await expect(page.locator("body")).not.toContainText("中国香港");
   await page.locator("#submit-btn").click();
 
   await expect(page.locator("#success-modal")).toHaveClass(/open/);
@@ -118,7 +135,6 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
       self_introduction: "这是后台浏览器流程使用的测试自我介绍。",
       expectation: "验证详情和删除流程。",
       privacyAccepted: true,
-      crossBorderAccepted: true,
     },
   });
   expect(createResponse.status()).toBe(201);
@@ -188,6 +204,7 @@ test("申请人只能用匹配的学号和手机查询本人录取结果", async
 
   await page.goto("/html/admission.html");
   await expect(page.locator("#query-button")).toBeEnabled();
+  await expectFormControlsUsePageFont(page, ".query-form .form-input");
   await page.locator("#student-id-input").fill("202600000001");
   await page.locator("#phone-input").fill("13800000001");
   await page.locator("#query-button").click();

@@ -1282,7 +1282,10 @@ button:focus-visible {
   padding: 0.75rem 1rem;
   border: 1px solid #d7dee8;
   border-radius: 6px;
+  font-family: inherit;
   font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
   background: #fff;
   color: #333;
   transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
@@ -1299,8 +1302,22 @@ button:focus-visible {
 }
 
 .form-input::placeholder {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
   color: #6b7280;
   opacity: 1;
+}
+
+select.form-input:invalid {
+  color: #6b7280;
+}
+
+select.form-input option {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #172033;
 }
 
 textarea.form-input {

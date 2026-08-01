@@ -44,6 +44,7 @@ def test_radioctl_and_templates_keep_preproduction_private():
     assert "--host 127.0.0.1 --port 5000" in service
     assert "--host 0.0.0.0" not in service
     assert "listen 127.0.0.1:8080;" in nginx
+    assert "client_max_body_size 3m;" in nginx
     assert "listen 80" not in nginx
     assert "listen 443" not in nginx
     assert "RECRUITMENT_CONFIG_PATH=/var/lib/radio-association/private/recruitment.json" in app_env

@@ -52,6 +52,11 @@ def write_atomic(path: Path, content: str, mode: int = 0o640) -> None:
         temporary.unlink(missing_ok=True)
 
 
+def remove_sqlite_sidecars(path: Path) -> None:
+    for suffix in ("-wal", "-shm"):
+        path.with_name(f"{path.name}{suffix}").unlink(missing_ok=True)
+
+
 def backup_database(source: Path, destination: Path) -> str:
     source = source.resolve()
     destination = destination.resolve()
@@ -74,6 +79,7 @@ def backup_database(source: Path, destination: Path) -> str:
         os.replace(temporary, destination)
     finally:
         temporary.unlink(missing_ok=True)
+        remove_sqlite_sidecars(temporary)
 
     checksum = sha256_file(destination)
     write_atomic(
@@ -120,6 +126,7 @@ def restore_database(source: Path, destination: Path, safety_directory: Path) ->
         destination.with_name(f"{destination.name}-shm").unlink(missing_ok=True)
     finally:
         temporary.unlink(missing_ok=True)
+        remove_sqlite_sidecars(temporary)
 
     return safety_backup, sha256_file(destination)
 

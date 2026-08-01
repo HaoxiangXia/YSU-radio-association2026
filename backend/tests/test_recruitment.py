@@ -29,7 +29,7 @@ def test_public_config_excludes_private_fields(default_client):
     body = response.json()
     assert body["application"]["status"] == "open"
     assert body["admissionQuery"]["enabled"] is True
-    assert body["application"]["crossBorderNotice"]
+    assert "crossBorderNotice" not in body["application"]
     assert "retentionUntil" not in body["application"]
     assert "path" not in json.dumps(body).lower()
 

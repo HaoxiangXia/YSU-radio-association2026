@@ -275,7 +275,6 @@ def get_public_recruitment_config(
             "endsAt": config.application.ends_at,
             "notice": config.application.notice,
             "privacyNotice": config.application.privacy_notice,
-            "crossBorderNotice": config.application.cross_border_notice,
         },
         "admissionQuery": {
             "enabled": config.admission_query.enabled,
