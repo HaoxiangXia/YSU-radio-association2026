@@ -98,7 +98,9 @@ install_public_config() {
 install_common_files() {
     local log_format_source="$1"
     validate_source_file "$log_format_source"
-    install -d -o root -g root -m 0755 "$ACME_ROOT/.well-known/acme-challenge"
+    getent group www-data >/dev/null || fail "服务器缺少 Nginx 的 www-data 用户组"
+    install -d -o root -g www-data -m 0750 "$ACME_ROOT" "$ACME_ROOT/.well-known"
+    install -d -o root -g www-data -m 2750 "$ACME_ROOT/.well-known/acme-challenge"
     install -o root -g root -m 0644 "$log_format_source" "$LOG_FORMAT_TARGET"
 }
 
