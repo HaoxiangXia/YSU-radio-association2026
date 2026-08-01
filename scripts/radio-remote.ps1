@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory = $true)]
     [ValidateSet(
         "Inventory", "Bootstrap", "Deploy", "Configure", "Admissions",
-        "Status", "Backup", "Rollback", "Restore", "Tunnel"
+        "Status", "Backup", "Rollback", "Restore", "Tunnel",
+        "PublicPrepare", "PublicEnable", "PublicStatus"
     )]
     [string]$Action,
 
@@ -20,7 +21,10 @@ param(
     [string]$IdentityFile,
     [string]$Commit,
     [string]$File,
-    [string]$BackupPath
+    [string]$BackupPath,
+
+    [ValidatePattern("^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$")]
+    [string]$Domain
 )
 
 $ErrorActionPreference = "Stop"
@@ -60,6 +64,49 @@ function Send-File {
     if ($LASTEXITCODE -ne 0) {
         throw "SCP upload failed with exit code $LASTEXITCODE"
     }
+}
+
+function Invoke-PublicSiteAction {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("prepare", "enable", "status")]
+        [string]$PublicAction
+    )
+    if (-not $Domain) {
+        throw "$PublicAction requires -Domain <完整域名>"
+    }
+
+    $script = Join-Path $RepositoryRoot "scripts\configure-public-site.sh"
+    $token = [Guid]::NewGuid().ToString("N")
+    $remoteScript = "/tmp/radio-public-$token.sh"
+
+    if ($PublicAction -eq "status") {
+        Send-File $script $remoteScript
+        Invoke-Ssh "trap 'rm -f $remoteScript' EXIT; sudo bash $remoteScript status $Domain"
+        return
+    }
+
+    $logFormat = Join-Path $RepositoryRoot "deployment\nginx\radio-association-log-format.conf"
+    $remoteLogFormat = "/tmp/radio-nginx-log-$token.conf"
+    if ($PublicAction -eq "prepare") {
+        $template = Join-Path $RepositoryRoot "deployment\nginx\radio-association-public-http.conf.template"
+        $remoteTemplate = "/tmp/radio-nginx-http-$token.conf.template"
+        Send-File $script $remoteScript
+        Send-File $template $remoteTemplate
+        Send-File $logFormat $remoteLogFormat
+        Invoke-Ssh "trap 'rm -f $remoteScript $remoteTemplate $remoteLogFormat' EXIT; sudo bash $remoteScript prepare $Domain $remoteTemplate $remoteLogFormat"
+        return
+    }
+
+    $template = Join-Path $RepositoryRoot "deployment\nginx\radio-association-public-https.conf.template"
+    $renewHook = Join-Path $RepositoryRoot "scripts\ops\reload-radio-nginx.sh"
+    $remoteTemplate = "/tmp/radio-nginx-https-$token.conf.template"
+    $remoteRenewHook = "/tmp/radio-nginx-renew-$token.sh"
+    Send-File $script $remoteScript
+    Send-File $template $remoteTemplate
+    Send-File $logFormat $remoteLogFormat
+    Send-File $renewHook $remoteRenewHook
+    Invoke-Ssh "trap 'rm -f $remoteScript $remoteTemplate $remoteLogFormat $remoteRenewHook' EXIT; sudo bash $remoteScript enable $Domain $remoteTemplate $remoteLogFormat $remoteRenewHook"
 }
 
 function Resolve-Commit {
@@ -169,5 +216,14 @@ switch ($Action) {
         if ($LASTEXITCODE -ne 0) {
             throw "SSH tunnel failed with exit code $LASTEXITCODE"
         }
+    }
+    "PublicPrepare" {
+        Invoke-PublicSiteAction -PublicAction "prepare"
+    }
+    "PublicEnable" {
+        Invoke-PublicSiteAction -PublicAction "enable"
+    }
+    "PublicStatus" {
+        Invoke-PublicSiteAction -PublicAction "status"
     }
 }

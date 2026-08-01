@@ -1,4 +1,4 @@
-# 预生产运维速查
+# 部署与运维速查
 
 ## 1. 执行前
 
@@ -6,7 +6,7 @@
 - 已创建服务器快照；
 - 本机 SSH 公钥已导入，并已用新连接验证；
 - 当前提交已通过 GitHub Actions；
-- 安全组和防火墙仍只保留必要 SSH，未开放 80、443、5000。
+- 腾讯云防火墙只开放当前阶段所需端口；永不开放 5000、8080。
 
 在 PowerShell 中设置本次参数：
 
@@ -74,3 +74,30 @@ sudo systemctl list-timers radio-association-backup.timer
 ```
 
 不要执行旧 `scripts/deploy.sh`、运行目录 `git pull/reset`、直接 `cp` 活跃数据库或 `scripts/init-db.js`。
+
+## 5. 首次启用公网 HTTPS
+
+公网开放分两步，避免在域名尚未生效时直接暴露应用：
+
+```powershell
+$Domain = "wuxie.luciangray.net"
+.\scripts\radio-remote.ps1 -Action PublicPrepare -Server $Server -User $User -IdentityFile $Key -Domain $Domain
+```
+
+`PublicPrepare` 只在 80 端口提供 ACME 验证路径和 503 准备页，申请后台及业务页面仍不对公网开放。随后将域名唯一的 A 记录指向服务器公网 IPv4，并在腾讯云防火墙开放 TCP 443。确认公网 DNS 已生效后执行：
+
+```powershell
+.\scripts\radio-remote.ps1 -Action PublicEnable -Server $Server -User $User -IdentityFile $Key -Domain $Domain
+.\scripts\radio-remote.ps1 -Action PublicStatus -Server $Server -User $User -IdentityFile $Key -Domain $Domain
+```
+
+`PublicEnable` 使用 HTTP-01 签发 Let's Encrypt 证书，启用 HTTPS 和 HTTP 跳转，并启用证书自动续期 timer。它不会修改招新业务开关。申请与录取查询必须保持关闭，直到负责人填写真实配置并明确确认正式开放。
+
+常规公网验收至少包括：
+
+- `http://域名` 跳转到同域名 HTTPS；
+- 证书域名、证书链和有效期正确；
+- 首页、入会申请关闭页、录取查询关闭页和负责人登录正常；
+- `/ops/`、公网 5000 和公网 8080 不可访问；
+- `sudo certbot renew --dry-run` 成功；
+- 校园网、校外网络和手机流量至少各验证一次。

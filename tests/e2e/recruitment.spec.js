@@ -89,6 +89,14 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
   await page.goto("/html/membership-application.html");
   await expect(page.locator("#submit-btn")).toBeEnabled();
   await expect(page.locator("#application-notice")).toContainText("开放入会申请");
+  await expect(page.locator("#form-status")).toBeEmpty();
+  await expect(page.locator("#membership-application-grade option")).toHaveText([
+    "请选择年级",
+    "大一",
+    "大二",
+    "大三",
+    "大四",
+  ]);
   await expectFormControlsUsePageFont(page, "#membership-application-form .form-input");
 
   await page.locator("#registration-name").fill("自动化申请人");
@@ -97,7 +105,7 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
     label: "信息科学与工程学院",
   });
   await page.locator("#membership-application-grade").selectOption({
-    label: "2026级",
+    label: "大一",
   });
   await page.locator("#registration-phone").fill(applicant.phone);
   await page.locator("#registration-email").fill("browser@example.test");
@@ -129,7 +137,7 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
       name: unsafeName,
       studentId: applicant.studentId,
       college: "机械工程学院",
-      grade: "2025级",
+      grade: "大二",
       phone: applicant.phone,
       email: "officer-flow@example.test",
       self_introduction: "这是后台浏览器流程使用的测试自我介绍。",

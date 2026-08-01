@@ -254,10 +254,7 @@
         applicationIsOpen = config.application.status === 'open';
         submitBtn.disabled = !applicationIsOpen;
         submitBtn.textContent = applicationIsOpen ? '提交入会申请' : '入会申请当前不可提交';
-        setFormStatus(
-          config.application.notice,
-          !applicationIsOpen,
-        );
+        setFormStatus('', false);
       } catch (error) {
         applicationIsOpen = false;
         submitBtn.disabled = true;
