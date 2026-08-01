@@ -11,7 +11,7 @@
 | 路径配置 | 环境变量 `DATABASE_PATH`；相对路径基于仓库根目录解析 |
 | 连接参数 | `PRAGMA journal_mode = WAL`、`PRAGMA foreign_keys = ON`、`row_factory = sqlite3.Row`、`check_same_thread=False` |
 | Schema 初始化 | `backend/config/database.py` 的 `initialize_database()` 在建连时执行 `CREATE TABLE IF NOT EXISTS` 并应用待处理的幂等迁移（模块导入/应用启动时自动运行） |
-| 静态数据种子 | `scripts/init-db.js`（Bun，**破坏性**，仅首次部署手动执行） |
+| 静态数据种子 | `scripts/init-db.js`（Bun，**破坏性**，仅用于明确需要重建展示种子数据的本地环境；生产环境禁止运行） |
 
 路由通过 FastAPI 依赖 `get_db`（`backend/config/database.py`）获取连接；每次请求一个连接，用后即关闭。所有 SQL 使用 `?` 位置参数绑定，排序列名走白名单。
 
@@ -123,11 +123,14 @@
 | 录取名单（录取查询） | 生产环境 `/var/lib/radio-association/private/admissions.json`；本地由 `ADMISSIONS_DATA_PATH` 指定 | 负责人网页上传 Excel，经校验和脱敏预览后原子发布；命令行导出仅作备用 |
 | 招新负责人账号 | 环境变量 `RECRUITMENT_OFFICER_ACCOUNTS`（`username:pbkdf2_hash:name;...`） | 哈希用 `scripts/hash-password.py` 生成 |
 | 招新配置（周期、申请表单、录取查询开关等） | JSON 配置文件，路径由 `RECRUITMENT_CONFIG_PATH` 指定 | `backend/config/recruitment.py` 加载并校验 |
+| 隐私确认值 | 不持久化 | `privacyAccepted` 只用于提交时校验，写入数据库前会被移除 |
+
+网页可以原子替换录取名单，但没有“清空测试名单”按钮。交接演练只做 Excel 校验和脱敏预览；正式名单删除或数据到期清理必须先明确范围、备份和恢复方案，再由维护者执行。
 
 ## 常用操作
 
 ```bash
-# 首次部署：初始化静态数据（破坏性，会重建静态表数据）
+# 本地开发：明确需要时重建展示种子数据（破坏性，禁止用于生产）
 bun scripts/init-db.js
 
 # 直接查看数据库（需本机安装 sqlite3 CLI）
@@ -137,4 +140,4 @@ sqlite3 backend/data/database.sqlite
 bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 ```
 
-注意：WAL 模式下数据库目录还会出现 `database.sqlite-wal` / `database.sqlite-shm` 文件，属正常现象；备份时请连同主文件一起处理，或使用 SQLite 的在线备份 API（迁移备份即采用 `Connection.backup`）。
+注意：WAL 模式下数据库目录还会出现 `database.sqlite-wal` / `database.sqlite-shm` 文件，属正常现象。生产服务运行时不得直接复制这些文件或主数据库作为备份，统一使用 `radioctl backup` 调用 SQLite 在线 Backup API，并核对完整性检查和 SHA-256 结果。

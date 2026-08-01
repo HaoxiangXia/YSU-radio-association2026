@@ -113,6 +113,13 @@ radio-association/
     └── fixtures/                 # 隔离的招新和录取测试配置
 ```
 
+### 文档入口
+
+- 接交者首先阅读 [项目交接与接手指南](docs/HANDOVER_GUIDE.md)，交接当天使用 [项目交接验收清单](docs/HANDOVER_CHECKLIST.md)。
+- 招新负责人日常使用 [招新日常运行说明](docs/RECRUITMENT_OPERATIONS.md)，正式开放前完成 [个人信息保护上线确认表](docs/PRIVACY_IMPACT_CHECKLIST.md)。
+- 服务器维护使用 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)；需要理解部署设计时再阅读 [部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)。
+- 数据结构见 [数据库说明](docs/DATABASE.md)；代码命名原因保留在 `docs/adr/`。
+
 ---
 
 ## 快速开始
@@ -153,7 +160,7 @@ uv sync
 ```env
 PORT=5000
 JWT_SECRET="your-secret-key-change-in-production"
-RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$迭代次数$盐$摘要:招新负责人"
+RECRUITMENT_OFFICER_ACCOUNTS="example-officer:pbkdf2_sha256$迭代次数$盐$摘要:示例负责人"
 ```
 
 > **安全提示**：`JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值。若未设置，应用启动时会直接报错。由于值中可能包含 `#` 等字符，建议用双引号包裹。
@@ -165,7 +172,7 @@ RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$迭代次数$盐$摘要:招新
 > ```
 >
 > 将生成的哈希填入环境变量，例如：
-> `RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$100000$...:无协管理员"`
+> `RECRUITMENT_OFFICER_ACCOUNTS="example-officer:pbkdf2_sha256$100000$...:示例负责人"`
 
 ### 4. 初始化本地展示种子数据（可选）
 
@@ -224,6 +231,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | GET | `/api/competitions` | 获取竞赛列表（按年份倒序） |
 | GET | `/api/trainings` | 获取培训记录 |
 | GET | `/api/honors` | 获取荣誉列表 |
+| GET | `/api/association` | 获取协会基本信息 |
 | POST | `/api/membership-applications` | 提交入会申请 |
 | GET | `/api/recruitment/config` | 获取公开招新安排 |
 | POST | `/api/admissions/query` | 按学号和申请手机号查询本人录取结果 |
@@ -237,9 +245,12 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | GET | `/api/recruitment-officers/verify` | 验证 Token 有效性 |
 | GET | `/api/recruitment-officers/profile` | 获取招新负责人信息 |
 | GET | `/api/membership-applications` | 获取入会申请列表（分页/搜索/排序） |
+| GET | `/api/membership-applications/stats` | 获取入会申请统计 |
+| GET | `/api/membership-applications/{membership_application_id}` | 获取指定入会申请详情 |
 | GET | `/api/membership-applications/export.csv` | 导出当前筛选条件下的入会申请 |
-| DELETE | `/api/membership-applications/:id` | 删除指定入会申请 |
+| DELETE | `/api/membership-applications/{membership_application_id}` | 删除指定入会申请 |
 | GET/PUT | `/api/recruitment/manage/config` | 读取或更新招新业务设置 |
+| GET | `/api/admissions/manage/status` | 获取录取名单发布状态 |
 | GET | `/api/admissions/manage/template.xlsx` | 下载录取名单模板 |
 | POST | `/api/admissions/manage/preview` | 校验并脱敏预览录取 Excel |
 | POST | `/api/admissions/manage/publish` | 发布已确认的预览名单 |
@@ -272,13 +283,13 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | start | `cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000` | 启动仅本机监听的服务 |
 | dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
 | images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
-| init | `bun scripts/init-db.js` | 初始化 SQLite 数据库（破坏性，仅限首次部署） |
+| init | `bun scripts/init-db.js` | 重建本地展示种子数据（破坏性，仅限明确需要的本地环境） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 | hash-password | `cd backend && uv run python ../scripts/hash-password.py` | 生成 PBKDF2 密码哈希，用于 `.env` |
 | verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
 | verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
 
-生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [预生产运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
+生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
 
 后续接交者请从 [项目交接与接手指南](docs/HANDOVER_GUIDE.md) 开始，并在最终交接当天逐项完成 [项目交接验收清单](docs/HANDOVER_CHECKLIST.md)。日常招新不要求理解后端或服务器实现。
 

@@ -6,7 +6,7 @@
 
 1. 网站地址：<https://wuxie.luciangray.net>。
 2. 日常招新通过网页后台完成，不需要登录服务器。
-3. 服务器维护统一使用 `radioctl` 或仓库中的 `scripts/radio-remote.ps1`，不要在服务器运行目录中执行 `git pull`、`git reset` 或旧 `scripts/deploy.sh`。
+3. 日常服务器维护先用 SSH 登录 `admin`，再执行 `su -` 进入 root shell，统一使用 `radioctl`；不要在服务器运行目录中执行 `git pull`、`git reset` 或旧 `scripts/deploy.sh`。
 4. 任何误删、数据异常或恢复操作都先停止继续操作、保留现场，再检查备份；不要删除数据库“重置”。
 
 相关文档：
@@ -18,10 +18,10 @@
 
 ## 2. 当前已经交付的状态
 
-截至 2026-08-01：
+以下是 2026-08-01 的交付快照，交接当天仍须按第 5 节重新核对：
 
-- 生产版本：`a27a5b3903a4e3ef75cd6b5e4e2be105c21ebbd5`；
-- Git 开发主线：`dev`，跟踪 `origin/dev`；
+- 实际部署代码版本：`a27a5b3903a4e3ef75cd6b5e4e2be105c21ebbd5`；
+- Git 开发主线：`dev`，跟踪 `origin/dev`；当前仓库 HEAD 可能因纯文档提交晚于实际部署代码版本，不要求两者机械相等；
 - 服务器：腾讯云中国香港，公网 IPv4 `43.129.242.112`；
 - 域名：`wuxie.luciangray.net`，A 记录指向上述服务器；
 - HTTPS：Let's Encrypt 证书已启用，HTTP 自动跳转 HTTPS，证书由 `certbot.timer` 自动续期；
@@ -40,8 +40,7 @@
 - GitHub 仓库的项目协作权限；
 - 招新负责人网页账号；
 - 服务器 `admin` 账号的 SSH 公钥登录；
-- 服务器操作系统和应用的完整管理权限；
-- 私下交付的应急 root 密码。
+- 私下交付的 root 强密码，通过 `su -` 取得服务器操作系统和应用的完整管理权限。
 
 ### 原资产所有者保留
 
@@ -66,7 +65,7 @@ Get-Content "$HOME\.ssh\id_ed25519.pub"
 
 ### 4.2 当前维护者完成一次性安装
 
-当前维护者或 Codex 将公钥加入服务器 `admin` 账号，并把 `admin` 配置为可供运维脚本使用的完整 sudo 管理账号。完成后，由接交者亲自在自己的电脑建立新连接验证。
+当前维护者或 Codex 将公钥追加到服务器 `admin` 账号，不覆盖已有公钥。完成后，由接交者亲自在自己的电脑建立新连接验证。root 强密码由当前维护者通过私下渠道另行交付。
 
 ### 4.3 接交者验证登录
 
@@ -78,34 +77,38 @@ ssh -i "$HOME\.ssh\id_ed25519" admin@43.129.242.112
 
 ```bash
 id
-sudo -n true
-sudo radioctl status
+su -
+id
+radioctl status
+exit
 ```
 
 预期结果：
 
 - `id` 显示当前用户为 `admin`，并包含 `sudo` 组；
-- `sudo -n true` 无输出且返回成功；
-- `radioctl status` 显示应用健康、当前发布 SHA、数据库和备份状态。
+- `su -` 接受私下交付的 root 密码，第二次 `id` 显示 `uid=0(root)`；
+- root shell 中的 `radioctl status` 显示应用健康、当前发布 SHA、数据库和备份状态。
 
-root 禁止直接 SSH 登录，SSH 密码认证也保持关闭。应急 root 密码只通过私下渠道交付，不写进 Git、聊天记录或本文；不要为了方便而开启 root SSH 或密码 SSH。
+root 禁止直接 SSH 登录，SSH 密码认证也保持关闭。root 密码只通过私下渠道交付，不写进 Git、聊天记录、截图或本文；不要为了方便而开启 root SSH 或密码 SSH。现有 `scripts/radio-remote.ps1` 使用 `BatchMode` 和非交互 `sudo`，因此不能直接以当前 `admin` 权限模型执行需要 root 的动作。
 
 ## 5. 接手当天的 15 分钟验收
 
 接交者独立完成以下操作，当前维护者只观察，不代替操作：
 
 1. 用自己的 SSH 私钥登录 `admin`。
-2. 执行 `sudo -n true` 和 `sudo radioctl status`。
+2. 执行 `su -`，进入 root shell 后运行 `radioctl status`，检查完成后执行 `exit`。
 3. 打开 <https://wuxie.luciangray.net>，确认首页和 HTTPS 正常。
 4. 打开网站页脚“招新负责人入口”，用交接到的新账号登录。
 5. 进入“入会申请管理”，确认当前记录数量符合预期。
 6. 进入“招新设置与录取结果”，确认入会申请和录取查询均保持关闭。
-7. 下载一次录取 Excel 模板，但不要发布真实名单。
+7. 下载一次录取 Excel 模板，用虚构数据完成校验和脱敏预览，但不要确认发布。
 8. 执行一次手动备份：
 
 ```bash
-sudo radioctl backup
-sudo radioctl status
+su -
+radioctl backup
+radioctl status
+exit
 ```
 
 9. 在校园网或普通网络和手机流量各打开一次首页。
@@ -163,9 +166,11 @@ sudo radioctl status
 正常情况下每周检查一次，招新开放期间可增加到每天一次：
 
 ```bash
-sudo radioctl status
-sudo systemctl is-active radio-association nginx
-sudo systemctl list-timers radio-association-backup.timer certbot.timer
+su -
+radioctl status
+systemctl is-active radio-association nginx
+systemctl list-timers radio-association-backup.timer certbot.timer
+exit
 ```
 
 期望：
@@ -174,13 +179,13 @@ sudo systemctl list-timers radio-association-backup.timer certbot.timer
 - `/healthz` 正常；
 - 最近备份未超过 30 小时；
 - 自动备份和证书续期 timer 有下一次执行时间；
-- 当前发布 SHA 与准备上线的 Git 提交一致。
+- 当前发布 SHA 与上一次确认上线的代码提交一致；如果 `dev` 后续只有文档提交，可以记录差异而不必为了对齐 SHA 重新部署。
 
 自动数据库备份位于 `/var/backups/radio-association/`，默认保留 14 天。不要手动复制正在运行的 SQLite 文件代替备份。
 
 ## 8. 发布代码更新
 
-不熟悉 Git 或部署脚本时，直接在仓库中让 Codex完成检查、测试和部署准备。接交者只需要确认要上线的提交，并保留提交与推送决定权。
+不熟悉 Git 或部署脚本时，直接在仓库中让 Codex 完成检查、测试、发布归档、校验和计算与上传准备。接交者只需要确认要上线的提交、保留提交与推送决定权，并在交互式 SSH 中输入 root 密码执行最终发布命令。
 
 上线前必须满足：
 
@@ -190,63 +195,60 @@ sudo systemctl list-timers radio-association-backup.timer certbot.timer
 - GitHub Actions 已通过；
 - 使用完整 40 位 SHA，不使用“最新版本”这种模糊目标。
 
-在仓库根目录的 PowerShell 中：
+当前 `admin` 不具备非交互 sudo，因此不要把下列参数直接传给 `scripts/radio-remote.ps1 -Action Deploy`。安全的低频更新流程是：
 
-```powershell
-$Server = "43.129.242.112"
-$User = "admin"
-$Key = "$HOME\.ssh\id_ed25519"
-$Commit = git rev-parse HEAD
+1. 让 Codex 核对工作区、远端 `dev`、CI 和目标 40 位 SHA；
+2. 让 Codex 生成源码归档、SHA-256，并以 `admin` 上传到服务器 `/tmp/`；
+3. 接交者登录 `admin`，执行 `su -`；
+4. 使用 Codex 给出的完整参数执行 `radioctl deploy <临时归档> <40位SHA> <SHA-256>`；
+5. 执行 `radioctl status`，确认健康后删除该明确路径下的临时归档并退出 root shell。
 
-.\scripts\radio-remote.ps1 -Action Deploy -Server $Server -User $User -IdentityFile $Key -Commit $Commit
-.\scripts\radio-remote.ps1 -Action Status -Server $Server -User $User -IdentityFile $Key
-.\scripts\radio-remote.ps1 -Action PublicStatus -Server $Server -User $User -IdentityFile $Key -Domain "wuxie.luciangray.net"
-```
-
-发布工具会创建部署前备份、安装锁定依赖、切换到精确版本并进行健康检查；失败时自动回到原版本。不要在 `/opt/radio-association/current` 中直接修改文件。
+`radioctl deploy` 会创建部署前备份、安装锁定依赖、切换到精确版本并进行健康检查；失败时自动回到原版本。不要在 `/opt/radio-association/current` 中直接修改文件，也不要把 root 密码交给 Codex 或写进自动化命令。
 
 ## 9. 常见故障的最短处理流程
 
 ### 网站打不开，但 SSH 可以登录
 
 ```bash
-sudo radioctl status
-sudo systemctl status radio-association nginx --no-pager
-sudo journalctl -u radio-association -n 100 --no-pager
-sudo nginx -t
+su -
+radioctl status
+systemctl status radio-association nginx --no-pager
+journalctl -u radio-association -n 100 --no-pager
+nginx -t
 ```
 
-- 应用失败：先保存输出，再执行 `sudo systemctl restart radio-association`；
-- Nginx 配置检查成功但服务失败：执行 `sudo systemctl restart nginx`；
+- 应用失败：先保存输出，再在 root shell 执行 `systemctl restart radio-association`；
+- Nginx 配置检查成功但服务失败：在 root shell 执行 `systemctl restart nginx`；
 - 不要直接改数据库、删除发布目录或重新初始化。
 
 ### 网页后台保存或发布失败
 
 1. 保持入会申请或录取查询关闭；
 2. 截图记录页面提示，但不要截出密码、Token、完整手机号或名单；
-3. 执行 `sudo radioctl status`；
-4. 把状态输出和错误发生时间交给 Codex分析；
+3. 进入 root shell，执行 `radioctl status`；
+4. 把状态输出和错误发生时间交给 Codex 分析；
 5. 不要反复上传或连续点击发布。
 
 ### 误删或数据数量异常
 
 1. 立即停止新增、删除和导出；
 2. 不要删除数据库或覆盖现有文件；
-3. 执行 `sudo radioctl backup` 保存当前现场；
+3. 进入 root shell，执行 `radioctl backup` 保存当前现场；
 4. 列出备份但不要自行猜选：
 
 ```bash
-sudo ls -lh /var/backups/radio-association/
+ls -lh /var/backups/radio-association/
 ```
 
-5. 让 Codex核对目标备份后，再按 [部署与运维速查](OPERATIONS_QUICK_REFERENCE.md) 执行恢复。
+5. 让 Codex 核对目标备份后，再按 [部署与运维速查](OPERATIONS_QUICK_REFERENCE.md) 执行恢复。
 
 ### HTTPS 或证书异常
 
 ```bash
-sudo nginx -t
-sudo systemctl status nginx certbot.timer --no-pager
-sudo certbot certificates
+su -
+nginx -t
+systemctl status nginx certbot.timer --no-pager
+certbot certificates
 ```
 
 不要删除 `/etc/letsencrypt/`。如果问题涉及 DNS、腾讯云防火墙、公网 IP 或云服务器不可达，联系资产所有者；这类问题无法只靠服务器权限处理。
@@ -265,7 +267,7 @@ sudo certbot certificates
 - 不直接复制活跃的 SQLite 主文件作为备份；
 - 不向公网开放 5000 或 8080；
 - 不把 `.env`、数据库、Excel、CSV、录取 JSON、密码、Token 或私钥提交到 Git；
-- 不把真实个人资料粘贴给 Codex或发到公开群；可以提供脱敏后的结构、错误信息和记录数量；
+- 不把真实个人资料粘贴给 Codex 或发到公开群；可以提供脱敏后的结构、错误信息和记录数量；
 - 不在不知道目标路径和恢复方案时批量删除文件。
 
 ## 11. 什么时候算交接完成
@@ -273,10 +275,10 @@ sudo certbot certificates
 满足以下条件后，原维护者不再承担日常项目工作：
 
 - 接交者自己的 SSH 公钥已安装并验证；
-- 接交者能独立获得 sudo 权限、运行 `radioctl` 和完成手动备份；
+- 接交者能通过 `su -` 取得 root 权限、运行 `radioctl` 和完成手动备份；
 - 接交者拥有新的招新负责人账号并能登录网页后台；
 - 接交者拥有 GitHub 项目权限并理解 `dev` 是开发主线；
-- 接交者独立完成一次设置检查、测试申请和测试录取演练；
+- 接交者独立完成一次设置检查、测试申请，以及虚构录取表的校验和脱敏预览；
 - 接交者已阅读并确认云账号与域名账号不转移的限制；
 - [交接验收清单](HANDOVER_CHECKLIST.md) 已填写并由双方保存；
 - 明文密码和私有资料仅通过私下渠道交付，没有进入 Git 或公开文档。

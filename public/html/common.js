@@ -244,11 +244,29 @@ function getFooterHTML() {
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2025 燕山大学无线电爱好者协会 | 挖掘潜质，就在无协 <span id="footer-icp-number"></span></p>
+          <p>&copy; 2026 燕山大学无线电爱好者协会 | 挖掘潜质，就在无协 <span id="footer-icp-number"></span></p>
         </div>
       </div>
     </footer>
   `;
+}
+
+function renderRecruitmentContact(element, contact = {}) {
+  if (!element) return;
+
+  const label = contact.label || '招新联系方式';
+  const channelText = contact.channelText || '';
+  const firstLine = channelText ? `${label}：${channelText}` : label;
+  const content = [document.createTextNode(firstLine)];
+
+  if (contact.qq) {
+    content.push(
+      document.createElement('br'),
+      document.createTextNode(`QQ群号：${contact.qq}`),
+    );
+  }
+
+  element.replaceChildren(...content);
 }
 
 async function loadFooterRecruitmentConfig() {
@@ -261,11 +279,7 @@ async function loadFooterRecruitmentConfig() {
     if (!response.ok) return;
     const config = await response.json();
     const contact = config.contact || {};
-    const parts = [contact.channelText, contact.qq ? `QQ群号：${contact.qq}` : '']
-      .filter(Boolean);
-    contactElement.textContent = parts.length
-      ? `${contact.label || '招新联系方式'}：${parts.join(' ')}`
-      : '请关注协会招新通知。';
+    renderRecruitmentContact(contactElement, contact);
     const icpElement = document.getElementById('footer-icp-number');
     if (icpElement && config.site?.icpNumber) {
       icpElement.textContent = ` | ${config.site.icpNumber}`;

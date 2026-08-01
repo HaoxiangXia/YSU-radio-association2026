@@ -20,6 +20,10 @@ function monitorPage(page) {
   const problems = [];
   page.on("pageerror", (error) => problems.push(`页面异常：${error.message}`));
   page.on("requestfailed", (request) => {
+    const failure = request.failure();
+    if (request.resourceType() === "media" && failure?.errorText === "net::ERR_ABORTED") {
+      return;
+    }
     problems.push(`请求失败：${request.method()} ${request.url()}`);
   });
   page.on("response", (response) => {
@@ -165,4 +169,88 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
       }
     }
   }
+});
+
+
+test("tall desktop viewport keeps the footer at the page edge", async ({ page }, testInfo) => {
+  if (testInfo.project.name !== "desktop-chromium") return;
+
+  await page.setViewportSize({ width: 1440, height: 1400 });
+  await page.goto("/html/activities.html");
+  await expect(page.locator(".footer")).toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const footer = document.querySelector(".footer");
+    const footerRect = footer.getBoundingClientRect();
+    return {
+      documentHeight: document.documentElement.scrollHeight,
+      footerBottom: footerRect.bottom,
+      viewportHeight: window.innerHeight,
+    };
+  });
+
+  expect(layout.footerBottom).toBeGreaterThanOrEqual(layout.viewportHeight - 1);
+  expect(Math.abs(layout.documentHeight - layout.footerBottom)).toBeLessThanOrEqual(1);
+});
+
+
+test("mobile menu stays above video and scrolls inside a short viewport", async ({ page }, testInfo) => {
+  if (!testInfo.project.name.startsWith("mobile")) return;
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/html/about-association.html");
+
+  const menuButton = page.locator(".menu-btn");
+  const menu = page.locator(".mobile-menu");
+  await expect(menuButton).toBeVisible();
+  await menuButton.click();
+  await expect(menu).toHaveClass(/open/);
+  await expect
+    .poll(() =>
+      menu.evaluate((menuElement) => {
+        const style = getComputedStyle(menuElement);
+        return style.opacity === "1" && style.visibility === "visible";
+      }),
+    )
+    .toBe(true);
+
+  const overlap = await page.evaluate(() => {
+    const menuElement = document.querySelector(".mobile-menu");
+    const video = document.querySelector("video");
+    const menuRect = menuElement.getBoundingClientRect();
+    const videoRect = video.getBoundingClientRect();
+    const left = Math.max(menuRect.left, videoRect.left);
+    const right = Math.min(menuRect.right, videoRect.right);
+    const top = Math.max(menuRect.top, videoRect.top);
+    const bottom = Math.min(menuRect.bottom, videoRect.bottom);
+    const hasOverlap = right > left && bottom > top;
+    const topElement = hasOverlap
+      ? document.elementFromPoint((left + right) / 2, (top + bottom) / 2)
+      : null;
+    return {
+      hasOverlap,
+      videoOwnsOverlap: Boolean(
+        topElement && (topElement === video || video.contains(topElement)),
+      ),
+    };
+  });
+
+  expect(overlap.hasOverlap).toBe(true);
+  expect(overlap.videoOwnsOverlap).toBe(false);
+
+  await page.setViewportSize({ width: 320, height: 400 });
+  const compactMenu = await menu.evaluate((menuElement) => {
+    const rect = menuElement.getBoundingClientRect();
+    return {
+      bottom: rect.bottom,
+      clientHeight: menuElement.clientHeight,
+      overflowY: getComputedStyle(menuElement).overflowY,
+      scrollHeight: menuElement.scrollHeight,
+      viewportHeight: window.innerHeight,
+    };
+  });
+
+  expect(compactMenu.bottom).toBeLessThanOrEqual(compactMenu.viewportHeight + 1);
+  expect(compactMenu.overflowY).toBe("auto");
+  expect(compactMenu.scrollHeight).toBeGreaterThan(compactMenu.clientHeight);
 });

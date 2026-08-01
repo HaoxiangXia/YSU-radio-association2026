@@ -1,105 +1,141 @@
 # 部署与运维速查
 
-## 1. 执行前
+本文面向已经取得服务器 `admin` 公钥和 root 密码的接交者。日常招新优先使用网页后台；只有状态检查、备份、发布、回滚、恢复或故障排查才需要 SSH。
 
-- 腾讯云轻量应用服务器控制台救援可用；
-- 已创建服务器快照；
-- 本机 SSH 公钥已导入，并已用新连接验证；
-- 当前提交已通过 GitHub Actions；
-- 腾讯云防火墙只开放当前阶段所需端口；永不开放 5000、8080。
+## 1. 登录与权限
 
-在 PowerShell 中设置本次参数：
+在 Windows PowerShell 中：
 
 ```powershell
-$Server = "服务器公网 IP"
-$User = "ubuntu" # 必须是已经通过 sudo -n true 验证的维护账号；最终交接后使用 admin
-$Key = "C:\Users\你的用户名\.ssh\id_ed25519"
-$Commit = git rev-parse HEAD
+$Server = "43.129.242.112"
+$Key = "$HOME\.ssh\id_ed25519"
+ssh -i $Key "admin@$Server"
 ```
 
-服务器禁止 root 直接 SSH 登录和 SSH 密码认证。最终接交者使用自己的公钥登录 `admin`；在交接配置完成且 `sudo -n true` 验证通过后，将 `$User` 改为 `"admin"`。不要把 root 密码写入脚本或命令参数。
-
-## 2. 只读盘点与首次准备
-
-```powershell
-.\scripts\radio-remote.ps1 -Action Inventory -Server $Server -User $User -IdentityFile $Key
-.\scripts\radio-remote.ps1 -Action Bootstrap -Server $Server -User $User -IdentityFile $Key -Commit $Commit
-```
-
-发现未知服务、目录、端口冲突或 SSH 生效配置异常时停止，不覆盖。
-
-在服务器交互终端创建真实环境文件，密钥和密码哈希不要放入命令参数：
+登录后进入 root shell：
 
 ```bash
-sudo install -o root -g root -m 600 /etc/radio-association/app.env.example /etc/radio-association/app.env
-sudoedit /etc/radio-association/app.env
+su -
+id
 ```
 
-`JWT_SECRET` 至少 32 字符；密码哈希在可信本地交互生成。申请和录取查询继续保持关闭。
+输入私下交付的 root 密码；`id` 应显示 `uid=0(root)`。root 禁止直接 SSH 登录，SSH 密码认证也保持关闭。不要把 root 密码写入脚本、命令参数、Git、聊天、截图或本文。
 
-## 3. 发布、配置与验证
+当前 `admin` 不具备非交互 sudo。仓库中的 `scripts/radio-remote.ps1` 使用 `BatchMode` 和 `sudo`，不能直接以这个 `admin` 权限模型执行需要 root 的动作。
 
-```powershell
-.\scripts\radio-remote.ps1 -Action Deploy -Server $Server -User $User -IdentityFile $Key -Commit $Commit
-.\scripts\radio-remote.ps1 -Action Status -Server $Server -User $User -IdentityFile $Key
-.\scripts\radio-remote.ps1 -Action Tunnel -Server $Server -User $User -IdentityFile $Key
-```
+## 2. 日常只读检查
 
-保持隧道窗口运行，在浏览器访问 `http://127.0.0.1:8080`。不要访问公网 `:5000`。
-
-日常招新请登录“招新负责人入口”，在“招新设置与录取结果”页面完成配置和录取名单发布。只有网页不可用时才使用以下备用命令：
-
-```powershell
-.\scripts\radio-remote.ps1 -Action Configure -Server $Server -User $User -IdentityFile $Key -File .\config\recruitment.local.json
-.\scripts\radio-remote.ps1 -Action Admissions -Server $Server -User $User -IdentityFile $Key -File "C:\私有目录\admission-results.json"
-```
-
-## 4. 备份、回滚与恢复
-
-```powershell
-.\scripts\radio-remote.ps1 -Action Backup -Server $Server -User $User -IdentityFile $Key
-.\scripts\radio-remote.ps1 -Action Rollback -Server $Server -User $User -IdentityFile $Key
-```
-
-指定版本回滚时追加 `-Commit <40位SHA>`。数据库恢复会停止服务并要求输入 `RESTORE`：
-
-```powershell
-.\scripts\radio-remote.ps1 -Action Restore -Server $Server -User $User -IdentityFile $Key -BackupPath "/var/backups/radio-association/database-时间-reason.sqlite"
-```
-
-故障诊断：
+以下命令都在 root shell 中执行：
 
 ```bash
-sudo radioctl status
-sudo journalctl -u radio-association -n 100 --no-pager
-sudo systemctl list-timers radio-association-backup.timer
+radioctl status
+systemctl is-active radio-association nginx
+systemctl list-timers radio-association-backup.timer certbot.timer
+certbot certificates
+ss -ltnp
 ```
 
-不要执行旧 `scripts/deploy.sh`、运行目录 `git pull/reset`、直接 `cp` 活跃数据库或 `scripts/init-db.js`。
+期望结果：
 
-## 5. 首次启用公网 HTTPS
+- `radio-association` 和 `nginx` 均为 `active`；
+- `/healthz` 与备份状态正常，最近成功备份未超过 30 小时；
+- 两个 timer 都有下一次执行时间；
+- 公网只监听 22、80、443，5000 和 8080 只监听 `127.0.0.1`；
+- `https://wuxie.luciangray.net` 可访问，HTTP 自动跳转 HTTPS。
 
-公网开放分两步，避免在域名尚未生效时直接暴露应用：
+查看最近应用日志：
 
-```powershell
-$Domain = "wuxie.luciangray.net"
-.\scripts\radio-remote.ps1 -Action PublicPrepare -Server $Server -User $User -IdentityFile $Key -Domain $Domain
+```bash
+journalctl -u radio-association -n 100 --no-pager
 ```
 
-`PublicPrepare` 只在 80 端口提供 ACME 验证路径和 503 准备页，申请后台及业务页面仍不对公网开放。随后将域名唯一的 A 记录指向服务器公网 IPv4，并在腾讯云防火墙开放 TCP 443。确认公网 DNS 已生效后执行：
+日志、截图和求助信息不得包含密码、Token、完整手机号、邮箱、表单正文或录取名单。
 
-```powershell
-.\scripts\radio-remote.ps1 -Action PublicEnable -Server $Server -User $User -IdentityFile $Key -Domain $Domain
-.\scripts\radio-remote.ps1 -Action PublicStatus -Server $Server -User $User -IdentityFile $Key -Domain $Domain
+## 3. 备份、回滚与恢复
+
+手动创建一致性数据库备份：
+
+```bash
+radioctl backup
+radioctl status
+ls -lh /var/backups/radio-association/
 ```
 
-`PublicEnable` 使用 HTTP-01 签发 Let's Encrypt 证书，启用 HTTPS 和 HTTP 跳转，并启用证书自动续期 timer。它不会修改招新业务开关。申请与录取查询必须保持关闭，直到负责人填写真实配置并明确确认正式开放。
+回滚到 `previous`：
 
-常规公网验收至少包括：
+```bash
+radioctl rollback
+radioctl status
+```
 
-- `http://域名` 跳转到同域名 HTTPS；
-- 证书域名、证书链和有效期正确；
-- 首页、入会申请关闭页、录取查询关闭页和负责人登录正常；
-- `/ops/`、公网 5000 和公网 8080 不可访问；
-- `sudo certbot renew --dry-run` 成功；
-- 校园网、校外网络和手机流量至少各验证一次。
+指定版本时使用完整 40 位 SHA：
+
+```bash
+radioctl rollback <40位SHA>
+radioctl status
+```
+
+数据库恢复属于高影响操作。先停止网页写操作、创建当前备份并让 Codex 核对目标文件、校验和及记录范围，再执行：
+
+```bash
+radioctl backup
+radioctl restore /var/backups/radio-association/<准确文件名>.sqlite --confirm
+radioctl status
+```
+
+不要猜测备份文件，不要复制活跃 SQLite/WAL 文件，不要删除数据库来“重置”。
+
+## 4. 发布代码更新
+
+代码更新前必须满足：
+
+- 当前分支为 `dev`，工作区没有不明修改；
+- 目标提交已推送到 `origin/dev` 并通过 GitHub Actions；
+- 使用经过确认的完整 40 位 SHA；
+- 申请和录取查询保持关闭，当前数据库备份正常。
+
+让 Codex 完成代码检查、测试、源码归档、SHA-256 计算和上传，并给出三个精确值：临时归档路径、40 位提交 SHA、归档 SHA-256。接交者只在 root shell 中执行：
+
+```bash
+radioctl deploy /tmp/<归档文件名> <40位SHA> <SHA-256>
+radioctl status
+```
+
+确认健康后，才删除 Codex 明确给出的单个 `/tmp/` 归档。`radioctl deploy` 会先备份数据库、安装锁定依赖、原子切换版本和检查健康；失败会自动恢复原版本。
+
+不要在 `/opt/radio-association/current` 中直接修改文件，不要在服务器运行目录执行 `git pull`、`git reset`、`checkout` 或旧 `scripts/deploy.sh`。
+
+## 5. 网页故障时更新业务文件
+
+日常业务配置和正式录取名单都应通过网页后台处理。只有网页功能确实不可用时，才让 Codex 校验文件并上传到 `/tmp/`，然后在 root shell 执行：
+
+```bash
+radioctl configure /tmp/<已校验的招新配置.json>
+radioctl admissions /tmp/<已校验的录取名单.json>
+radioctl status
+```
+
+操作成功后删除对应的单个临时文件。不要上传原始 Excel 到服务器，不要在申请或录取查询开放时替换业务文件。
+
+## 6. HTTPS 与公网检查
+
+常规检查：
+
+```bash
+nginx -t
+systemctl status nginx certbot.timer --no-pager
+certbot certificates
+curl -I https://wuxie.luciangray.net/
+```
+
+首次启用公网的 `PublicPrepare`、`PublicEnable` 已经完成，日常不得重复运行。只有服务器重建、域名变化或证书体系需要重建时，才参考 [部署与运维架构](DEPLOYMENT_AND_OPERATIONS.md)，让 Codex 重新盘点后制定当次命令。
+
+云服务器不可达、公网 IP 变化、腾讯云防火墙或域名解析故障仍需要资产所有者使用腾讯云或阿里云控制台处理。
+
+## 7. 禁止操作
+
+- 不运行生产 `scripts/init-db.js` 或旧 `scripts/deploy.sh`；
+- 不直接复制活跃 SQLite、WAL、SHM 文件作为备份；
+- 不向公网开放 5000 或 8080；
+- 不公开 `.env`、数据库、Excel、CSV、录取 JSON、密码、Token 或私钥；
+- 不在目标路径、备份和恢复方案不明确时批量删除、恢复或覆盖文件。

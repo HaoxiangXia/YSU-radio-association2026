@@ -43,6 +43,23 @@ body {
   min-height: 100vh;
 }
 
+/* 内页内容不足一屏时，保持页脚贴住视口底部。 */
+.site-page {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+.site-page > main {
+  flex: 1 0 auto;
+}
+
+.site-page > #footer-placeholder {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
 a {
   color: var(--color-link);
   text-decoration: none;

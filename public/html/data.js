@@ -229,26 +229,6 @@ const departments = [
 // 竞赛活动
 const competitions = [
   {
-    id: 'zhanwang-cup-2024',
-    name: '展望杯嵌入式大赛',
-    year: 2024,
-    date: '2024年5月8日',
-    participants: 102,
-    description: '为促进学校创新风气，激发燕山大学学生的学习和创新热情，提高创新能力，无线电爱好者协会为大家提供一个自我展示的平台。竞赛以团队形式报名，每队必须有三名成员才可参加比赛。',
-    tracks: ['嵌入式方向', '软件方向', 'AI方向'],
-    highlights: [
-      '比赛形式采取分散制作集中评比的方式',
-      '优秀作品评出一等奖、二等奖和三等奖',
-      '学长学姐负责组织现场答辩',
-    ],
-    images: [
-      '/image/competitions/zhanwang-cup/photo-01.jpg',
-      '/image/competitions/zhanwang-cup/photo-02.jpg',
-      '/image/competitions/zhanwang-cup/photo-03.jpg',
-      '/image/competitions/zhanwang-cup/photo-04.jpg',
-    ],
-  },
-  {
     id: 'zhanwang-cup-2026',
     name: '展望杯嵌入式大赛',
     year: 2026,

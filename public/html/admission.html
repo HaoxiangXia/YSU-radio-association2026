@@ -213,12 +213,6 @@
       resultDiv.style.display = 'block';
     }
 
-    function formatContact(contact) {
-      const parts = [contact.channelText];
-      if (contact.qq) parts.push(`QQ群号：${contact.qq}`);
-      return `${contact.label}：${parts.join(' ')}`;
-    }
-
     async function loadRecruitmentConfig() {
       const queryButton = document.getElementById('query-button');
       try {
@@ -230,7 +224,7 @@
         if (!config.admissionQuery || !config.contact) throw new Error('配置内容不完整');
 
         document.getElementById('admission-notice').textContent = config.admissionQuery.notice;
-        document.getElementById('admission-contact').textContent = formatContact(config.contact);
+        renderRecruitmentContact(document.getElementById('admission-contact'), config.contact);
         admissionQueryEnabled = config.admissionQuery.enabled === true;
         queryButton.disabled = !admissionQueryEnabled;
         queryButton.textContent = admissionQueryEnabled ? '查询' : '录取查询当前未开放';
