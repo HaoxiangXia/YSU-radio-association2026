@@ -280,6 +280,8 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 
 生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [预生产运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
 
+后续接交者请从 [项目交接与接手指南](docs/HANDOVER_GUIDE.md) 开始，并在最终交接当天逐项完成 [项目交接验收清单](docs/HANDOVER_CHECKLIST.md)。日常招新不要求理解后端或服务器实现。
+
 ---
 
 ## 安全说明

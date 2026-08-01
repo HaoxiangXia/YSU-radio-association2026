@@ -12,10 +12,12 @@
 
 ```powershell
 $Server = "服务器公网 IP"
-$User = "root"
+$User = "ubuntu" # 必须是已经通过 sudo -n true 验证的维护账号；最终交接后使用 admin
 $Key = "C:\Users\你的用户名\.ssh\id_ed25519"
 $Commit = git rev-parse HEAD
 ```
+
+服务器禁止 root 直接 SSH 登录和 SSH 密码认证。最终接交者使用自己的公钥登录 `admin`；在交接配置完成且 `sudo -n true` 验证通过后，将 `$User` 改为 `"admin"`。不要把 root 密码写入脚本或命令参数。
 
 ## 2. 只读盘点与首次准备
 
