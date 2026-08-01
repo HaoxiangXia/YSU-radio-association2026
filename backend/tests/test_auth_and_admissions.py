@@ -1,11 +1,46 @@
+import io
+import json
+import zipfile
 from datetime import datetime, timedelta, timezone
 
 import jwt
+import pytest
+from openpyxl import Workbook
 
 from conftest import TEST_PASSWORD
 from routes import recruitment_officers
-from routes.admissions import AdmissionDataError
+from routes.admissions import AdmissionDataError, parse_admission_workbook
 from utils.security import admission_query_limiter, login_limiter
+
+
+def login(client):
+    response = client.post(
+        "/api/recruitment-officers/login",
+        json={"username": "officer", "password": TEST_PASSWORD},
+    )
+    assert response.status_code == 200
+    return {"Authorization": f"Bearer {response.json()['token']}"}
+
+
+def workbook_bytes(*, formula: bool = False, extra_header: bool = False) -> bytes:
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "录取名单"
+    headers = ["姓名", "学号", "申请手机号", "录取部门", "录取状态"]
+    if extra_header:
+        headers.append("备注")
+    worksheet.append(headers)
+    worksheet.append((
+        "新同学",
+        "202600000008",
+        "13800000008",
+        "机械部门",
+        "=\"已录取\"" if formula else "已录取",
+    ))
+    output = io.BytesIO()
+    workbook.save(output)
+    workbook.close()
+    return output.getvalue()
 
 
 def test_login_success_verify_and_wrong_password(default_client):
@@ -159,3 +194,107 @@ def test_invalid_admissions_file_stops_startup_without_echoing_private_value(
         assert private_value not in str(error)
     else:
         raise AssertionError("无效录取名单没有阻止应用启动")
+
+
+def test_admissions_management_requires_authentication(default_client):
+    client, _ = default_client
+
+    assert client.get("/api/admissions/manage/status").status_code == 401
+    assert client.get("/api/admissions/manage/template.xlsx").status_code == 401
+    assert client.post(
+        "/api/admissions/manage/preview",
+        content=workbook_bytes(),
+    ).status_code == 401
+
+
+def test_officer_can_preview_publish_and_then_open_query(client_factory, config_copy):
+    config = config_copy(admission_enabled=False)
+    with client_factory(config=config, admissions=[]) as (client, state):
+        headers = login(client)
+        template = client.get(
+            "/api/admissions/manage/template.xlsx",
+            headers=headers,
+        )
+        preview = client.post(
+            "/api/admissions/manage/preview",
+            headers={
+                **headers,
+                "Content-Type": (
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ),
+            },
+            content=workbook_bytes(),
+        )
+        publish = client.post(
+            "/api/admissions/manage/publish",
+            headers=headers,
+            json={"previewId": preview.json()["previewId"]},
+        )
+        config["admissionQuery"]["enabled"] = True
+        opened = client.put(
+            "/api/recruitment/manage/config",
+            headers=headers,
+            json=config,
+        )
+        query = client.post(
+            "/api/admissions/query",
+            json={"studentId": "202600000008", "phone": "13800000008"},
+        )
+        persisted = json.loads(state["admissions_path"].read_text(encoding="utf-8"))
+
+    assert template.status_code == 200
+    assert template.content.startswith(b"PK")
+    assert preview.status_code == 200
+    assert preview.json()["valid"] is True
+    assert preview.json()["preview"][0]["phone"] == "*******0008"
+    assert publish.status_code == 200
+    assert opened.status_code == 200
+    assert query.status_code == 200
+    assert query.json()["name"] == "新同学"
+    assert persisted[0]["studentId"] == "202600000008"
+
+
+def test_formula_is_rejected_and_publish_requires_closed_query(default_client):
+    client, _ = default_client
+    headers = login(client)
+    invalid_preview = client.post(
+        "/api/admissions/manage/preview",
+        headers=headers,
+        content=workbook_bytes(formula=True),
+    )
+    valid_preview = client.post(
+        "/api/admissions/manage/preview",
+        headers=headers,
+        content=workbook_bytes(),
+    )
+    publish = client.post(
+        "/api/admissions/manage/publish",
+        headers=headers,
+        json={"previewId": valid_preview.json()["previewId"]},
+    )
+
+    assert invalid_preview.status_code == 200
+    assert invalid_preview.json()["valid"] is False
+    assert invalid_preview.json()["errors"][0]["message"] == "不得使用公式"
+    assert publish.status_code == 409
+    assert "关闭录取查询" in publish.json()["detail"]
+
+
+def test_extra_excel_columns_and_expanded_workbook_are_rejected(default_client):
+    client, _ = default_client
+    headers = login(client)
+    extra_column = client.post(
+        "/api/admissions/manage/preview",
+        headers=headers,
+        content=workbook_bytes(extra_header=True),
+    )
+
+    expanded = io.BytesIO()
+    with zipfile.ZipFile(expanded, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("xl/worksheets/sheet1.xml", b"0" * (21 * 1024 * 1024))
+
+    with pytest.raises(AdmissionDataError, match="展开后过大"):
+        parse_admission_workbook(expanded.getvalue())
+
+    assert extra_column.status_code == 422
+    assert "只能包含这些表头" in extra_column.json()["detail"]

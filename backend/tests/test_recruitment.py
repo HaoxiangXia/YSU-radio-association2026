@@ -4,11 +4,21 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from pydantic import ValidationError
 
+from conftest import TEST_PASSWORD
 from config.recruitment import (
     RecruitmentConfig,
     RecruitmentConfigError,
     get_application_status,
 )
+
+
+def login(client):
+    response = client.post(
+        "/api/recruitment-officers/login",
+        json={"username": "officer", "password": TEST_PASSWORD},
+    )
+    assert response.status_code == 200
+    return {"Authorization": f"Bearer {response.json()['token']}"}
 
 
 def test_public_config_excludes_private_fields(default_client):
@@ -19,6 +29,7 @@ def test_public_config_excludes_private_fields(default_client):
     body = response.json()
     assert body["application"]["status"] == "open"
     assert body["admissionQuery"]["enabled"] is True
+    assert body["application"]["crossBorderNotice"]
     assert "retentionUntil" not in body["application"]
     assert "path" not in json.dumps(body).lower()
 
@@ -77,3 +88,34 @@ def test_invalid_config_stops_startup(client_factory, config_copy, mutate):
         with client_factory(config=raw):
             pass
 
+
+def test_managed_config_requires_authentication(default_client, config_copy):
+    client, _ = default_client
+
+    assert client.get("/api/recruitment/manage/config").status_code == 401
+    assert client.put(
+        "/api/recruitment/manage/config",
+        json=config_copy(),
+    ).status_code == 401
+
+
+def test_officer_can_atomically_update_business_config(default_client, config_copy):
+    client, state = default_client
+    headers = login(client)
+    updated = config_copy()
+    updated["application"]["notice"] = "更新后的招新通知"
+    updated["contact"]["channelText"] = "更新后的联系说明"
+
+    response = client.put(
+        "/api/recruitment/manage/config",
+        headers=headers,
+        json=updated,
+    )
+    public = client.get("/api/recruitment/config")
+    persisted = json.loads(state["config_path"].read_text(encoding="utf-8"))
+
+    assert response.status_code == 200
+    assert "application.notice" in response.json()["changedFields"]
+    assert public.json()["application"]["notice"] == "更新后的招新通知"
+    assert persisted["contact"]["channelText"] == "更新后的联系说明"
+    assert list(state["config_path"].parent.glob("*.previous.*"))

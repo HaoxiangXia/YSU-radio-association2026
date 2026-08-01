@@ -50,6 +50,7 @@ def make_config(
             "endsAt": (now + timedelta(days=1)).isoformat(),
             "notice": "测试期间的入会申请安排",
             "privacyNotice": "测试资料仅用于自动化验证。",
+            "crossBorderNotice": "测试资料存储在中国香港的测试服务器。",
             "retentionUntil": "2099-12-31",
         },
         "admissionQuery": {
@@ -92,6 +93,7 @@ def make_application(student_id: str = "202600000002", **overrides) -> dict:
         "self_introduction": "这是用于自动化测试的自我介绍内容。",
         "expectation": "希望学习无线电相关知识。",
         "privacyAccepted": True,
+        "crossBorderAccepted": True,
     }
     application.update(overrides)
     return application

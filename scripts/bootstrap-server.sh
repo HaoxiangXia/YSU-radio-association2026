@@ -16,15 +16,49 @@ BACKUP_ROOT="/var/backups/radio-association"
 LIB_DIR="/usr/local/lib/radio-association"
 UV_PYTHON_INSTALL_DIR="/opt/uv-python"
 
-if command -v nginx >/dev/null 2>&1 &&
-    systemctl is-active --quiet nginx 2>/dev/null; then
-    echo "错误：检测到正在运行的 Nginx，bootstrap 不会覆盖现有 Web 服务" >&2
-    exit 1
+nginx_default="/etc/nginx/sites-enabled/default"
+nginx_default_is_only_site=false
+nginx_default_was_active=false
+if command -v nginx >/dev/null 2>&1; then
+    mapfile -t nginx_enabled_sites < <(
+        find /etc/nginx/sites-enabled -mindepth 1 -maxdepth 1 -printf '%f\n' 2>/dev/null |
+            sort
+    )
+    if [[ "${#nginx_enabled_sites[@]}" -eq 1 ]] &&
+        [[ "${nginx_enabled_sites[0]}" == "default" ]] &&
+        [[ -L "$nginx_default" ]] &&
+        [[ "$(readlink -f "$nginx_default")" == "/etc/nginx/sites-available/default" ]] &&
+        ! find /etc/nginx/conf.d -maxdepth 1 -type f -name '*.conf' -size +0c \
+            -print -quit 2>/dev/null | grep -q .; then
+        nginx_default_is_only_site=true
+    elif [[ "${#nginx_enabled_sites[@]}" -gt 0 ]] ||
+        find /etc/nginx/conf.d -maxdepth 1 -type f -name '*.conf' -size +0c \
+            -print -quit 2>/dev/null | grep -q .; then
+        echo "错误：检测到非 Ubuntu 默认站点的 Nginx 配置，bootstrap 不会覆盖现有 Web 服务" >&2
+        exit 1
+    fi
+
+    if systemctl is-active --quiet nginx 2>/dev/null; then
+        if [[ "$nginx_default_is_only_site" != true ]]; then
+            echo "错误：检测到无法确认为 Ubuntu 默认欢迎页的 Nginx 服务" >&2
+            exit 1
+        fi
+        nginx_default_was_active=true
+        echo "已确认当前仅运行 Ubuntu 默认 Nginx 欢迎页；稍后将改为回环预生产站点"
+    fi
 fi
-if command -v ss >/dev/null 2>&1 &&
-    ss -H -ltn | awk '{print $4}' | grep -Eq ':(80|443|5000|8080)$'; then
-    echo "错误：80、443、5000 或 8080 已被占用，请先确认现有业务" >&2
-    exit 1
+if command -v ss >/dev/null 2>&1; then
+    occupied_web_ports="$(
+        ss -H -ltn | awk '{print $4}' | grep -E ':(80|443|5000|8080)$' || true
+    )"
+    if [[ "$nginx_default_was_active" == true ]]; then
+        occupied_web_ports="$(printf '%s\n' "$occupied_web_ports" | grep -Ev ':80$' || true)"
+    fi
+    if [[ -n "$occupied_web_ports" ]]; then
+        echo "错误：80、443、5000 或 8080 存在未知占用，请先确认现有业务" >&2
+        echo "$occupied_web_ports" >&2
+        exit 1
+    fi
 fi
 
 required_files=(
@@ -70,7 +104,7 @@ install -d -o root -g "$APP_USER" -m 0750 \
     "$APP_ROOT" "$APP_ROOT/releases" "$CONFIG_DIR" "$STATE_ROOT"
 install -d -o "$APP_USER" -g "$APP_USER" -m 0750 \
     "$STATE_ROOT/data" "$STATE_ROOT/state"
-install -d -o root -g "$APP_USER" -m 0750 "$STATE_ROOT/private"
+install -d -o "$APP_USER" -g "$APP_USER" -m 0700 "$STATE_ROOT/private"
 install -d -o root -g root -m 0750 "$BACKUP_ROOT" "$LIB_DIR"
 
 install -o root -g root -m 0755 \
@@ -93,18 +127,20 @@ install -o root -g root -m 0644 \
 install -o root -g root -m 0600 \
     "$REPOSITORY_ROOT/deployment/backup.env.example" "$CONFIG_DIR/backup.env.example"
 
-if [[ ! -f "$CONFIG_DIR/recruitment.json" ]]; then
-    install -o root -g "$APP_USER" -m 0640 \
+if [[ ! -f "$STATE_ROOT/private/recruitment.json" ]]; then
+    install -o "$APP_USER" -g "$APP_USER" -m 0600 \
         "$REPOSITORY_ROOT/config/recruitment.example.json" \
-        "$CONFIG_DIR/recruitment.json"
+        "$STATE_ROOT/private/recruitment.json"
 fi
 
 nginx_available="/etc/nginx/sites-available/radio-association-staging"
 nginx_enabled="/etc/nginx/sites-enabled/radio-association-staging"
-nginx_default="/etc/nginx/sites-enabled/default"
+if [[ "$nginx_default_was_active" == true ]]; then
+    systemctl stop nginx
+fi
 if [[ -L "$nginx_default" ]] &&
     [[ "$(readlink -f "$nginx_default")" == "/etc/nginx/sites-available/default" ]]; then
-    mv "$nginx_default" /etc/nginx/sites-available/default.disabled-by-radio-association
+    unlink "$nginx_default"
 fi
 install -o root -g root -m 0644 \
     "$REPOSITORY_ROOT/deployment/nginx/radio-association-staging.conf" \

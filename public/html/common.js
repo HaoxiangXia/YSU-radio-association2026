@@ -239,22 +239,40 @@ function getFooterHTML() {
           </div>
           <div>
             <h4>联系我们</h4>
-            <p class="footer-contact-line">
-              现任会长：赵易贵
-              <span class="qq-contact">
-                <span class="qq-icon">QQ</span>
-                3140848313
-              </span>
-            </p>
+            <p class="footer-contact-line" id="footer-recruitment-contact">请关注协会招新通知。</p>
             <p class="footer-contact-meta">燕山大学 · 无线电爱好者协会</p>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2025 燕山大学无线电爱好者协会 | 挖掘潜质，就在无协</p>
+          <p>&copy; 2025 燕山大学无线电爱好者协会 | 挖掘潜质，就在无协 <span id="footer-icp-number"></span></p>
         </div>
       </div>
     </footer>
   `;
+}
+
+async function loadFooterRecruitmentConfig() {
+  const contactElement = document.getElementById('footer-recruitment-contact');
+  if (!contactElement) return;
+  try {
+    const response = await fetch('/api/recruitment/config', {
+      headers: { Accept: 'application/json' },
+    });
+    if (!response.ok) return;
+    const config = await response.json();
+    const contact = config.contact || {};
+    const parts = [contact.channelText, contact.qq ? `QQ群号：${contact.qq}` : '']
+      .filter(Boolean);
+    contactElement.textContent = parts.length
+      ? `${contact.label || '招新联系方式'}：${parts.join(' ')}`
+      : '请关注协会招新通知。';
+    const icpElement = document.getElementById('footer-icp-number');
+    if (icpElement && config.site?.icpNumber) {
+      icpElement.textContent = ` | ${config.site.icpNumber}`;
+    }
+  } catch (error) {
+    // Public pages remain usable if the optional footer configuration is unavailable.
+  }
 }
 
 // 初始化页面
@@ -275,6 +293,7 @@ function initPage() {
   initNav();
   initScrollTop();
   initImageViewer();
+  loadFooterRecruitmentConfig();
 }
 
 // 页面加载完成后初始化

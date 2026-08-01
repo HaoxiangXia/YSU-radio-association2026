@@ -38,6 +38,7 @@ class MembershipApplicationCreate(BaseModel):
     self_introduction: str = Field(min_length=10, max_length=1000)
     expectation: Optional[str] = Field(default=None, max_length=500)
     privacy_accepted: StrictBool = Field(alias="privacyAccepted")
+    cross_border_accepted: StrictBool = Field(alias="crossBorderAccepted")
 
     @field_validator("email")
     @classmethod
@@ -56,6 +57,13 @@ class MembershipApplicationCreate(BaseModel):
     def require_privacy_acceptance(cls, value: bool) -> bool:
         if value is not True:
             raise ValueError("必须确认隐私说明")
+        return value
+
+    @field_validator("cross_border_accepted")
+    @classmethod
+    def require_cross_border_acceptance(cls, value: bool) -> bool:
+        if value is not True:
+            raise ValueError("必须单独确认香港服务器存储说明")
         return value
 
 
@@ -113,7 +121,7 @@ def create_membership_application(
             db,
             data.model_dump(
                 by_alias=True,
-                exclude={"privacy_accepted"},
+                exclude={"privacy_accepted", "cross_border_accepted"},
             ),
         )
     except sqlite3.IntegrityError:

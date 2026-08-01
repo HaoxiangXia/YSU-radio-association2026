@@ -54,7 +54,7 @@
 | 数据库 | SQLite 3（Python 标准库 `sqlite3`） |
 | 认证 | JWT（PyJWT）+ PBKDF2 密码哈希 |
 | 安全防护 | 登录/提交速率限制（内存固定窗口） |
-| 导出 | CSV（前端生成并下载）、Excel → JSON（脚本） |
+| 导出与导入 | CSV 导出、负责人网页 Excel 校验/脱敏预览/录取名单发布 |
 
 ---
 
@@ -77,6 +77,8 @@
 - **登录** — JWT 认证，支持“记住我”
 - **入会申请管理** — 查看所有入会申请，支持分页、搜索、筛选
 - **数据导出** — 将入会申请导出为 CSV
+- **招新设置** — 编辑开放时间、通知、隐私告知、联系方式和表单选项
+- **录取结果** — 下载模板、上传 Excel、校验、脱敏预览并确认发布
 
 ---
 
@@ -142,14 +144,16 @@ uv sync
 | `PORT` | 否 | 服务端口号，默认 `5000` |
 | `DATABASE_PATH` | 否 | SQLite 数据库路径，相对路径基于仓库根目录，默认 `backend/data/database.sqlite` |
 | `JWT_SECRET` | **是** | JWT 签名密钥，生产环境必须设置为随机长字符串。未设置时应用启动失败。 |
-| `RECRUITMENT_OFFICER_ACCOUNTS` | **是** | 招新负责人账号列表，格式 `用户名:密码:姓名;...`。未设置时应用启动失败。 |
+| `RECRUITMENT_OFFICER_ACCOUNTS` | **是** | 招新负责人账号列表，格式 `用户名:PBKDF2密码哈希:显示名称;...`。未设置时应用启动失败。 |
+| `RECRUITMENT_CONFIG_PATH` | 否 | 私有招新业务配置路径；生产环境使用 `/var/lib/radio-association/private/recruitment.json`。 |
+| `ADMISSIONS_DATA_PATH` | 否 | 私有录取名单路径；生产环境使用 `/var/lib/radio-association/private/admissions.json`。 |
 
 在项目根目录从示例复制 `.env`（此文件不会提交）：
 
 ```env
 PORT=5000
 JWT_SECRET="your-secret-key-change-in-production"
-RECRUITMENT_OFFICER_ACCOUNTS="wuxie:513513#:无协管理员;admin2:pass2#:技术负责人"
+RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$迭代次数$盐$摘要:招新负责人"
 ```
 
 > **安全提示**：`JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值。若未设置，应用启动时会直接报错。由于值中可能包含 `#` 等字符，建议用双引号包裹。
@@ -163,13 +167,13 @@ RECRUITMENT_OFFICER_ACCOUNTS="wuxie:513513#:无协管理员;admin2:pass2#:技术
 > 将生成的哈希填入环境变量，例如：
 > `RECRUITMENT_OFFICER_ACCOUNTS="wuxie:pbkdf2_sha256$100000$...:无协管理员"`
 
-### 4. 初始化数据库
+### 4. 初始化本地展示种子数据（可选）
 
 ```bash
 bun scripts/init-db.js
 ```
 
-该脚本会先清空再重新插入协会、部门、竞赛、荣誉、培训等基础数据，属于破坏性操作，仅限首次部署执行。
+该脚本会先清空再重新插入协会、部门、竞赛、荣誉、培训等基础数据，属于破坏性操作，仅用于明确需要这些 API 种子数据的本地环境。生产部署和故障排查不得自行运行。
 
 ### 5. 启动服务
 
@@ -186,9 +190,9 @@ uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000
 
 服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
-### 5. 导出录取名单（可选）
+### 6. 发布录取名单
 
-Excel 工作簿第一行应为表头，后续行按以下列顺序填写：
+招新负责人登录后进入“招新设置与录取结果”，下载标准模板并按以下列顺序填写：
 
 | 列 | 字段 | 说明 |
 |----|------|------|
@@ -196,15 +200,17 @@ Excel 工作簿第一行应为表头，后续行按以下列顺序填写：
 | B | 学号 | 学生12位学号 |
 | C | 手机号 | 学生入会申请时填写的手机号 |
 | D | 录取部门 | 录取部门名称（可选） |
-| E | 录取状态 | 如“已录取”（可选） |
+| E | 录取状态 | 仅限“已录取”或“未录取” |
 
-执行导出：
+网页会校验文件大小、表头、字段、重复学号、公式、宏和外部链接；校验通过后只展示少量脱敏预览，负责人再次确认才会原子发布。发布新名单前必须先关闭录取查询，发布完成后再单独开启。
+
+网页故障时可使用备用导出脚本，输出路径必须位于 Git 仓库之外：
 
 ```bash
-bun scripts/export-admissions.js
+bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 ```
 
-该命令读取 `工作簿1.xlsx` 中的录取数据，生成 `public/data/admission-results.json` 供前端录取查询使用。录取查询时会同时核验学号和手机号。
+生产录取名单始终位于非公开私有目录，录取查询会同时核验学号和申请手机号。
 
 ---
 
@@ -219,6 +225,8 @@ bun scripts/export-admissions.js
 | GET | `/api/trainings` | 获取培训记录 |
 | GET | `/api/honors` | 获取荣誉列表 |
 | POST | `/api/membership-applications` | 提交入会申请 |
+| GET | `/api/recruitment/config` | 获取公开招新安排 |
+| POST | `/api/admissions/query` | 按学号和申请手机号查询本人录取结果 |
 
 ### 招新负责人接口（需 JWT 认证）
 
@@ -229,7 +237,12 @@ bun scripts/export-admissions.js
 | GET | `/api/recruitment-officers/verify` | 验证 Token 有效性 |
 | GET | `/api/recruitment-officers/profile` | 获取招新负责人信息 |
 | GET | `/api/membership-applications` | 获取入会申请列表（分页/搜索/排序） |
+| GET | `/api/membership-applications/export.csv` | 导出当前筛选条件下的入会申请 |
 | DELETE | `/api/membership-applications/:id` | 删除指定入会申请 |
+| GET/PUT | `/api/recruitment/manage/config` | 读取或更新招新业务设置 |
+| GET | `/api/admissions/manage/template.xlsx` | 下载录取名单模板 |
+| POST | `/api/admissions/manage/preview` | 校验并脱敏预览录取 Excel |
+| POST | `/api/admissions/manage/publish` | 发布已确认的预览名单 |
 
 ---
 
@@ -275,7 +288,8 @@ bun scripts/export-admissions.js
 - `JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值，未设置时应用启动失败。
 - API 认证使用 JWT 令牌机制。
 - 入会申请管理接口需要 Bearer Token 认证。
-- 登录和入会申请提交均带有简单的内存速率限制，生产环境如需多进程部署请接入 Redis 等共享存储。
+- 登录、入会申请和录取查询均带有简单的内存速率限制；生产环境固定使用一个 Uvicorn 进程，与 SQLite 单进程设计一致。
+- 入会申请需要分别确认个人信息处理说明和中国香港服务器存储说明；两个确认值只用于提交校验，不写入业务表。
 - 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人密码哈希。
 
 ---

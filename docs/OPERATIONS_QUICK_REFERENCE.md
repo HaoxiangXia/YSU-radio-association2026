@@ -2,7 +2,7 @@
 
 ## 1. 执行前
 
-- 阿里云控制台救援可用；
+- 腾讯云轻量应用服务器控制台救援可用；
 - 已创建服务器快照；
 - 本机 SSH 公钥已导入，并已用新连接验证；
 - 当前提交已通过 GitHub Actions；
@@ -45,7 +45,7 @@ sudoedit /etc/radio-association/app.env
 
 保持隧道窗口运行，在浏览器访问 `http://127.0.0.1:8080`。不要访问公网 `:5000`。
 
-安全更新招新配置或私有录取名单：
+日常招新请登录“招新负责人入口”，在“招新设置与录取结果”页面完成配置和录取名单发布。只有网页不可用时才使用以下备用命令：
 
 ```powershell
 .\scripts\radio-remote.ps1 -Action Configure -Server $Server -User $User -IdentityFile $Key -File .\config\recruitment.local.json

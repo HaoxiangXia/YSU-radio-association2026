@@ -120,7 +120,7 @@
 
 | 数据 | 存放位置 | 来源 |
 |---|---|---|
-| 录取名单（录取查询） | `public/data/admission-results.json`（gitignore） | `bun scripts/export-admissions.js` 从 Excel 导出 |
+| 录取名单（录取查询） | 生产环境 `/var/lib/radio-association/private/admissions.json`；本地由 `ADMISSIONS_DATA_PATH` 指定 | 负责人网页上传 Excel，经校验和脱敏预览后原子发布；命令行导出仅作备用 |
 | 招新负责人账号 | 环境变量 `RECRUITMENT_OFFICER_ACCOUNTS`（`username:pbkdf2_hash:name;...`） | 哈希用 `scripts/hash-password.py` 生成 |
 | 招新配置（周期、申请表单、录取查询开关等） | JSON 配置文件，路径由 `RECRUITMENT_CONFIG_PATH` 指定 | `backend/config/recruitment.py` 加载并校验 |
 
@@ -133,8 +133,8 @@ bun scripts/init-db.js
 # 直接查看数据库（需本机安装 sqlite3 CLI）
 sqlite3 backend/data/database.sqlite
 
-# 导出录取名单 JSON
-bun scripts/export-admissions.js 工作簿1.xlsx public/data/admission-results.json
+# 故障时在本地导出录取名单 JSON（输出必须在仓库外）
+bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 ```
 
 注意：WAL 模式下数据库目录还会出现 `database.sqlite-wal` / `database.sqlite-shm` 文件，属正常现象；备份时请连同主文件一起处理，或使用 SQLite 的在线备份 API（迁移备份即采用 `Connection.backup`）。

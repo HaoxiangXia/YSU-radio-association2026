@@ -1,5 +1,8 @@
 import json
 import os
+import shutil
+import tempfile
+import threading
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Literal
@@ -34,6 +37,11 @@ class ApplicationConfig(StrictConfigModel):
     ends_at: datetime | None = Field(default=None, alias="endsAt")
     notice: str = Field(min_length=1, max_length=500)
     privacy_notice: str = Field(alias="privacyNotice", min_length=1, max_length=1500)
+    cross_border_notice: str = Field(
+        alias="crossBorderNotice",
+        min_length=1,
+        max_length=1500,
+    )
     retention_until: date | None = Field(default=None, alias="retentionUntil")
 
     @field_validator("starts_at", "ends_at")
@@ -51,8 +59,16 @@ class ApplicationConfig(StrictConfigModel):
             raise ValueError("开始时间和截止时间必须同时填写或同时留空")
         if self.enabled and not (has_start and has_end):
             raise ValueError("开启入会申请时必须填写开始时间和截止时间")
+        if self.enabled and self.retention_until is None:
+            raise ValueError("开启入会申请时必须填写资料保留期限")
         if has_start and has_end and self.starts_at >= self.ends_at:
             raise ValueError("开始时间必须早于截止时间")
+        if (
+            self.retention_until is not None
+            and self.ends_at is not None
+            and self.retention_until < self.ends_at.date()
+        ):
+            raise ValueError("资料保留期限不得早于入会申请截止日期")
         return self
 
 
@@ -101,6 +117,7 @@ class RecruitmentConfigError(RuntimeError):
 
 _current_config: RecruitmentConfig | None = None
 _current_config_path: Path | None = None
+_config_lock = threading.RLock()
 
 
 def resolve_recruitment_config_path(path: str | Path | None = None) -> Path:
@@ -140,21 +157,92 @@ def initialize_recruitment_config(
     path: str | Path | None = None,
 ) -> RecruitmentConfig:
     global _current_config, _current_config_path
-    _current_config_path = resolve_recruitment_config_path(path)
-    _current_config = load_recruitment_config(_current_config_path)
-    return _current_config
+    with _config_lock:
+        _current_config_path = resolve_recruitment_config_path(path)
+        _current_config = load_recruitment_config(_current_config_path)
+        return _current_config
 
 
 def get_recruitment_config() -> RecruitmentConfig:
-    if _current_config is None:
-        return initialize_recruitment_config()
-    return _current_config
+    with _config_lock:
+        if _current_config is None:
+            return initialize_recruitment_config()
+        return _current_config
+
+
+def resolve_writable_recruitment_config_path(
+    path: str | Path | None = None,
+) -> Path:
+    configured_path = path or os.environ.get("RECRUITMENT_CONFIG_PATH")
+    if configured_path:
+        resolved = Path(configured_path).expanduser()
+        if not resolved.is_absolute():
+            resolved = REPOSITORY_ROOT / resolved
+        return resolved.resolve()
+    return LOCAL_CONFIG_PATH.resolve()
+
+
+def save_recruitment_config(
+    config: RecruitmentConfig,
+    path: str | Path | None = None,
+) -> tuple[Path, Path | None]:
+    """Atomically persist validated business configuration.
+
+    The tracked example is never overwritten. If a previous private config exists,
+    retain one timestamped copy beside it for operational recovery.
+    """
+
+    global _current_config, _current_config_path
+    config_path = resolve_writable_recruitment_config_path(path)
+    if config_path == EXAMPLE_CONFIG_PATH.resolve():
+        raise RecruitmentConfigError("示例配置是只读模板，不能作为后台保存目标")
+
+    payload = json.dumps(
+        config.model_dump(mode="json", by_alias=True),
+        ensure_ascii=False,
+        indent=2,
+    ) + "\n"
+
+    with _config_lock:
+        try:
+            config_path.parent.mkdir(parents=True, exist_ok=True)
+            backup_path = None
+            if config_path.exists():
+                timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+                backup_path = config_path.with_name(
+                    f"{config_path.name}.previous.{timestamp}"
+                )
+                shutil.copy2(config_path, backup_path)
+                os.chmod(backup_path, 0o600)
+
+            descriptor, temporary_name = tempfile.mkstemp(
+                prefix=f".{config_path.name}.",
+                suffix=".tmp",
+                dir=config_path.parent,
+            )
+            temporary_path = Path(temporary_name)
+            try:
+                with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as file:
+                    file.write(payload)
+                    file.flush()
+                    os.fsync(file.fileno())
+                os.chmod(temporary_path, 0o600)
+                os.replace(temporary_path, config_path)
+            finally:
+                temporary_path.unlink(missing_ok=True)
+        except OSError as exc:
+            raise RecruitmentConfigError("招新配置保存失败，原配置未被替换") from exc
+
+        _current_config = config
+        _current_config_path = config_path
+        return config_path, backup_path
 
 
 def reset_recruitment_config() -> None:
     global _current_config, _current_config_path
-    _current_config = None
-    _current_config_path = None
+    with _config_lock:
+        _current_config = None
+        _current_config_path = None
 
 
 def get_application_status(
@@ -187,6 +275,7 @@ def get_public_recruitment_config(
             "endsAt": config.application.ends_at,
             "notice": config.application.notice,
             "privacyNotice": config.application.privacy_notice,
+            "crossBorderNotice": config.application.cross_border_notice,
         },
         "admissionQuery": {
             "enabled": config.admission_query.enabled,

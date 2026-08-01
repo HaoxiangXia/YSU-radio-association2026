@@ -8,9 +8,9 @@ CURRENT_LINK="$APP_ROOT/current"
 PREVIOUS_LINK="$APP_ROOT/previous"
 CONFIG_DIR="${RADIO_CONFIG_DIR:-/etc/radio-association}"
 ENV_FILE="$CONFIG_DIR/app.env"
-RECRUITMENT_CONFIG="$CONFIG_DIR/recruitment.json"
 STATE_ROOT="${RADIO_STATE_ROOT:-/var/lib/radio-association}"
 DATABASE_PATH="$STATE_ROOT/data/database.sqlite"
+RECRUITMENT_CONFIG="$STATE_ROOT/private/recruitment.json"
 ADMISSIONS_PATH="$STATE_ROOT/private/admissions.json"
 BACKUP_STATUS_PATH="$STATE_ROOT/state/backup-status.json"
 BACKUP_ROOT="${RADIO_BACKUP_ROOT:-/var/backups/radio-association}"
@@ -238,9 +238,9 @@ install_private_file() {
     mkdir -p "$directory"
     if [[ -f "$target" ]]; then
         backup="${target}.previous.$(date -u +%Y%m%dT%H%M%SZ)"
-        install -o root -g "$APP_USER" -m "$mode" "$target" "$backup"
+        install -o "$APP_USER" -g "$APP_USER" -m "$mode" "$target" "$backup"
     fi
-    install -o root -g "$APP_USER" -m "$mode" "$source" "${target}.new.$$"
+    install -o "$APP_USER" -g "$APP_USER" -m "$mode" "$source" "${target}.new.$$"
     mv -f "${target}.new.$$" "$target"
     printf '%s' "$backup"
 }
@@ -253,10 +253,10 @@ command_configure() {
     RECRUITMENT_CONFIG_PATH="$source" PYTHONPATH="$release/backend" \
         "$release/backend/.venv/bin/python" -c \
         'from config.recruitment import load_recruitment_config; load_recruitment_config()'
-    backup="$(install_private_file "$source" "$RECRUITMENT_CONFIG" 640)"
+    backup="$(install_private_file "$source" "$RECRUITMENT_CONFIG" 600)"
     if ! systemctl restart "$SERVICE" || ! wait_for_health; then
         if [[ -n "$backup" ]]; then
-            install -o root -g "$APP_USER" -m 640 "$backup" "$RECRUITMENT_CONFIG"
+            install -o "$APP_USER" -g "$APP_USER" -m 600 "$backup" "$RECRUITMENT_CONFIG"
         else
             rm -f "$RECRUITMENT_CONFIG"
         fi
@@ -271,10 +271,10 @@ command_admissions() {
     local source="$1" backup=""
     [[ -f "$source" ]] || fail "录取名单不存在：$source"
     validate_admissions "$source"
-    backup="$(install_private_file "$source" "$ADMISSIONS_PATH" 640)"
+    backup="$(install_private_file "$source" "$ADMISSIONS_PATH" 600)"
     if ! systemctl restart "$SERVICE" || ! wait_for_health; then
         if [[ -n "$backup" ]]; then
-            install -o root -g "$APP_USER" -m 640 "$backup" "$ADMISSIONS_PATH"
+            install -o "$APP_USER" -g "$APP_USER" -m 600 "$backup" "$ADMISSIONS_PATH"
         else
             rm -f "$ADMISSIONS_PATH"
         fi

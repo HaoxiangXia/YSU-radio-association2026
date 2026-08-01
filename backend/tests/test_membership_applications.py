@@ -78,6 +78,7 @@ def test_application_not_open(client_factory, config_copy, state):
         ("email", "not-an-email"),
         ("self_introduction", "太短"),
         ("privacyAccepted", False),
+        ("crossBorderAccepted", False),
     ],
 )
 def test_application_validation(default_client, field, value):
@@ -115,6 +116,8 @@ def test_create_duplicate_and_privacy_not_persisted(default_client):
         }
         assert "privacyAccepted" not in columns
         assert "privacy_accepted" not in columns
+        assert "crossBorderAccepted" not in columns
+        assert "cross_border_accepted" not in columns
 
 
 def test_concurrent_duplicate_submission_has_single_winner(default_client):

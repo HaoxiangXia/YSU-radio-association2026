@@ -91,6 +91,7 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
     .fill("这是 Playwright 自动化测试使用的自我介绍内容。");
   await page.locator("#registration-expectation").fill("希望参与协会技术活动。");
   await page.locator("#privacy-accepted").check();
+  await page.locator("#cross-border-accepted").check();
   await page.locator("#submit-btn").click();
 
   await expect(page.locator("#success-modal")).toHaveClass(/open/);
@@ -117,6 +118,7 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
       self_introduction: "这是后台浏览器流程使用的测试自我介绍。",
       expectation: "验证详情和删除流程。",
       privacyAccepted: true,
+      crossBorderAccepted: true,
     },
   });
   expect(createResponse.status()).toBe(201);
@@ -154,6 +156,29 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
   await row.getByRole("button", { name: "删除" }).click();
   await expect(row).toHaveCount(0);
   await expect(page.locator("#admin-feedback")).toContainText("删除成功");
+  await expectHealthyLayout(page, problems);
+});
+
+
+test("负责人可查看招新设置与录取发布页面", async ({ page }, testInfo) => {
+  const problems = monitorPage(page);
+  await page.goto("/html/admin-login.html");
+  await page.locator("#admin-username").fill("officer");
+  await page.locator("#admin-password").fill("test-password");
+  await page.locator("#login-btn").click();
+  await page.waitForURL("**/html/membership-applications.html");
+  await page.getByRole("link", { name: "招新设置与录取结果" }).click();
+  await page.waitForURL("**/html/recruitment-operations.html");
+
+  await expect(page.locator("#cycle")).toHaveValue("e2e-cycle");
+  await expect(page.locator("#cross-border-notice")).toHaveValue(/中国香港/);
+  await expect(page.locator("#admissions-status")).toContainText("录取查询当前已开放");
+  await expect(page.locator("#publish-button")).toBeDisabled();
+  if (testInfo.project.name.startsWith("mobile")) {
+    await expectMinimumTouchTarget(page.locator("#reload-config-button"));
+    await expectMinimumTouchTarget(page.locator("#download-template-button"));
+    await expect(page.locator("#cycle")).toHaveCSS("font-size", "16px");
+  }
   await expectHealthyLayout(page, problems);
 });
 

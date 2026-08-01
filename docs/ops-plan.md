@@ -18,16 +18,16 @@
 | `/opt/radio-association/current` | 当前发布的原子符号链接 | root 管理 |
 | `/opt/radio-association/previous` | 上一健康发布 | root 管理 |
 | `/etc/radio-association/app.env` | 密钥、账号及私有路径 | `root:root 600` |
-| `/etc/radio-association/recruitment.json` | 当前招新业务配置 | `root:radio-association 640` |
+| `/var/lib/radio-association/private/recruitment.json` | 当前招新业务配置 | `radio-association:radio-association 600`，供负责人网页原子更新 |
 | `/var/lib/radio-association/data/database.sqlite` | 生产数据库 | `radio-association 640` |
-| `/var/lib/radio-association/private/admissions.json` | 私有录取名单 | `root:radio-association 640` |
+| `/var/lib/radio-association/private/admissions.json` | 私有录取名单 | `radio-association:radio-association 600`，不进入静态目录 |
 | `/var/backups/radio-association/` | 本机一致性备份 | root 管理，保留 14 天 |
 
 应用使用无登录 shell、无 sudo 权限的 `radio-association` 系统用户运行。systemd 启用了只读系统、最小地址族、空 capability 等限制。
 
 ## 首次准备
 
-1. 用户先在阿里云控制台确认远程连接或救援能力并创建修改前快照。
+1. 用户先在腾讯云轻量应用服务器控制台确认远程连接或救援能力并创建修改前快照。
 2. 将本机 SSH 公钥导入服务器，建立一条新的密钥连接。
 3. 运行只读盘点，确认没有未知业务或 80、443、5000 端口冲突。
 4. 提交并通过 CI 后，以明确的 40 位 commit SHA 运行 `Bootstrap`。
@@ -59,6 +59,8 @@ Windows 入口使用 `git archive <SHA>` 生成不含 Git 历史的源码归档�
 - `restore`：必须显式传入 `--confirm`；校验 SHA-256 和 `PRAGMA quick_check`，停止服务，使用 Backup API 生成恢复前安全备份并恢复，最后重新健康检查。
 - `rollback`：切换到指定 SHA 或 `previous`，执行数据库备份和健康检查；失败自动切回。
 
+日常招新不要求接交人员运行上述命令。负责人网页可编辑严格白名单内的招新业务字段，并通过“下载模板 → 上传校验 → 脱敏预览 → 确认发布”更新录取名单。网页不能修改密钥、账号、路径或备份设置；命令入口作为网页故障时的备用方案保留。
+
 ## 备份
 
 systemd timer 每天北京时间 03:00 触发，带随机延迟和错过补跑。备份工具使用 Python `sqlite3.Connection.backup()`，随后执行：
@@ -77,6 +79,6 @@ systemd timer 每天北京时间 03:00 触发，带随机延迟和错过补跑�
 - `/livez`、`/healthz`、`/ops/backupz` 返回预期状态；
 - SSH 隧道下首页、申请关闭、负责人鉴权、CSV、录取查询关闭均符合配置；
 - 手动备份、临时恢复演练和代码回滚均有成功证据；
-- 阿里云安全组与服务器防火墙未开放公网 Web 端口。
+- 腾讯云防火墙与服务器防火墙未开放公网 Web 端口。
 
 服务器尚未实际执行前，以上仅代表工具与目标设计，不代表部署、备份或回滚已经在生产主机验证。

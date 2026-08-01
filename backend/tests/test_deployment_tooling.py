@@ -34,6 +34,8 @@ def test_radioctl_and_templates_keep_preproduction_private():
     radioctl = read("deployment/radioctl")
     service = read("deployment/systemd/radio-association.service")
     nginx = read("deployment/nginx/radio-association-staging.conf")
+    app_env = read("deployment/app.env.example")
+    bootstrap = read("scripts/bootstrap-server.sh")
 
     for command in ("deploy", "rollback", "backup", "restore", "configure", "admissions"):
         assert command in radioctl
@@ -44,6 +46,14 @@ def test_radioctl_and_templates_keep_preproduction_private():
     assert "listen 127.0.0.1:8080;" in nginx
     assert "listen 80" not in nginx
     assert "listen 443" not in nginx
+    assert "RECRUITMENT_CONFIG_PATH=/var/lib/radio-association/private/recruitment.json" in app_env
+    assert 'RECRUITMENT_CONFIG="$STATE_ROOT/private/recruitment.json"' in radioctl
+    assert 'install -d -o "$APP_USER" -g "$APP_USER" -m 0700 "$STATE_ROOT/private"' in bootstrap
+    assert 'nginx_default_is_only_site=true' in bootstrap
+    assert 'systemctl stop nginx' in bootstrap
+    assert 'unlink "$nginx_default"' in bootstrap
+    assert "非 Ubuntu 默认站点" in bootstrap
+    assert "ReadWritePaths=/var/lib/radio-association" in service
 
 
 def test_release_extractor_rejects_links(tmp_path):

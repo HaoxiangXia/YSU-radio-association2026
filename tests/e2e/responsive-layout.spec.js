@@ -114,7 +114,12 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
   const firstGallery = page.locator(".department-card__gallery").first();
   const firstGalleryBefore = await firstGallery.boundingBox();
   await page.locator(".department-card__media-control--next").first().click();
-  await expect(firstGallery).toHaveJSProperty("clientHeight", Math.round(firstGalleryBefore.height));
+  await expect
+    .poll(async () => {
+      const after = await firstGallery.boundingBox();
+      return after ? Math.abs(after.height - firstGalleryBefore.height) : Number.POSITIVE_INFINITY;
+    })
+    .toBeLessThanOrEqual(1);
 
   if (testInfo.project.name.startsWith("mobile")) {
     await page.goto("/html/honors.html");

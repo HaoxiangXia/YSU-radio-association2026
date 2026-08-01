@@ -112,6 +112,7 @@
       <p id="form-status" class="text-sm mt-3" role="status"></p>
       <p id="contact-info" class="text-gray-500 text-sm mt-2">联系方式正在加载。</p>
       <p id="privacy-notice" class="text-gray-500 text-sm mt-1">隐私说明正在加载。</p>
+      <p id="cross-border-notice" class="text-gray-500 text-sm mt-1">服务器存储说明正在加载。</p>
     </div>
 
     <form id="membership-application-form" class="card form-card space-y-4 recruit-form">
@@ -176,6 +177,14 @@
           <label for="privacy-accepted">我已阅读并同意上述隐私说明，确认提交本次入会申请资料。<span class="text-red-500">*</span></label>
         </div>
         <div class="form-error" id="error-privacyAccepted"></div>
+      </div>
+
+      <div>
+        <div class="privacy-confirmation">
+          <input type="checkbox" id="cross-border-accepted" name="crossBorderAccepted" aria-describedby="error-crossBorderAccepted" required>
+          <label for="cross-border-accepted">我已单独阅读并同意将上述资料存储在中国香港服务器。<span class="text-red-500">*</span></label>
+        </div>
+        <div class="form-error" id="error-crossBorderAccepted"></div>
       </div>
 
       <div class="pt-4">
@@ -249,6 +258,7 @@
         document.getElementById('application-notice').textContent = config.application.notice;
         document.getElementById('contact-info').textContent = formatContact(config.contact);
         document.getElementById('privacy-notice').textContent = `隐私说明：${config.application.privacyNotice}`;
+        document.getElementById('cross-border-notice').textContent = `服务器存储说明：${config.application.crossBorderNotice}`;
 
         applicationIsOpen = config.application.status === 'open';
         submitBtn.disabled = !applicationIsOpen;
@@ -293,6 +303,7 @@
       if (selfIntroduction.length < 10 || selfIntroduction.length > 1000) errors.self_introduction = '自我介绍应为 10 到 1000 个字符';
       if (form.elements.expectation.value.trim().length > 500) errors.expectation = '加入期望不能超过 500 个字符';
       if (!form.elements.privacyAccepted.checked) errors.privacyAccepted = '请先阅读并同意隐私说明';
+      if (!form.elements.crossBorderAccepted.checked) errors.crossBorderAccepted = '请单独确认香港服务器存储说明';
       
       // 显示错误
       Object.keys(errors).forEach(key => {
@@ -335,6 +346,7 @@
           self_introduction: form.elements.self_introduction.value.trim(),
           expectation: form.elements.expectation.value.trim(),
           privacyAccepted: form.elements.privacyAccepted.checked,
+          crossBorderAccepted: form.elements.crossBorderAccepted.checked,
         };
         
         const response = await fetch('/api/membership-applications', {
