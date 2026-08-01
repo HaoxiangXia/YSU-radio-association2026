@@ -30,9 +30,17 @@ export default defineConfig({
       },
     },
     {
-      name: "mobile-chromium",
+      name: "mobile-320",
       use: {
         ...devices["Pixel 7"],
+        viewport: { width: 320, height: 568 },
+      },
+    },
+    {
+      name: "mobile-390",
+      use: {
+        ...devices["Pixel 7"],
+        viewport: { width: 390, height: 844 },
       },
     },
   ],

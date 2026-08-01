@@ -1,5 +1,60 @@
 // 无线电爱好者协会 - 公共 JavaScript
 
+function getResponsiveImageAsset(sourcePath) {
+  return window.RESPONSIVE_IMAGE_ASSETS?.[sourcePath] || null;
+}
+
+function getResponsiveImageData(sourcePath, sizes = '100vw') {
+  const asset = getResponsiveImageAsset(sourcePath);
+  if (!asset?.variants?.length) {
+    return {
+      src: sourcePath,
+      srcset: '',
+      sizes,
+      width: '',
+      height: '',
+    };
+  }
+
+  const variants = [...asset.variants].sort((left, right) => left.width - right.width);
+  const fallback = variants.find((variant) => variant.width >= 1200) || variants.at(-1);
+  return {
+    src: fallback.src,
+    srcset: variants.map((variant) => `${variant.src} ${variant.width}w`).join(', '),
+    sizes,
+    width: asset.width,
+    height: asset.height,
+  };
+}
+
+function getResponsiveImageAttributes(sourcePath, sizes = '100vw') {
+  const image = getResponsiveImageData(sourcePath, sizes);
+  const srcset = image.srcset ? ` srcset="${image.srcset}"` : '';
+  const dimensions = image.width && image.height
+    ? ` width="${image.width}" height="${image.height}"`
+    : '';
+  return `src="${image.src}"${srcset} sizes="${image.sizes}"${dimensions}`;
+}
+
+function applyResponsiveImage(element, sourcePath, sizes = '100vw', useLargest = false) {
+  const image = getResponsiveImageData(sourcePath, sizes);
+  const asset = getResponsiveImageAsset(sourcePath);
+  element.src = useLargest && asset?.variants?.length
+    ? asset.variants.at(-1).src
+    : image.src;
+  if (image.srcset) {
+    element.srcset = image.srcset;
+    element.sizes = sizes;
+  } else {
+    element.removeAttribute('srcset');
+    element.removeAttribute('sizes');
+  }
+  if (image.width && image.height) {
+    element.width = image.width;
+    element.height = image.height;
+  }
+}
+
 // 导航栏功能
 function initNav() {
   const menuBtn = document.querySelector('.menu-btn');
@@ -108,7 +163,7 @@ function initImageViewer() {
 
   const openViewer = (trigger) => {
     opener = trigger;
-    viewerImg.src = trigger.dataset.image;
+    applyResponsiveImage(viewerImg, trigger.dataset.image, '90vw', true);
     viewerImg.alt = trigger.dataset.imageAlt || '活动图片预览';
     viewer.classList.add('open');
     viewer.setAttribute('aria-hidden', 'false');

@@ -7,3 +7,6 @@
 
 # Store video assets with Git LFS and never apply text conversion.
 *.mp4 filter=lfs diff=lfs merge=lfs -text
+
+# Keep original image sources in Git, but exclude them from production archives.
+source-assets/** export-ignore

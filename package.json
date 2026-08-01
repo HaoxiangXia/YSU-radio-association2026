@@ -7,6 +7,7 @@
     "start": "cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000",
     "dev": "cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000",
     "export:admissions": "bun scripts/export-admissions.js",
+    "images:build": "cd backend && uv run --frozen python ../scripts/generate-responsive-images.py",
     "init": "bun scripts/init-db.js",
     "check:sensitive": "bun scripts/check-sensitive-files.js",
     "check:source": "bun scripts/check-source.js",

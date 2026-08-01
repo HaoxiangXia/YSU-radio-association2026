@@ -25,7 +25,7 @@
         <div class="department-card__media" data-images="${galleryData}">
           <div class="department-card__gallery">
             <button type="button" class="department-card__preview" data-image="${firstImage.src}" data-image-alt="${firstImage.alt}" aria-label="查看${firstImage.alt}完整图片">
-              <img class="department-card__photo" src="${firstImage.src}" alt="${firstImage.alt}" loading="lazy">
+              <img class="department-card__photo" ${getResponsiveImageAttributes(firstImage.src, '(max-width: 700px) calc(100vw - 3rem), (max-width: 959px) calc(50vw - 3rem), 31rem')} alt="${firstImage.alt}" loading="lazy" decoding="async">
             </button>
             ${images.length > 1 ? `
               <button type="button" class="department-card__media-control department-card__media-control--previous" data-gallery-direction="-1" aria-label="查看上一张图片">‹</button>
@@ -79,7 +79,7 @@
         event.stopPropagation();
         currentIndex = (currentIndex + Number(control.dataset.galleryDirection) + images.length) % images.length;
         const current = images[currentIndex];
-        image.src = current.src;
+        applyResponsiveImage(image, current.src, '(max-width: 700px) calc(100vw - 3rem), (max-width: 959px) calc(50vw - 3rem), 31rem');
         image.alt = current.alt;
         preview.dataset.image = current.src;
         preview.dataset.imageAlt = current.alt;

@@ -1,6 +1,6 @@
 # 无线电爱好者协会信息展示系统
 
-> 当前招新网站开发分支是 `lucian`；`master` 仅保留上一年度归档版本，`dev` 为独立的 FastAPI 重构尝试，请勿直接合并或基于 `master` 开发。
+> 当前开发主线是 `dev`，应跟踪 `origin/dev`；`master` 仅作为归档分支，`lucian` 保留旧 Bun/Express 实现与迁移历史，请勿继续在二者上开发或直接合并。
 
 > 燕山大学无线电爱好者协会（无协）官方信息展示与招新管理系统
 
@@ -8,7 +8,6 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![uv](https://img.shields.io/badge/uv-astral-purple?style=flat)](https://docs.astral.sh/uv/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat&logo=sqlite&logoColor=white)](https://sqlite.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -85,64 +84,31 @@
 
 ```
 radio-association/
-├── package.json                  # Bun 脚本配置（种子与导出脚本）
-├── .env                          # 环境变量（端口号、JWT 密钥等）
+├── package.json                  # 开发、验证、图片和导出脚本
+├── .env.example                  # 本地环境变量示例
 ├── README.md                     # 项目说明
+├── config/
+│   └── recruitment.example.json # 招新业务配置示例
 ├── docs/                         # 文档与决策记录
-│   └── adr/
-│       ├── 0001-membership-application-identifier.md
-│       └── 0002-recruitment-officer-identifier.md
 ├── backend/                      # FastAPI 后端（当前活跃后端）
 │   ├── app.py                    # FastAPI 应用入口
 │   ├── pyproject.toml            # uv 项目配置与依赖
-│   ├── utils/                    # 安全工具：密码哈希、速率限制
-│   │   └── security.py
-│   ├── config/
-│   │   └── database.py           # SQLite 连接与建表
-│   ├── models/                   # 数据模型
-│   │   ├── association.py
-│   │   ├── competition.py
-│   │   ├── department.py
-│   │   ├── honor.py
-│   │   ├── membership_application.py
-│   │   └── training.py
-│   └── routes/                   # API 路由
-│       ├── recruitment_officers.py
-│       ├── association.py
-│       ├── competitions.py
-│       ├── departments.py
-│       ├── honors.py
-│       ├── membership_applications.py
-│       └── trainings.py
-├── backend/
-│   └── data/                     # SQLite 数据库文件（gitignore）
+│   ├── config/                   # 数据库与招新配置
+│   ├── models/                   # SQLite 数据访问
+│   ├── routes/                   # FastAPI 路由
+│   ├── tests/                    # API、运维和部署工具测试
+│   └── data/                     # 本地 SQLite 数据（不提交）
 ├── public/                       # 前端静态资源
-│   ├── html/                     # 纯 HTML 页面
-│   │   ├── index.html
-│   │   ├── about-association.html
-│   │   ├── activities.html
-│   │   ├── competition-activities.html
-│   │   ├── recreational-activities.html
-│   │   ├── honors.html
-│   │   ├── trainings.html
-│   │   ├── membership-application.html   # 在线入会申请
-│   │   ├── membership-applications.html  # 入会申请管理（需登录）
-│   │   ├── admission.html
-│   │   ├── admin-login.html
-│   │   ├── styles.css
-│   │   ├── common.js
-│   │   ├── data.js
-│   │   └── home-effects.js
-│   ├── images/
-│   ├── image/
-│   ├── data/                     # 录取查询数据
-│   │   └── admission-results.json
+│   ├── html/                     # 原生 HTML、CSS、JavaScript
+│   ├── image/                    # 会徽与生成的响应式 WebP
 │   └── favicon.ico
-├── backup/                       # 备份目录
-│   └── vue-source/               # 原 Vue 源码备份
-└── scripts/
-    ├── export-admissions.js      # Excel → JSON 导出工具
-    └── hash-password.py          # 生成 PBKDF2 密码哈希
+├── source-assets/
+│   └── image-originals/          # 图片原稿，不进入 git archive
+├── deployment/                   # Nginx、systemd 与运维配置
+├── scripts/                      # 图片、导出、检查与运维工具
+└── tests/
+    ├── e2e/                      # Playwright 桌面与移动端测试
+    └── fixtures/                 # 隔离的招新和录取测试配置
 ```
 
 ---
@@ -153,7 +119,7 @@ radio-association/
 
 - **Python** >= 3.11
 - **uv**（安装方式见 https://docs.astral.sh/uv/getting-started/installation/）
-- **Bun**（仅用于运行 `scripts/init-db.js` 和 `scripts/export-admissions.js`）
+- **Bun**（运行项目脚本、前端检查、录取导出和 Playwright 测试）
 
 ### 1. 克隆项目
 
@@ -292,9 +258,12 @@ bun scripts/export-admissions.js
 |------|------|------|
 | start | `cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000` | 启动仅本机监听的服务 |
 | dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
+| images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
 | init | `bun scripts/init-db.js` | 初始化 SQLite 数据库（破坏性，仅限首次部署） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
 | hash-password | `cd backend && uv run python ../scripts/hash-password.py` | 生成 PBKDF2 密码哈希，用于 `.env` |
+| verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
+| verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
 
 生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [预生产运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
 
@@ -308,12 +277,6 @@ bun scripts/export-admissions.js
 - 入会申请管理接口需要 Bearer Token 认证。
 - 登录和入会申请提交均带有简单的内存速率限制，生产环境如需多进程部署请接入 Redis 等共享存储。
 - 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人密码哈希。
-
----
-
-## License
-
-MIT License
 
 ---
 

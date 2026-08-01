@@ -32,9 +32,23 @@ async function expectHealthyLayout(page, problems) {
   expect(problems).toEqual([]);
 }
 
+async function expectMinimumTouchTarget(locator) {
+  await expect
+    .poll(async () => {
+      const box = await locator.boundingBox();
+      return box ? Math.min(box.width, box.height) : 0;
+    })
+    .toBeGreaterThanOrEqual(43.5);
+}
+
 
 function fakeApplicant(testInfo, offset = 0) {
-  const projectOffset = testInfo.project.name.startsWith("mobile") ? 50 : 0;
+  const projectOffsets = {
+    "desktop-chromium": 0,
+    "mobile-320": 50,
+    "mobile-390": 100,
+  };
+  const projectOffset = projectOffsets[testInfo.project.name] ?? 150;
   const unique = projectOffset + offset;
   return {
     studentId: String(202600001000 + unique),
@@ -119,6 +133,15 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
   await row.getByRole("button", { name: "详情" }).click();
   await expect(page.locator("#detail-content")).toContainText(unsafeName);
   await expect(page.locator("#detail-content img")).toHaveCount(0);
+  if (testInfo.project.name.startsWith("mobile")) {
+    await expectMinimumTouchTarget(row.getByRole("button", { name: "详情" }));
+    await expectMinimumTouchTarget(row.getByRole("button", { name: "删除" }));
+    await expectMinimumTouchTarget(page.locator("#detail-close-button"));
+    await expectMinimumTouchTarget(page.locator("#logout-button"));
+    await expect(page.locator("#search-input")).toHaveCSS("font-size", "16px");
+    await expect(page.locator("#college-filter")).toHaveCSS("font-size", "16px");
+    await expect(page.locator("#grade-filter")).toHaveCSS("font-size", "16px");
+  }
   await page.locator("#detail-close-button").click();
 
   const downloadPromise = page.waitForEvent("download");

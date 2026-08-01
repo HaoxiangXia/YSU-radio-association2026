@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文娱活动 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css">
+  <link rel="stylesheet" href="/html/styles.css?v=20260729">
   <style>
 .site-page.recreational-page .activity-record {
   --page-accent: #6d4de0;
@@ -44,7 +44,8 @@
   </div>
 
   <script src="/html/data.js"></script>
-  <script src="/html/common.js"></script>
+  <script src="/html/image-assets.js?v=20260729"></script>
+  <script src="/html/common.js?v=20260729"></script>
   <script>
     // 渲染文娱活动列表
     function renderRecreationalActivities() {
@@ -78,7 +79,7 @@
               <section class="activity-gallery" aria-label="${activity.name}活动图片">
                 ${activity.images.map((image, imageIndex) => `
                   <button type="button" class="activity-gallery__item" data-image="${image}" data-image-alt="${activity.name}活动现场照片 ${imageIndex + 1}" aria-label="查看${activity.name}活动照片 ${imageIndex + 1}">
-                    <img src="${image}" alt="${activity.name}活动现场照片 ${imageIndex + 1}" loading="lazy" decoding="async">
+                    <img ${getResponsiveImageAttributes(image, '(max-width: 640px) calc(50vw - 2.5rem), (max-width: 1024px) calc(33vw - 2rem), 13rem')} alt="${activity.name}活动现场照片 ${imageIndex + 1}" loading="lazy" decoding="async">
                   </button>
                 `).join('')}
               </section>

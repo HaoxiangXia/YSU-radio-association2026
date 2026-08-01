@@ -221,6 +221,11 @@ button:focus-visible {
   right: 0;
   left: 0;
   padding: 0.5rem;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  max-height: calc(100vh - var(--nav-height));
+  max-height: calc(100dvh - var(--nav-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-top: 1px solid #f3f4f6;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
@@ -895,6 +900,10 @@ button:focus-visible {
 .overflow-x-auto {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-hint {
+  display: none;
 }
 
 .w-full {
@@ -2108,6 +2117,23 @@ textarea.form-input {
   scrollbar-color: rgba(59, 130, 246, 0.38) transparent;
 }
 
+@media (max-width: 700px) {
+  .site-page .table-scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 0 0.55rem;
+    color: #64748b;
+    font-size: 0.75rem;
+  }
+
+  .site-page .table-scroll-hint::before {
+    content: "↔";
+    color: #2563eb;
+    font-size: 1rem;
+  }
+}
+
 .site-page .data-table th {
   padding-top: 0.9rem;
   padding-bottom: 0.9rem;
@@ -2420,6 +2446,20 @@ textarea.form-input {
 
   .site-page .pagination {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 800px) {
+  .about-association-page .hero-eyebrow,
+  .about-association-page .home-card-kicker,
+  .about-association-page .home-card-date,
+  .about-association-page .home-card-link-cue,
+  .about-association-page .home-honor-kicker,
+  .about-association-page .home-honor-badge,
+  .about-association-page .home-section-index,
+  .about-association-page .department-metrics span,
+  .about-association-page .department-summary > span {
+    font-size: 0.75rem !important;
   }
 }
 

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>入会申请管理 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css">
+  <link rel="stylesheet" href="/html/styles.css?v=20260729">
   <style>
 .btn-sm {
   padding: 0.5rem 0.75rem;
@@ -177,7 +177,13 @@
 }
 
 .icon-button {
-  padding: 0.25rem;
+  display: inline-flex;
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: none;
   background: none;
   color: #6b7280;
@@ -220,6 +226,21 @@
 .admin-feedback.is-error { color: #dc2626; }
 
 @media (max-width: 700px) {
+  .search-bar input,
+  .search-bar select {
+    min-height: 2.75rem;
+    font-size: 1rem;
+  }
+  .search-bar .btn-sm,
+  .site-page.recruitment-officer-page.membership-applications-page .action-btn,
+  .membership-applications-page .pagination button {
+    min-height: 2.75rem;
+  }
+  .site-page.recruitment-officer-page.membership-applications-page .action-btn {
+    min-width: 2.75rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.8125rem;
+  }
   .membership-applications-page .overflow-x-auto { overflow: visible; }
   .membership-applications-page .data-table,
   .membership-applications-page .data-table tbody,
@@ -347,8 +368,8 @@
     <img src="" alt="查看图片">
   </div>
 
-  <script src="/html/data.js"></script>
-  <script src="/html/common.js"></script>
+  <script src="/html/image-assets.js?v=20260729"></script>
+  <script src="/html/common.js?v=20260729"></script>
   <script>
     const pageSize = 20;
     let currentPage = 1;
