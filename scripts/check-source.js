@@ -66,6 +66,14 @@ const sourceImageFiles = existingFiles.filter(
 const sourceKeys = new Set(
   sourceImageFiles.map((path) => `/image/${path.slice(sourcePrefix.length)}`),
 );
+// Historical material intentionally retained for possible future reuse, but not
+// presented as part of the current competition records.
+const archivedSourceKeys = new Set([
+  "/image/competitions/zhanwang-cup/photo-01.jpg",
+  "/image/competitions/zhanwang-cup/photo-02.jpg",
+  "/image/competitions/zhanwang-cup/photo-03.jpg",
+  "/image/competitions/zhanwang-cup/photo-04.jpg",
+]);
 const standaloneImages = new Map([
   [
     "/image/brand/association-emblem-white.png",
@@ -106,7 +114,10 @@ try {
 
 const manifestKeys = new Set(Object.keys(responsiveManifest));
 for (const sourceKey of sourceKeys) {
-  if (!logicalImageReferences.has(sourceKey)) {
+  if (
+    !logicalImageReferences.has(sourceKey)
+    && !archivedSourceKeys.has(sourceKey)
+  ) {
     failures.push(`未被页面引用的原图：${sourceKey}`);
   }
   if (!manifestKeys.has(sourceKey)) {
