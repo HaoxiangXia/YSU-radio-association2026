@@ -10,7 +10,7 @@ node_modules/
 
 # Environment and secrets
 .env
-config/recruitment.local.json
+backend/config/recruitment.local.json
 
 # SQLite database files
 *.sqlite

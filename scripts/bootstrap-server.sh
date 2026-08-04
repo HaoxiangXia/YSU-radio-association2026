@@ -69,7 +69,7 @@ required_files=(
     "$REPOSITORY_ROOT/deployment/nginx/radio-association-staging.conf"
     "$REPOSITORY_ROOT/scripts/ops/sqlite_backup.py"
     "$REPOSITORY_ROOT/scripts/ops/extract_release.py"
-    "$REPOSITORY_ROOT/config/recruitment.example.json"
+    "$REPOSITORY_ROOT/backend/config/recruitment.example.json"
 )
 for required_file in "${required_files[@]}"; do
     [[ -f "$required_file" ]] || {
@@ -129,7 +129,7 @@ install -o root -g root -m 0600 \
 
 if [[ ! -f "$STATE_ROOT/private/recruitment.json" ]]; then
     install -o "$APP_USER" -g "$APP_USER" -m 0600 \
-        "$REPOSITORY_ROOT/config/recruitment.example.json" \
+        "$REPOSITORY_ROOT/backend/config/recruitment.example.json" \
         "$STATE_ROOT/private/recruitment.json"
 fi
 

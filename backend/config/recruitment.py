@@ -19,8 +19,9 @@ from pydantic import (
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-EXAMPLE_CONFIG_PATH = REPOSITORY_ROOT / "config" / "recruitment.example.json"
-LOCAL_CONFIG_PATH = REPOSITORY_ROOT / "config" / "recruitment.local.json"
+CONFIG_DIR = Path(__file__).resolve().parent
+EXAMPLE_CONFIG_PATH = CONFIG_DIR / "recruitment.example.json"
+LOCAL_CONFIG_PATH = CONFIG_DIR / "recruitment.local.json"
 
 
 class StrictConfigModel(BaseModel):
