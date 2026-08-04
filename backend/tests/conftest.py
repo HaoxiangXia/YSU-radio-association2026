@@ -28,7 +28,8 @@ from fastapi.testclient import TestClient
 
 from app import app
 from config.recruitment import reset_recruitment_config
-from routes.admissions import reset_admissions_data
+from models.admission_list import reset_admissions_data
+from routes.admissions import reset_preview_sessions
 from utils.security import (
     admission_query_limiter,
     application_submit_limiter,
@@ -101,6 +102,7 @@ def make_application(student_id: str = "202600000002", **overrides) -> dict:
 def reset_runtime_state() -> None:
     reset_recruitment_config()
     reset_admissions_data()
+    reset_preview_sessions()
     login_limiter._windows.clear()
     application_submit_limiter._windows.clear()
     admission_query_limiter._windows.clear()

@@ -8,8 +8,9 @@ import pytest
 from openpyxl import Workbook
 
 from conftest import TEST_PASSWORD
+from models.admission_list import AdmissionDataError
 from routes import recruitment_officers
-from routes.admissions import AdmissionDataError, parse_admission_workbook
+from utils.admission_workbook import parse_admission_workbook
 from utils.security import admission_query_limiter, login_limiter
 
 
