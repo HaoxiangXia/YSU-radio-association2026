@@ -1,0 +1,12 @@
+{
+  "name": "radio-association-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && cp dist/html/trainings.html ../public/html/trainings.html"
+  },
+  "dependencies": {
+    "astro": "^7.1.6"
+  }
+}

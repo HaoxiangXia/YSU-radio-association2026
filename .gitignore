@@ -7,6 +7,8 @@ __pycache__/
 
 # Node
 node_modules/
+frontend/dist/
+frontend/.astro/
 
 # Environment and secrets
 .env
