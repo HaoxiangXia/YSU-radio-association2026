@@ -49,14 +49,12 @@ def make_config(
             "enabled": application_enabled,
             "startsAt": (now - timedelta(days=1)).isoformat(),
             "endsAt": (now + timedelta(days=1)).isoformat(),
-            "notice": "测试期间的入会申请安排",
             "privacyNotice": "测试资料仅用于自动化验证。",
             "crossBorderNotice": "测试资料存储在中国香港的测试服务器。",
             "retentionUntil": "2099-12-31",
         },
         "admissionQuery": {
             "enabled": admission_enabled,
-            "notice": "测试期间的录取查询安排",
         },
         "contact": {
             "label": "测试联系方式",

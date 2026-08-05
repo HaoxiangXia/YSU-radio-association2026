@@ -94,7 +94,7 @@ def create_membership_application(
     if application_status != "open":
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
-            recruitment_config.application.notice,
+            "入会申请当前未开放，请留意协会后续通知。",
         )
 
     if data.college not in recruitment_config.options.colleges:

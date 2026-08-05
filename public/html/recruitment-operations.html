@@ -79,10 +79,6 @@
           <input class="form-input" id="ends-at" name="endsAt" type="datetime-local">
         </div>
         <div class="operations-field--wide">
-          <label class="form-label" for="application-notice">入会申请通知</label>
-          <textarea class="form-input" id="application-notice" name="applicationNotice" rows="3" maxlength="500" required></textarea>
-        </div>
-        <div class="operations-field--wide">
           <label class="form-label" for="privacy-notice">个人信息处理说明</label>
           <textarea class="form-input" id="privacy-notice" name="privacyNotice" rows="4" maxlength="1500" required></textarea>
         </div>
@@ -96,10 +92,6 @@
           <input id="admission-enabled" name="admissionEnabled" type="checkbox">
           <span><strong>开放录取查询</strong><br><span class="operations-help">必须先关闭查询、发布并复核新名单，再重新开放。</span></span>
         </label>
-        <div class="operations-field--wide">
-          <label class="form-label" for="admission-notice">录取查询通知</label>
-          <textarea class="form-input" id="admission-notice" name="admissionNotice" rows="3" maxlength="500" required></textarea>
-        </div>
 
         <div>
           <label class="form-label" for="contact-label">联系方式标题</label>
@@ -228,11 +220,9 @@
       form.elements.applicationEnabled.checked = config.application.enabled === true;
       form.elements.startsAt.value = toLocalInput(config.application.startsAt);
       form.elements.endsAt.value = toLocalInput(config.application.endsAt);
-      form.elements.applicationNotice.value = config.application.notice;
       form.elements.privacyNotice.value = config.application.privacyNotice;
       form.elements.crossBorderNotice.value = config.application.crossBorderNotice;
       form.elements.admissionEnabled.checked = config.admissionQuery.enabled === true;
-      form.elements.admissionNotice.value = config.admissionQuery.notice;
       form.elements.contactLabel.value = config.contact.label;
       form.elements.contactQq.value = config.contact.qq || '';
       form.elements.contactChannel.value = config.contact.channelText;
@@ -262,14 +252,12 @@
           enabled: form.elements.applicationEnabled.checked,
           startsAt: toIsoValue(form.elements.startsAt.value),
           endsAt: toIsoValue(form.elements.endsAt.value),
-          notice: form.elements.applicationNotice.value.trim(),
           privacyNotice: form.elements.privacyNotice.value.trim(),
           crossBorderNotice: form.elements.crossBorderNotice.value.trim(),
           retentionUntil: form.elements.retentionUntil.value || null,
         },
         admissionQuery: {
           enabled: form.elements.admissionEnabled.checked,
-          notice: form.elements.admissionNotice.value.trim(),
         },
         contact: {
           label: form.elements.contactLabel.value.trim(),

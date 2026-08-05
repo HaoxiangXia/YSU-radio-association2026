@@ -4,14 +4,12 @@
     "enabled": true,
     "startsAt": "2020-01-01T00:00:00+08:00",
     "endsAt": "2100-01-01T00:00:00+08:00",
-    "notice": "自动化测试期间开放入会申请。",
     "privacyNotice": "这些伪造资料只用于浏览器自动化测试。",
     "crossBorderNotice": "这些伪造资料存储在中国香港的自动化测试服务器。",
     "retentionUntil": "2100-01-01"
   },
   "admissionQuery": {
-    "enabled": true,
-    "notice": "自动化测试期间开放录取查询。"
+    "enabled": true
   },
   "contact": {
     "label": "测试联系方式",

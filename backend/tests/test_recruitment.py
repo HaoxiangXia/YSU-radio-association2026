@@ -103,7 +103,7 @@ def test_officer_can_atomically_update_business_config(default_client, config_co
     client, state = default_client
     headers = login(client)
     updated = config_copy()
-    updated["application"]["notice"] = "更新后的招新通知"
+    updated["application"]["privacyNotice"] = "更新后的个人信息处理说明"
     updated["contact"]["channelText"] = "更新后的联系说明"
 
     response = client.put(
@@ -115,7 +115,7 @@ def test_officer_can_atomically_update_business_config(default_client, config_co
     persisted = json.loads(state["config_path"].read_text(encoding="utf-8"))
 
     assert response.status_code == 200
-    assert "application.notice" in response.json()["changedFields"]
-    assert public.json()["application"]["notice"] == "更新后的招新通知"
+    assert "application.privacyNotice" in response.json()["changedFields"]
+    assert public.json()["application"]["privacyNotice"] == "更新后的个人信息处理说明"
     assert persisted["contact"]["channelText"] == "更新后的联系说明"
     assert list(state["config_path"].parent.glob("*.previous.*"))

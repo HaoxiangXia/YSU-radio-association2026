@@ -106,7 +106,7 @@ def query_admission(
     if not config.admission_query.enabled:
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
-            config.admission_query.notice,
+            "录取查询尚未开放，请留意协会后续通知。",
         )
 
     client_key = get_client_ip(request)

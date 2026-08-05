@@ -36,7 +36,6 @@ class ApplicationConfig(StrictConfigModel):
     enabled: StrictBool = False
     starts_at: datetime | None = Field(default=None, alias="startsAt")
     ends_at: datetime | None = Field(default=None, alias="endsAt")
-    notice: str = Field(min_length=1, max_length=500)
     privacy_notice: str = Field(alias="privacyNotice", min_length=1, max_length=1500)
     cross_border_notice: str = Field(
         alias="crossBorderNotice",
@@ -75,7 +74,6 @@ class ApplicationConfig(StrictConfigModel):
 
 class AdmissionQueryConfig(StrictConfigModel):
     enabled: StrictBool = False
-    notice: str = Field(min_length=1, max_length=500)
 
 
 class ContactConfig(StrictConfigModel):
@@ -274,12 +272,10 @@ def get_public_recruitment_config(
             "status": get_application_status(config, now),
             "startsAt": config.application.starts_at,
             "endsAt": config.application.ends_at,
-            "notice": config.application.notice,
             "privacyNotice": config.application.privacy_notice,
         },
         "admissionQuery": {
             "enabled": config.admission_query.enabled,
-            "notice": config.admission_query.notice,
         },
         "contact": config.contact.model_dump(by_alias=True),
         "options": config.options.model_dump(by_alias=True),

@@ -107,7 +107,6 @@
   <main class="page-container page-container--narrow subpage-content membership-application-content">
     <div class="card card-section notice-card mb-6 membership-application-notice">
       <h3 class="font-bold mb-2 text-gray-800">入会申请须知</h3>
-      <p id="application-notice" class="text-gray-500 text-sm">正在读取招新安排，请稍候。</p>
       <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
       <p id="form-status" class="text-sm mt-3" role="status"></p>
       <p id="contact-info" class="text-gray-500 text-sm mt-2">联系方式正在加载。</p>
@@ -241,7 +240,6 @@
         }
 
         populateOptions(config);
-        document.getElementById('application-notice').textContent = config.application.notice;
         renderRecruitmentContact(document.getElementById('contact-info'), config.contact);
         document.getElementById('privacy-notice').textContent = `隐私说明：${config.application.privacyNotice}`;
 

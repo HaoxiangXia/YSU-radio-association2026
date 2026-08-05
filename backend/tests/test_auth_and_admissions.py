@@ -151,7 +151,7 @@ def test_admission_query_closed(client_factory, config_copy):
         )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == config["admissionQuery"]["notice"]
+    assert response.json()["detail"] == "录取查询尚未开放，请留意协会后续通知。"
 
 
 def test_admission_rate_limit(default_client):
