@@ -1,0 +1,26 @@
+# 生产编排文件。在服务器上运行前，于本文件旁创建 .env：
+#   RADIO_SHA=<40位commit SHA>      —— 镜像 tag，锚定部署版本
+#   APP_UID=<radio-association的UID> —— id -u radio-association
+#   APP_GID=<radio-association的GID> —— id -g radio-association
+# .env 为 git 未跟踪文件，git checkout 切换版本时不受影响。
+services:
+  app:
+    image: radio-association:${RADIO_SHA:?must set RADIO_SHA in .env}
+    build:
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
+    container_name: radio-association
+    user: "${APP_UID:?must set APP_UID in .env}:${APP_GID:?must set APP_GID in .env}"
+    env_file: /etc/radio-association/app.env
+    volumes:
+      # 同路径挂载：应用经 DATABASE_PATH 等环境变量定位文件，容器内外路径一致，配置零改动
+      - /var/lib/radio-association:/var/lib/radio-association
+    ports:
+      - "127.0.0.1:5000:5000"
+    restart: unless-stopped
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
