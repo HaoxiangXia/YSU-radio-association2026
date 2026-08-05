@@ -116,6 +116,10 @@ const departments = [
     name: '机械部',
     category: 'technical',
     images: [
+      { src: '/image/departments/mechanical/project-05.jpg', alt: '车间装配现场' },
+      { src: '/image/departments/mechanical/project-06.jpg', alt: '管道电路装配' },
+      { src: '/image/departments/mechanical/project-07.jpg', alt: '高教杯竞赛合影' },
+      { src: '/image/departments/mechanical/project-08.jpg', alt: 'SolidWorks 3D建模' },
       { src: '/image/departments/mechanical/project-01.jpg', alt: '机械部制作的机器人结构装置' },
       { src: '/image/departments/mechanical/project-02.jpg', alt: '机械部制作的三维打印龙模型' },
       { src: '/image/departments/mechanical/project-03.jpg', alt: '机械部制作的金属打印龙模型' },
@@ -193,7 +197,6 @@ const departments = [
     images: [
       { src: '/image/activities/youth-league/photo-02.jpg', alt: '无线电爱好者协会团支部主题学习海报' },
       { src: '/image/activities/youth-league/photo-01.jpg', alt: '团支部成员开展主题学习活动' },
-      { src: '/image/activities/team-building/photo-01.jpg', alt: '协会成员参与集体活动' },
     ],
     description: '团支部是协会的思想引领核心，负责协会的思想政治工作和团员管理，促进协会健康发展。同时也承担着协会文化建设和对外宣传的重要职责。',
     responsibilities: [
