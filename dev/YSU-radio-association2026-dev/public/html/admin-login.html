@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>招新负责人登录 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css?v=20260729">
+  <style>
+.page-container--compact {
+  max-width: 28rem;
+}
+  </style>
+</head>
+<body class="site-page sub-page recruitment-officer-login-page">
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero subpage-hero--compact">
+    <div class="container subpage-hero__inner">
+      <h1>招新负责人登录</h1>
+      <p>招新负责人身份验证与入会申请管理入口。</p>
+    </div>
+  </header>
+
+  <main class="page-container page-container--compact subpage-content">
+    <div class="card form-card">
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="admin-username" class="form-label">用户名</label>
+          <input type="text" id="admin-username" name="username" class="form-input" placeholder="请输入用户名" required>
+        </div>
+
+        <div>
+          <label for="admin-password" class="form-label">密码</label>
+          <input type="password" id="admin-password" name="password" class="form-input" placeholder="请输入密码" required>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="remember" name="remember" class="rounded">
+          <label for="remember" class="text-sm text-gray-600">在这台私人设备上保持登录 7 天</label>
+        </div>
+        <p class="text-sm text-gray-600">公共电脑请勿勾选，关闭浏览器后会自动退出。</p>
+
+        <div id="error-message" class="text-red-500 text-sm" style="display: none;"></div>
+
+        <button type="submit" class="btn-solid w-full" id="login-btn">登录</button>
+      </form>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script src="/html/image-assets.js?v=20260729"></script>
+  <script src="/html/common.js?v=20260729"></script>
+  <script>
+    function checkAuth() {
+      const token = localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
+      if (!token) return;
+
+      fetch('/api/recruitment-officers/verify', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/html/membership-applications.html';
+        } else if (response.status === 401) {
+          localStorage.removeItem('recruitment_officer_token');
+          sessionStorage.removeItem('recruitment_officer_token');
+        }
+      })
+      .catch(() => {});
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const form = document.getElementById('login-form');
+      const errorDiv = document.getElementById('error-message');
+      const loginBtn = document.getElementById('login-btn');
+      
+      errorDiv.style.display = 'none';
+      
+      loginBtn.disabled = true;
+      loginBtn.textContent = '登录中...';
+      
+      try {
+        const username = form.elements.username.value.trim();
+        const password = form.elements.password.value;
+        const remember = form.elements.remember.checked;
+        
+        const response = await fetch('/api/recruitment-officers/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, remember }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.token) {
+          if (remember) {
+            localStorage.setItem('recruitment_officer_token', data.token);
+            sessionStorage.removeItem('recruitment_officer_token');
+          } else {
+            sessionStorage.setItem('recruitment_officer_token', data.token);
+            localStorage.removeItem('recruitment_officer_token');
+          }
+          window.location.href = '/html/membership-applications.html';
+        } else {
+          errorDiv.textContent = data.detail || data.message || '用户名或密码错误';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        errorDiv.textContent = '登录失败，请稍后再试';
+        errorDiv.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = '登录';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      
+      const form = document.getElementById('login-form');
+      if (form) {
+        form.addEventListener('submit', handleLogin);
+      }
+    });
+  </script>
+</body>
+</html>

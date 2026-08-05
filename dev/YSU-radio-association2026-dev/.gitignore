@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+
+# Environment and secrets
+.env
+config/recruitment.local.json
+
+# SQLite database files
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+backend/data/
+
+# Generated data and assets
+public/data/admission-results.json
+public/image/*.mp4
+!public/image/video.mp4
+
+# Excel temporary files
+工作簿1.xlsx
+~$*.xlsx
+AGENTS.md
+CONTEXT.md
+PLAN.md
+artifacts/
+playwright-report/
+scripts/baseline-allowlist.json
+scripts/check.js
+scripts/smoke.js
+scripts/screenshots.js
+scripts/recruitment-audit.js
+scripts/recruitment-browser-proxy.js
+.agent/
+.codex/
+.codex-remote-attachments/

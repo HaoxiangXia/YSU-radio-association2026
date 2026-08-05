@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up the YSU Radio Association SQLite database
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/radio-association/backup.env
+ExecStart=/usr/local/sbin/radioctl backup

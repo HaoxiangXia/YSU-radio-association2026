@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>招新设置与录取结果 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css?v=20260801">
+  <style>
+    .operations-grid { display: grid; gap: 1.25rem; }
+    .operations-card { padding: clamp(1rem, 3vw, 1.5rem); }
+    .operations-heading { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .operations-heading h2 { margin: 0; }
+    .operations-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .operations-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .operations-field--wide { grid-column: 1 / -1; }
+    .operations-toggle { display: flex; gap: 0.65rem; align-items: flex-start; padding: 0.85rem; border: 1px solid #dbeafe; border-radius: 8px; background: #f8fbff; }
+    .operations-toggle input { flex: 0 0 auto; width: 1.1rem; height: 1.1rem; margin-top: 0.15rem; }
+    .operations-help { margin-top: 0.35rem; color: #64748b; font-size: 0.82rem; line-height: 1.55; }
+    .operations-feedback { min-height: 1.5rem; margin-top: 0.85rem; color: #166534; font-size: 0.9rem; }
+    .operations-feedback.is-error { color: #b91c1c; }
+    .admissions-status { margin: 0 0 1rem; padding: 0.85rem; border-radius: 8px; background: #f8fafc; color: #475569; }
+    .preview-summary { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+    .preview-summary span { padding: 0.35rem 0.65rem; border-radius: 999px; background: #eaf4ff; color: #1d4ed8; font-size: 0.82rem; }
+    .preview-table-wrap { overflow-x: auto; }
+    .preview-table { width: 100%; min-width: 38rem; border-collapse: collapse; }
+    .preview-table th, .preview-table td { padding: 0.65rem; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 0.85rem; }
+    .preview-errors { margin: 0.75rem 0; padding-left: 1.2rem; color: #b91c1c; }
+    @media (max-width: 720px) {
+      .operations-form-grid { grid-template-columns: 1fr; }
+      .operations-field--wide { grid-column: auto; }
+      .operations-actions > * { width: 100%; min-height: 2.75rem; }
+      .operations-heading button { min-height: 2.75rem; padding: 0.65rem 0.9rem; }
+      .operations-card .form-input { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body class="site-page sub-page recruitment-officer-page recruitment-operations-page">
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero subpage-hero--compact">
+    <div class="container subpage-hero__inner">
+      <h1>招新设置与录取结果</h1>
+      <p>管理招新开放安排，并安全预览和发布录取名单。</p>
+    </div>
+  </header>
+
+  <main class="page-container subpage-content operations-grid">
+    <div class="operations-actions" aria-label="负责人页面导航">
+      <a class="btn-outline" href="/html/membership-applications.html">返回入会申请管理</a>
+      <button class="btn-outline" type="button" id="logout-button">退出登录</button>
+    </div>
+
+    <section class="card operations-card" aria-labelledby="config-heading">
+      <div class="operations-heading">
+        <h2 id="config-heading">招新业务设置</h2>
+        <button class="btn-outline" type="button" id="reload-config-button">重新读取</button>
+      </div>
+      <form id="config-form" class="operations-form-grid">
+        <div>
+          <label class="form-label" for="cycle">招新周期</label>
+          <input class="form-input" id="cycle" name="cycle" maxlength="50" required>
+        </div>
+        <div>
+          <label class="form-label" for="retention-until">资料保留至</label>
+          <input class="form-input" id="retention-until" name="retentionUntil" type="date">
+        </div>
+
+        <label class="operations-toggle operations-field--wide" for="application-enabled">
+          <input id="application-enabled" name="applicationEnabled" type="checkbox">
+          <span><strong>开放入会申请</strong><br><span class="operations-help">只有开关开启且当前时间处于起止时间内时，学生才能提交。</span></span>
+        </label>
+        <div>
+          <label class="form-label" for="starts-at">开始时间</label>
+          <input class="form-input" id="starts-at" name="startsAt" type="datetime-local">
+        </div>
+        <div>
+          <label class="form-label" for="ends-at">截止时间</label>
+          <input class="form-input" id="ends-at" name="endsAt" type="datetime-local">
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="application-notice">入会申请通知</label>
+          <textarea class="form-input" id="application-notice" name="applicationNotice" rows="3" maxlength="500" required></textarea>
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="privacy-notice">个人信息处理说明</label>
+          <textarea class="form-input" id="privacy-notice" name="privacyNotice" rows="4" maxlength="1500" required></textarea>
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="cross-border-notice">香港服务器存储说明</label>
+          <textarea class="form-input" id="cross-border-notice" name="crossBorderNotice" rows="4" maxlength="1500" required></textarea>
+          <p class="operations-help">正式开放前必须由负责人确认这段告知文字；学生会在申请页单独勾选同意。</p>
+        </div>
+
+        <label class="operations-toggle operations-field--wide" for="admission-enabled">
+          <input id="admission-enabled" name="admissionEnabled" type="checkbox">
+          <span><strong>开放录取查询</strong><br><span class="operations-help">必须先关闭查询、发布并复核新名单，再重新开放。</span></span>
+        </label>
+        <div class="operations-field--wide">
+          <label class="form-label" for="admission-notice">录取查询通知</label>
+          <textarea class="form-input" id="admission-notice" name="admissionNotice" rows="3" maxlength="500" required></textarea>
+        </div>
+
+        <div>
+          <label class="form-label" for="contact-label">联系方式标题</label>
+          <input class="form-input" id="contact-label" name="contactLabel" maxlength="100" required>
+        </div>
+        <div>
+          <label class="form-label" for="contact-qq">QQ群号（可留空）</label>
+          <input class="form-input" id="contact-qq" name="contactQq" maxlength="30" inputmode="numeric">
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="contact-channel">联系说明</label>
+          <textarea class="form-input" id="contact-channel" name="contactChannel" rows="3" maxlength="500" required></textarea>
+        </div>
+        <div>
+          <label class="form-label" for="colleges">学院选项（每行一项）</label>
+          <textarea class="form-input" id="colleges" name="colleges" rows="10" required></textarea>
+        </div>
+        <div>
+          <label class="form-label" for="grades">年级选项（每行一项）</label>
+          <textarea class="form-input" id="grades" name="grades" rows="10" required></textarea>
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="icp-number">备案号（没有则留空）</label>
+          <input class="form-input" id="icp-number" name="icpNumber" maxlength="100">
+        </div>
+        <div class="operations-field--wide operations-actions">
+          <button class="btn-solid" type="submit" id="save-config-button">检查并保存设置</button>
+        </div>
+      </form>
+      <p class="operations-feedback" id="config-feedback" role="status"></p>
+    </section>
+
+    <section class="card operations-card" aria-labelledby="admissions-heading">
+      <div class="operations-heading">
+        <h2 id="admissions-heading">录取名单</h2>
+        <button class="btn-outline" type="button" id="reload-admissions-button">刷新状态</button>
+      </div>
+      <p class="admissions-status" id="admissions-status">正在读取录取名单状态。</p>
+      <div class="operations-actions">
+        <button class="btn-outline" type="button" id="download-template-button">下载 Excel 模板</button>
+        <input class="form-input" id="admissions-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <button class="btn-solid" type="button" id="preview-button">校验并预览</button>
+      </div>
+      <p class="operations-help">只接受 2 MiB 以内的 `.xlsx`。预览不会替换正式名单；文件不得包含公式、宏或外部链接。</p>
+      <div id="preview-result" hidden>
+        <div class="preview-summary" id="preview-summary"></div>
+        <ul class="preview-errors" id="preview-errors"></ul>
+        <div class="preview-table-wrap">
+          <table class="preview-table">
+            <thead><tr><th>姓名</th><th>学号</th><th>申请手机号</th><th>录取部门</th><th>状态</th></tr></thead>
+            <tbody id="preview-body"></tbody>
+          </table>
+        </div>
+        <div class="operations-actions" style="margin-top: 1rem;">
+          <button class="btn-solid" type="button" id="publish-button" disabled>确认发布此名单</button>
+        </div>
+      </div>
+      <p class="operations-feedback" id="admissions-feedback" role="status"></p>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <button class="scrollTopBtn" title="回到顶部">↑</button>
+  <div class="image-viewer"><img src="" alt="查看图片"></div>
+
+  <script src="/html/image-assets.js?v=20260729"></script>
+  <script src="/html/common.js?v=20260801"></script>
+  <script>
+    let currentPreviewId = null;
+    let admissionQueryEnabled = false;
+
+    function getToken() {
+      return localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
+    }
+
+    function authHeaders(extra = {}) {
+      return { Authorization: `Bearer ${getToken()}`, ...extra };
+    }
+
+    function clearAuthAndRedirect() {
+      localStorage.removeItem('recruitment_officer_token');
+      sessionStorage.removeItem('recruitment_officer_token');
+      window.location.href = '/html/admin-login.html';
+    }
+
+    async function checkedResponse(response) {
+      if (response.status === 401 || response.status === 403) {
+        clearAuthAndRedirect();
+        throw new Error('登录已失效');
+      }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        const detail = Array.isArray(body.detail)
+          ? body.detail.map((item) => item.msg).join('；')
+          : body.detail;
+        throw new Error(detail || body.message || '请求失败');
+      }
+      return response;
+    }
+
+    function setFeedback(id, message = '', isError = false) {
+      const element = document.getElementById(id);
+      element.textContent = message;
+      element.classList.toggle('is-error', isError);
+    }
+
+    function toLocalInput(isoValue) {
+      if (!isoValue) return '';
+      const date = new Date(isoValue);
+      const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return local.toISOString().slice(0, 16);
+    }
+
+    function toIsoValue(localValue) {
+      return localValue ? new Date(localValue).toISOString() : null;
+    }
+
+    function lines(value) {
+      return [...new Set(value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))];
+    }
+
+    function fillConfig(config) {
+      const form = document.getElementById('config-form');
+      form.elements.cycle.value = config.cycle;
+      form.elements.retentionUntil.value = config.application.retentionUntil || '';
+      form.elements.applicationEnabled.checked = config.application.enabled === true;
+      form.elements.startsAt.value = toLocalInput(config.application.startsAt);
+      form.elements.endsAt.value = toLocalInput(config.application.endsAt);
+      form.elements.applicationNotice.value = config.application.notice;
+      form.elements.privacyNotice.value = config.application.privacyNotice;
+      form.elements.crossBorderNotice.value = config.application.crossBorderNotice;
+      form.elements.admissionEnabled.checked = config.admissionQuery.enabled === true;
+      form.elements.admissionNotice.value = config.admissionQuery.notice;
+      form.elements.contactLabel.value = config.contact.label;
+      form.elements.contactQq.value = config.contact.qq || '';
+      form.elements.contactChannel.value = config.contact.channelText;
+      form.elements.colleges.value = config.options.colleges.join('\n');
+      form.elements.grades.value = config.options.grades.join('\n');
+      form.elements.icpNumber.value = config.site.icpNumber || '';
+      admissionQueryEnabled = config.admissionQuery.enabled === true;
+    }
+
+    async function loadConfig() {
+      setFeedback('config-feedback', '正在读取设置。');
+      try {
+        const response = await checkedResponse(await fetch('/api/recruitment/manage/config', { headers: authHeaders() }));
+        const body = await response.json();
+        fillConfig(body.config);
+        setFeedback('config-feedback', `已读取 ${body.config.cycle} 招新周期设置。`);
+      } catch (error) {
+        setFeedback('config-feedback', error.message, true);
+      }
+    }
+
+    function configFromForm() {
+      const form = document.getElementById('config-form');
+      return {
+        cycle: form.elements.cycle.value.trim(),
+        application: {
+          enabled: form.elements.applicationEnabled.checked,
+          startsAt: toIsoValue(form.elements.startsAt.value),
+          endsAt: toIsoValue(form.elements.endsAt.value),
+          notice: form.elements.applicationNotice.value.trim(),
+          privacyNotice: form.elements.privacyNotice.value.trim(),
+          crossBorderNotice: form.elements.crossBorderNotice.value.trim(),
+          retentionUntil: form.elements.retentionUntil.value || null,
+        },
+        admissionQuery: {
+          enabled: form.elements.admissionEnabled.checked,
+          notice: form.elements.admissionNotice.value.trim(),
+        },
+        contact: {
+          label: form.elements.contactLabel.value.trim(),
+          qq: form.elements.contactQq.value.trim(),
+          channelText: form.elements.contactChannel.value.trim(),
+        },
+        options: {
+          colleges: lines(form.elements.colleges.value),
+          grades: lines(form.elements.grades.value),
+        },
+        site: { icpNumber: form.elements.icpNumber.value.trim() },
+      };
+    }
+
+    async function saveConfig(event) {
+      event.preventDefault();
+      const config = configFromForm();
+      const summary = [
+        `招新周期：${config.cycle}`,
+        `入会申请：${config.application.enabled ? '开启' : '关闭'}`,
+        `录取查询：${config.admissionQuery.enabled ? '开启' : '关闭'}`,
+        `学院/年级选项：${config.options.colleges.length}/${config.options.grades.length}`,
+      ].join('\n');
+      if (!window.confirm(`请确认保存以下设置：\n\n${summary}`)) return;
+
+      const button = document.getElementById('save-config-button');
+      button.disabled = true;
+      setFeedback('config-feedback', '正在校验并保存。');
+      try {
+        const response = await checkedResponse(await fetch('/api/recruitment/manage/config', {
+          method: 'PUT',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify(config),
+        }));
+        const body = await response.json();
+        fillConfig(body.config);
+        setFeedback('config-feedback', body.changedFields.length
+          ? `保存成功，已更新 ${body.changedFields.length} 个字段。`
+          : '配置内容没有变化。');
+        await loadAdmissionsStatus();
+      } catch (error) {
+        setFeedback('config-feedback', error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function loadAdmissionsStatus() {
+      try {
+        const response = await checkedResponse(await fetch('/api/admissions/manage/status', { headers: authHeaders() }));
+        const status = await response.json();
+        admissionQueryEnabled = status.queryEnabled === true;
+        let message = status.published
+          ? `已发布 ${status.count ?? '未知'} 条录取结果`
+          : '尚未发布录取名单';
+        if (!status.valid) message += '，但当前名单校验失败';
+        message += `；录取查询当前${status.queryEnabled ? '已开放' : '已关闭'}。`;
+        document.getElementById('admissions-status').textContent = message;
+      } catch (error) {
+        document.getElementById('admissions-status').textContent = `状态读取失败：${error.message}`;
+      }
+    }
+
+    async function downloadTemplate() {
+      setFeedback('admissions-feedback', '正在生成模板。');
+      try {
+        const response = await checkedResponse(await fetch('/api/admissions/manage/template.xlsx', { headers: authHeaders() }));
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = '录取名单模板.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        setFeedback('admissions-feedback', '模板已下载。');
+      } catch (error) {
+        setFeedback('admissions-feedback', error.message, true);
+      }
+    }
+
+    function renderPreview(body) {
+      document.getElementById('preview-result').hidden = false;
+      const summary = document.getElementById('preview-summary');
+      summary.replaceChildren();
+      const labels = [
+        `总计 ${body.summary.total}`,
+        `已录取 ${body.summary.accepted}`,
+        `未录取 ${body.summary.rejected}`,
+        `错误 ${body.summary.errors}`,
+      ];
+      labels.forEach((label) => {
+        const item = document.createElement('span');
+        item.textContent = label;
+        summary.appendChild(item);
+      });
+
+      const errors = document.getElementById('preview-errors');
+      errors.replaceChildren();
+      body.errors.forEach((error) => {
+        const item = document.createElement('li');
+        item.textContent = `第 ${error.row} 行：${error.message}`;
+        errors.appendChild(item);
+      });
+
+      const previewBody = document.getElementById('preview-body');
+      previewBody.replaceChildren();
+      body.preview.forEach((record) => {
+        const row = document.createElement('tr');
+        ['name', 'studentId', 'phone', 'department', 'status'].forEach((field) => {
+          const cell = document.createElement('td');
+          cell.textContent = record[field] || '-';
+          row.appendChild(cell);
+        });
+        previewBody.appendChild(row);
+      });
+
+      currentPreviewId = body.valid ? body.previewId : null;
+      const publishButton = document.getElementById('publish-button');
+      publishButton.disabled = !currentPreviewId || admissionQueryEnabled;
+      publishButton.title = admissionQueryEnabled ? '请先在上方关闭录取查询并保存' : '';
+    }
+
+    async function previewWorkbook() {
+      const input = document.getElementById('admissions-file');
+      const file = input.files[0];
+      if (!file) {
+        setFeedback('admissions-feedback', '请先选择 Excel 文件。', true);
+        return;
+      }
+      if (!file.name.toLowerCase().endsWith('.xlsx') || file.size > 2 * 1024 * 1024) {
+        setFeedback('admissions-feedback', '请选择 2 MiB 以内的 .xlsx 文件。', true);
+        return;
+      }
+      const button = document.getElementById('preview-button');
+      button.disabled = true;
+      setFeedback('admissions-feedback', '正在校验录取名单。');
+      try {
+        const response = await checkedResponse(await fetch('/api/admissions/manage/preview', {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+          body: file,
+        }));
+        const body = await response.json();
+        renderPreview(body);
+        setFeedback('admissions-feedback', body.valid
+          ? '校验通过。预览只显示脱敏内容，请确认后再发布。'
+          : '校验未通过，请修正错误行后重新上传。', !body.valid);
+      } catch (error) {
+        currentPreviewId = null;
+        document.getElementById('publish-button').disabled = true;
+        setFeedback('admissions-feedback', error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function publishAdmissions() {
+      if (!currentPreviewId) return;
+      if (admissionQueryEnabled) {
+        setFeedback('admissions-feedback', '请先关闭录取查询再发布。', true);
+        return;
+      }
+      if (!window.confirm('发布会替换当前录取名单并保留旧名单备份。确定继续吗？')) return;
+      const button = document.getElementById('publish-button');
+      button.disabled = true;
+      setFeedback('admissions-feedback', '正在发布录取名单。');
+      try {
+        const response = await checkedResponse(await fetch('/api/admissions/manage/publish', {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ previewId: currentPreviewId }),
+        }));
+        const body = await response.json();
+        currentPreviewId = null;
+        document.getElementById('preview-result').hidden = true;
+        document.getElementById('admissions-file').value = '';
+        setFeedback('admissions-feedback', `${body.message}，共 ${body.count} 条。`);
+        await loadAdmissionsStatus();
+      } catch (error) {
+        button.disabled = false;
+        setFeedback('admissions-feedback', error.message, true);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!getToken()) {
+        clearAuthAndRedirect();
+        return;
+      }
+      document.getElementById('config-form').addEventListener('submit', saveConfig);
+      document.getElementById('reload-config-button').addEventListener('click', loadConfig);
+      document.getElementById('reload-admissions-button').addEventListener('click', loadAdmissionsStatus);
+      document.getElementById('download-template-button').addEventListener('click', downloadTemplate);
+      document.getElementById('preview-button').addEventListener('click', previewWorkbook);
+      document.getElementById('publish-button').addEventListener('click', publishAdmissions);
+      document.getElementById('logout-button').addEventListener('click', clearAuthAndRedirect);
+      await loadConfig();
+      await loadAdmissionsStatus();
+    });
+  </script>
+</body>
+</html>
