@@ -30,7 +30,7 @@ class MembershipApplicationCreate(BaseModel):
     )
 
     name: str = Field(min_length=2, max_length=30)
-    student_id: str = Field(alias="studentId", pattern=r"^\d{12}$")
+    student_id: str = Field(alias="studentId", pattern=r"^202\d{9}$")
     college: str = Field(min_length=1, max_length=100)
     grade: str = Field(min_length=1, max_length=50)
     phone: str = Field(pattern=r"^1[3-9]\d{9}$")
