@@ -28,7 +28,8 @@ from fastapi.testclient import TestClient
 
 from app import app
 from config.recruitment import reset_recruitment_config
-from routes.admissions import reset_admissions_data
+from models.admission_list import reset_admissions_data
+from routes.admissions import reset_preview_sessions
 from utils.security import (
     admission_query_limiter,
     application_submit_limiter,
@@ -48,14 +49,12 @@ def make_config(
             "enabled": application_enabled,
             "startsAt": (now - timedelta(days=1)).isoformat(),
             "endsAt": (now + timedelta(days=1)).isoformat(),
-            "notice": "测试期间的入会申请安排",
             "privacyNotice": "测试资料仅用于自动化验证。",
             "crossBorderNotice": "测试资料存储在中国香港的测试服务器。",
             "retentionUntil": "2099-12-31",
         },
         "admissionQuery": {
             "enabled": admission_enabled,
-            "notice": "测试期间的录取查询安排",
         },
         "contact": {
             "label": "测试联系方式",
@@ -101,6 +100,7 @@ def make_application(student_id: str = "202600000002", **overrides) -> dict:
 def reset_runtime_state() -> None:
     reset_recruitment_config()
     reset_admissions_data()
+    reset_preview_sessions()
     login_limiter._windows.clear()
     application_submit_limiter._windows.clear()
     admission_query_limiter._windows.clear()

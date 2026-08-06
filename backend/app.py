@@ -12,6 +12,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'), override=False)
 
 from config.database import initialize_database
 from config.recruitment import initialize_recruitment_config
+from models.admission_list import initialize_admissions_data
 
 from routes import (
     admissions,
@@ -31,7 +32,7 @@ from routes import (
 async def lifespan(app: FastAPI):
     recruitment_config = initialize_recruitment_config()
     recruitment_officers.load_recruitment_officer_accounts()
-    admissions.initialize_admissions_data(recruitment_config)
+    initialize_admissions_data(recruitment_config)
     initialize_database()
     yield
 

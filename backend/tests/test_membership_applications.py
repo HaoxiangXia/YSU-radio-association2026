@@ -64,7 +64,7 @@ def test_application_not_open(client_factory, config_copy, state):
         )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == config["application"]["notice"]
+    assert response.json()["detail"] == "入会申请当前未开放，请留意协会后续通知。"
 
 
 @pytest.mark.parametrize(

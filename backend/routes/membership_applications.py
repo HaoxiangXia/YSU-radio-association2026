@@ -30,7 +30,7 @@ class MembershipApplicationCreate(BaseModel):
     )
 
     name: str = Field(min_length=2, max_length=30)
-    student_id: str = Field(alias="studentId", pattern=r"^\d{12}$")
+    student_id: str = Field(alias="studentId", pattern=r"^202\d{9}$")
     college: str = Field(min_length=1, max_length=100)
     grade: str = Field(min_length=1, max_length=50)
     phone: str = Field(pattern=r"^1[3-9]\d{9}$")
@@ -94,7 +94,7 @@ def create_membership_application(
     if application_status != "open":
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
-            recruitment_config.application.notice,
+            "入会申请当前未开放，请留意协会后续通知。",
         )
 
     if data.college not in recruitment_config.options.colleges:

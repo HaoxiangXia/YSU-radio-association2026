@@ -118,8 +118,7 @@
   <main class="page-container page-container--narrow subpage-content query-content">
     <section class="card card-section mb-6 query-card">
       <h2 class="card-title">查询录取结果</h2>
-      <p id="admission-notice" class="text-gray-600 text-sm mb-4">正在读取录取查询安排，请稍候。</p>
-      
+
       <div class="query-form">
         <input type="text" id="student-id-input" class="form-input" placeholder="请输入12位学号" aria-label="学号" inputmode="numeric" maxlength="12">
         <input type="tel" id="phone-input" class="form-input" placeholder="请输入手机号" aria-label="手机号" inputmode="numeric" maxlength="11">
@@ -223,7 +222,6 @@
         const config = await response.json();
         if (!config.admissionQuery || !config.contact) throw new Error('配置内容不完整');
 
-        document.getElementById('admission-notice').textContent = config.admissionQuery.notice;
         renderRecruitmentContact(document.getElementById('admission-contact'), config.contact);
         admissionQueryEnabled = config.admissionQuery.enabled === true;
         queryButton.disabled = !admissionQueryEnabled;
@@ -231,7 +229,7 @@
         if (!admissionQueryEnabled) {
           showResult({
             title: '录取查询尚未开放',
-            message: config.admissionQuery.notice,
+            message: '录取查询尚未开放，请留意协会后续通知。',
           });
         } else {
           clearResult();

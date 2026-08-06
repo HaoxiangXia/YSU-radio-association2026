@@ -4,14 +4,12 @@
     "enabled": false,
     "startsAt": null,
     "endsAt": null,
-    "notice": "2026 年入会申请尚未开放，请留意协会后续通知。",
     "privacyNotice": "提交的信息仅用于本次招新，由招新负责人查看，不会公开展示。如需更正或删除，请通过下方联系方式与协会联系。",
     "crossBorderNotice": "本网站服务器位于中国香港。提交后，姓名、学号、学院、年级、联系方式和申请说明将存储在该服务器，仅供本次招新的负责人处理。请在确认了解该存储位置后再提交。",
     "retentionUntil": null
   },
   "admissionQuery": {
-    "enabled": false,
-    "notice": "录取查询尚未开放，请留意协会后续通知。"
+    "enabled": false
   },
   "contact": {
     "label": "招新联系方式",

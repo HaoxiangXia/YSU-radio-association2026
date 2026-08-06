@@ -42,13 +42,13 @@ function forbiddenPathReason(path) {
   if (file === "admission-results.json") {
     return "录取名单 JSON";
   }
-  if (lower === "config/recruitment.local.json") {
+  if (lower === "backend/config/recruitment.local.json") {
     return "本地真实业务配置";
   }
   if (
-    lower.startsWith("config/recruitment.")
+    lower.startsWith("backend/config/recruitment.")
     && lower.endsWith(".json")
-    && lower !== "config/recruitment.example.json"
+    && lower !== "backend/config/recruitment.example.json"
   ) {
     return "非模板业务配置";
   }

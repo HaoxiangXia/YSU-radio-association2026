@@ -8,8 +8,9 @@ import pytest
 from openpyxl import Workbook
 
 from conftest import TEST_PASSWORD
+from models.admission_list import AdmissionDataError
 from routes import recruitment_officers
-from routes.admissions import AdmissionDataError, parse_admission_workbook
+from utils.admission_workbook import parse_admission_workbook
 from utils.security import admission_query_limiter, login_limiter
 
 
@@ -150,7 +151,7 @@ def test_admission_query_closed(client_factory, config_copy):
         )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == config["admissionQuery"]["notice"]
+    assert response.json()["detail"] == "录取查询尚未开放，请留意协会后续通知。"
 
 
 def test_admission_rate_limit(default_client):

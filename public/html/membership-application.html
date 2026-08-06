@@ -107,7 +107,6 @@
   <main class="page-container page-container--narrow subpage-content membership-application-content">
     <div class="card card-section notice-card mb-6 membership-application-notice">
       <h3 class="font-bold mb-2 text-gray-800">入会申请须知</h3>
-      <p id="application-notice" class="text-gray-500 text-sm">正在读取招新安排，请稍候。</p>
       <p class="text-gray-500 text-sm">标有 <span class="text-red-500">*</span> 的为必填项</p>
       <p id="form-status" class="text-sm mt-3" role="status"></p>
       <p id="contact-info" class="text-gray-500 text-sm mt-2">联系方式正在加载。</p>
@@ -128,7 +127,7 @@
 
       <div>
         <label for="registration-student-id" class="form-label">学号 <span class="text-red-500">*</span></label>
-        <input type="text" id="registration-student-id" name="studentId" class="form-input" placeholder="请输入12位学号" aria-describedby="error-studentId" inputmode="numeric" pattern="\d{12}" maxlength="12" required>
+        <input type="text" id="registration-student-id" name="studentId" class="form-input" placeholder="请输入12位学号" aria-describedby="error-studentId" inputmode="numeric" pattern="202\d{9}" maxlength="12" required>
         <div class="form-error" id="error-studentId"></div>
       </div>
 
@@ -241,7 +240,6 @@
         }
 
         populateOptions(config);
-        document.getElementById('application-notice').textContent = config.application.notice;
         renderRecruitmentContact(document.getElementById('contact-info'), config.contact);
         document.getElementById('privacy-notice').textContent = `隐私说明：${config.application.privacyNotice}`;
 
@@ -257,42 +255,63 @@
       }
     }
 
-    function validateForm() {
+    // 每个字段返回错误文案；为空字符串表示通过
+    const fieldValidators = {
+      name: (form) => {
+        const value = form.elements.name.value.trim();
+        return (value.length < 2 || value.length > 30) ? '姓名应为 2 到 30 个字符' : '';
+      },
+      studentId: (form) => /^202\d{9}$/.test(form.elements.studentId.value.trim()) ? '' : '请输入 12 位数字学号',
+      college: (form) => form.elements.college.value ? '' : '请选择学院',
+      grade: (form) => form.elements.grade.value ? '' : '请选择年级',
+      phone: (form) => /^1[3-9]\d{9}$/.test(form.elements.phone.value.trim()) ? '' : '请输入有效的手机号码',
+      email: (form) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.elements.email.value.trim()) ? '' : '请输入有效的电子邮箱',
+      self_introduction: (form) => {
+        const value = form.elements.self_introduction.value.trim();
+        return (value.length < 10 || value.length > 1000) ? '自我介绍应为 10 到 1000 个字符' : '';
+      },
+      expectation: (form) => form.elements.expectation.value.trim().length > 500 ? '加入期望不能超过 500 个字符' : '',
+      privacyAccepted: (form) => form.elements.privacyAccepted.checked ? '' : '请先阅读并同意隐私说明',
+    };
+
+    function showFieldError(key, message) {
+      const errorEl = document.getElementById(`error-${key}`);
+      if (errorEl) errorEl.textContent = message;
+    }
+
+    function validateField(key) {
+      const validator = fieldValidators[key];
+      if (!validator) return true;
       const form = document.getElementById('membership-application-form');
-      const errors = {};
-      
-      document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
-      
-      const name = form.elements.name.value.trim();
-      if (name.length < 2 || name.length > 30) errors.name = '姓名应为 2 到 30 个字符';
-      
-      const studentId = form.elements.studentId.value.trim();
-      if (!/^\d{12}$/.test(studentId)) errors.studentId = '请输入 12 位数字学号';
-      
-      const college = form.elements.college.value;
-      if (!college) errors.college = '请选择学院';
-      
-      const grade = form.elements.grade.value;
-      if (!grade) errors.grade = '请选择年级';
-      
-      const phone = form.elements.phone.value.trim();
-      if (!/^1[3-9]\d{9}$/.test(phone)) errors.phone = '请输入有效的手机号码';
-      
-      const email = form.elements.email.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = '请输入有效的电子邮箱';
-      
-      const selfIntroduction = form.elements.self_introduction.value.trim();
-      if (selfIntroduction.length < 10 || selfIntroduction.length > 1000) errors.self_introduction = '自我介绍应为 10 到 1000 个字符';
-      if (form.elements.expectation.value.trim().length > 500) errors.expectation = '加入期望不能超过 500 个字符';
-      if (!form.elements.privacyAccepted.checked) errors.privacyAccepted = '请先阅读并同意隐私说明';
-      
-      // 显示错误
-      Object.keys(errors).forEach(key => {
-        const errorEl = document.getElementById(`error-${key}`);
-        if (errorEl) errorEl.textContent = errors[key];
+      const message = validator(form);
+      showFieldError(key, message);
+      return !message;
+    }
+
+    function validateForm() {
+      let valid = true;
+      Object.keys(fieldValidators).forEach(key => {
+        if (!validateField(key)) valid = false;
       });
-      
-      return Object.keys(errors).length === 0;
+      return valid;
+    }
+
+    // 离开输入框即校验；已显示错误的字段在输入过程中实时复检
+    function attachFieldValidation(form) {
+      ['name', 'studentId', 'phone', 'email', 'self_introduction', 'expectation'].forEach(key => {
+        const el = form.elements[key];
+        if (!el) return;
+        el.addEventListener('blur', () => validateField(key));
+        el.addEventListener('input', () => {
+          const errorEl = document.getElementById(`error-${key}`);
+          if (errorEl && errorEl.textContent) validateField(key);
+        });
+      });
+      ['college', 'grade', 'privacyAccepted'].forEach(key => {
+        const el = form.elements[key];
+        if (!el) return;
+        el.addEventListener('change', () => validateField(key));
+      });
     }
 
     function setFormStatus(message, isError = true) {
@@ -365,6 +384,7 @@
       const form = document.getElementById('membership-application-form');
       if (form) {
         form.addEventListener('submit', handleSubmit);
+        attachFieldValidation(form);
       }
       document.getElementById('success-close-button').addEventListener('click', closeSuccessModal);
       loadRecruitmentConfig();

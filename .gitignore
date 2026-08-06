@@ -7,10 +7,12 @@ __pycache__/
 
 # Node
 node_modules/
+frontend/dist/
+frontend/.astro/
 
 # Environment and secrets
 .env
-config/recruitment.local.json
+backend/config/recruitment.local.json
 
 # SQLite database files
 *.sqlite

@@ -88,7 +88,7 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
 
   await page.goto("/html/membership-application.html");
   await expect(page.locator("#submit-btn")).toBeEnabled();
-  await expect(page.locator("#application-notice")).toContainText("开放入会申请");
+  await expect(page.locator("#privacy-notice")).toContainText("伪造资料");
   await expect(page.locator("#form-status")).toBeEmpty();
   await expect(page.locator("#membership-application-grade option")).toHaveText([
     "请选择年级",

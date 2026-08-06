@@ -9,6 +9,7 @@ from config.recruitment import (
     get_recruitment_config,
     save_recruitment_config,
 )
+from models.admission_list import AdmissionDataError, load_admissions
 from routes.recruitment_officers import (
     RecruitmentOfficerInfo,
     get_current_recruitment_officer,
@@ -57,8 +58,6 @@ def update_recruitment_config(
     officer: RecruitmentOfficerInfo = Depends(get_current_recruitment_officer),
 ):
     if updated.admission_query.enabled:
-        from routes.admissions import AdmissionDataError, load_admissions
-
         try:
             load_admissions()
         except AdmissionDataError as exc:
