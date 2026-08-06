@@ -49,7 +49,7 @@ jobs:
       - name: Check frontend build is in sync
         run: |
           bun run build:frontend
-          git diff --exit-code public/html/trainings.html
+          git diff --exit-code public/html/trainings.html public/html/honors.html
 
       - name: Run fast verification
         run: bun run verify
@@ -86,7 +86,7 @@ jobs:
       - name: Check frontend build is in sync
         run: |
           bun run build:frontend
-          git diff --exit-code public/html/trainings.html
+          git diff --exit-code public/html/trainings.html public/html/honors.html
 
       - name: Install Chromium
         run: bunx playwright install --with-deps chromium
