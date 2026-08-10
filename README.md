@@ -196,17 +196,17 @@ uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000
 
 服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
-### 6. 培训教学页前端（仅修改该页时需要）
+### 6. Astro 前端页面（仅修改这些页面时需要）
 
-培训教学页（`/html/trainings.html`）由 `frontend/` 下的 Astro 工程在构建时渲染生成，产物已提交进仓库；不修改该页面时无需执行本步骤。
+培训教学页（`/html/trainings.html`）与荣誉成就页（`/html/honors.html`）由 `frontend/` 下的 Astro 工程在构建时渲染生成，产物已提交进仓库；不修改这些页面时无需执行本步骤。
 
 ```bash
 bun install --cwd frontend   # 首次或 frontend/bun.lock 变更后安装前端依赖
-bun run build:frontend       # 构建并覆盖 public/html/trainings.html
+bun run build:frontend       # 构建并覆盖 public/html/trainings.html 与 public/html/honors.html
 bun run dev:frontend         # Astro 开发服务器（需本地后端已在 5000 端口运行）
 ```
 
-修改 `frontend/src/` 后必须重新构建并一并提交产物，CI 会校验产物与 Astro 源码保持同步。其余 13 个页面仍是 `public/html/` 下的原生 HTML，直接编辑即可。
+修改 `frontend/src/` 后必须重新构建并一并提交产物，CI 会校验产物与 Astro 源码保持同步。其余 12 个页面仍是 `public/html/` 下的原生 HTML，直接编辑即可。
 
 ### 7. 发布录取名单
 
@@ -294,7 +294,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | start | `cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000` | 启动仅本机监听的服务 |
 | dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
 | dev:frontend | `bun run dev:frontend` | Astro 开发服务器（`/api`、`/html` 等代理到本地 5000 后端） |
-| build:frontend | `bun run build:frontend` | 构建培训教学页并覆盖 `public/html/trainings.html` |
+| build:frontend | `bun run build:frontend` | 构建培训教学页与荣誉成就页并覆盖 `public/html/trainings.html`、`public/html/honors.html` |
 | images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
 | init | `bun scripts/init-db.js` | 重建本地展示种子数据（破坏性，仅限明确需要的本地环境） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |

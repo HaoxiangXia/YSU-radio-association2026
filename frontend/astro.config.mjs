@@ -14,9 +14,10 @@ export default defineConfig({
         '/api': 'http://127.0.0.1:5000',
         '/html': {
           target: 'http://127.0.0.1:5000',
-          // Astro 自己的页面路由（/html/trainings.html）不代理，交给 Astro 处理
+          // Astro 自己的页面路由（/html/trainings.html、/html/honors.html）不代理，交给 Astro 处理
           bypass(req) {
             if (req.url?.startsWith('/html/trainings.html')) return req.url;
+            if (req.url?.startsWith('/html/honors.html')) return req.url;
           },
         },
         '/image': 'http://127.0.0.1:5000',
