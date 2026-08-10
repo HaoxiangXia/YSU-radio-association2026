@@ -90,7 +90,7 @@ def test_expired_and_invalid_tokens_are_rejected(default_client):
         {
             "recruitmentOfficerId": "officer",
             "username": "officer",
-            "name": "测试负责人",
+            "name": "officer",
             "exp": datetime.now(timezone.utc) - timedelta(seconds=1),
         },
         recruitment_officers.JWT_SECRET,

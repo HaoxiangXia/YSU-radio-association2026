@@ -18,11 +18,11 @@ TEST_PASSWORD_HASH = (
     "pbkdf2_sha256$100000$dGVzdC1zYWx0LTE2Ynl0ZQ=="
     "$rKacGrMkPx8pSchW2qKHGLFxJfc6gmLbTgidpuptvDU="
 )
-TEST_ACCOUNT = f"officer:{TEST_PASSWORD_HASH}:测试负责人"
 
 # These must exist before importing app/routes because JWT_SECRET is read at import time.
 os.environ.setdefault("JWT_SECRET", "test-only-jwt-secret-with-at-least-32-characters")
-os.environ.setdefault("RECRUITMENT_OFFICER_ACCOUNTS", TEST_ACCOUNT)
+os.environ.setdefault("OFFICER_USERNAME", "officer")
+os.environ.setdefault("OFFICER_PASSWORD_HASH", TEST_PASSWORD_HASH)
 
 from fastapi.testclient import TestClient
 
@@ -138,7 +138,8 @@ def client_factory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         monkeypatch.setenv("RECRUITMENT_CONFIG_PATH", str(config_path))
         monkeypatch.setenv("ADMISSIONS_DATA_PATH", str(admissions_path))
         monkeypatch.setenv("DATABASE_PATH", str(db_path))
-        monkeypatch.setenv("RECRUITMENT_OFFICER_ACCOUNTS", TEST_ACCOUNT)
+        monkeypatch.setenv("OFFICER_USERNAME", "officer")
+        monkeypatch.setenv("OFFICER_PASSWORD_HASH", TEST_PASSWORD_HASH)
         reset_runtime_state()
 
         try:

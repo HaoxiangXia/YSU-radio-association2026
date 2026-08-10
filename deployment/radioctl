@@ -52,8 +52,10 @@ require_runtime_config() {
         fail "$ENV_FILE 仍包含示例占位值"
     grep -qE '^JWT_SECRET=.{32,}$' "$ENV_FILE" ||
         fail "$ENV_FILE 缺少长度至少为 32 的 JWT_SECRET"
-    grep -qE '^RECRUITMENT_OFFICER_ACCOUNTS=.+' "$ENV_FILE" ||
-        fail "$ENV_FILE 缺少 RECRUITMENT_OFFICER_ACCOUNTS"
+    grep -qE '^OFFICER_USERNAME=.+' "$ENV_FILE" ||
+        fail "$ENV_FILE 缺少 OFFICER_USERNAME"
+    grep -qE '^OFFICER_PASSWORD_HASH=pbkdf2_sha256\$' "$ENV_FILE" ||
+        fail "$ENV_FILE 缺少 OFFICER_PASSWORD_HASH（须为 PBKDF2 哈希）"
 }
 
 wait_for_health() {

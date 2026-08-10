@@ -121,7 +121,7 @@
 | 数据 | 存放位置 | 来源 |
 |---|---|---|
 | 录取名单（录取查询） | 生产环境 `/var/lib/radio-association/private/admissions.json`；本地由 `ADMISSIONS_DATA_PATH` 指定 | 负责人网页上传 Excel，经校验和脱敏预览后原子发布；命令行导出仅作备用 |
-| 招新负责人账号 | 环境变量 `RECRUITMENT_OFFICER_ACCOUNTS`（`username:pbkdf2_hash:name;...`） | 哈希用 `scripts/hash-password.py` 生成 |
+| 招新负责人账号 | 环境变量 `OFFICER_USERNAME` + `OFFICER_PASSWORD_HASH`（仅一个账号） | 哈希用 `scripts/hash-password.py` 生成 |
 | 招新配置（周期、申请表单、录取查询开关等） | JSON 配置文件，路径由 `RECRUITMENT_CONFIG_PATH` 指定 | `backend/config/recruitment.py` 加载并校验 |
 | 隐私确认值 | 不持久化 | `privacyAccepted` 只用于提交时校验，写入数据库前会被移除 |
 

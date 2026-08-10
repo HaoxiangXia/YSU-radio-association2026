@@ -31,7 +31,7 @@ from routes import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     recruitment_config = initialize_recruitment_config()
-    recruitment_officers.load_recruitment_officer_accounts()
+    recruitment_officers.load_recruitment_officer()
     initialize_admissions_data(recruitment_config)
     initialize_database()
     yield

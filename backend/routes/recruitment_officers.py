@@ -23,26 +23,14 @@ class RecruitmentOfficerInfo(BaseModel):
     name: str
 
 
-def load_recruitment_officer_accounts():
-    raw = os.environ.get("RECRUITMENT_OFFICER_ACCOUNTS")
-    if not raw:
+def load_recruitment_officer():
+    username = os.environ.get("OFFICER_USERNAME")
+    password_hash = os.environ.get("OFFICER_PASSWORD_HASH")
+    if not username or not password_hash:
         raise RuntimeError(
-            "RECRUITMENT_OFFICER_ACCOUNTS 环境变量未设置。"
+            "OFFICER_USERNAME 或 OFFICER_PASSWORD_HASH 环境变量未设置。"
         )
-
-    accounts = []
-    for segment in raw.split(";"):
-        segment = segment.strip()
-        if not segment:
-            continue
-        parts = segment.split(":")
-        if len(parts) < 2:
-            continue
-        username = parts[0].strip()
-        password = parts[1].strip()
-        name = parts[2].strip() if len(parts) > 2 else username
-        accounts.append({"username": username, "password": password, "name": name})
-    return accounts
+    return {"username": username, "password": password_hash, "name": username}
 
 
 def get_current_recruitment_officer(
@@ -96,9 +84,9 @@ def login(req: LoginRequest, request: Request):
             "登录尝试过于频繁，请稍后再试",
         )
 
-    accounts = load_recruitment_officer_accounts()
-    officer = next((a for a in accounts if a["username"] == req.username), None)
-    if not officer or not verify_password(req.password, officer["password"]):
+    officer = load_recruitment_officer()
+    password_ok = verify_password(req.password, officer["password"])
+    if req.username != officer["username"] or not password_ok:
         login_limiter.record_failure(client_key)
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "用户名或密码错误")
 

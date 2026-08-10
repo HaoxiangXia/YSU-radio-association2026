@@ -150,7 +150,8 @@ uv sync
 | `PORT` | 否 | 服务端口号，默认 `5000` |
 | `DATABASE_PATH` | 否 | SQLite 数据库路径，相对路径基于仓库根目录，默认 `backend/data/database.sqlite` |
 | `JWT_SECRET` | **是** | JWT 签名密钥，生产环境必须设置为随机长字符串。未设置时应用启动失败。 |
-| `RECRUITMENT_OFFICER_ACCOUNTS` | **是** | 招新负责人账号列表，格式 `用户名:PBKDF2密码哈希:显示名称;...`。未设置时应用启动失败。 |
+| `OFFICER_USERNAME` | **是** | 招新负责人登录用户名（仅一个账号）。未设置时应用启动失败。 |
+| `OFFICER_PASSWORD_HASH` | **是** | 招新负责人密码的 PBKDF2 哈希。未设置时应用启动失败。 |
 | `RECRUITMENT_CONFIG_PATH` | 否 | 私有招新业务配置路径；生产环境使用 `/var/lib/radio-association/private/recruitment.json`。 |
 | `ADMISSIONS_DATA_PATH` | 否 | 私有录取名单路径；生产环境使用 `/var/lib/radio-association/private/admissions.json`。 |
 
@@ -159,10 +160,11 @@ uv sync
 ```env
 PORT=5000
 JWT_SECRET="your-secret-key-change-in-production"
-RECRUITMENT_OFFICER_ACCOUNTS="example-officer:pbkdf2_sha256$迭代次数$盐$摘要:示例负责人"
+OFFICER_USERNAME=example-officer
+OFFICER_PASSWORD_HASH="pbkdf2_sha256$迭代次数$盐$摘要"
 ```
 
-> **安全提示**：`JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值。若未设置，应用启动时会直接报错。由于值中可能包含 `#` 等字符，建议用双引号包裹。
+> **安全提示**：`JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD_HASH` 不提供硬编码默认值。若未设置，应用启动时会直接报错。由于哈希中包含 `$` 等字符，建议用双引号包裹。
 >
 > 密码必须是 PBKDF2 哈希，使用脚本生成：
 >
@@ -170,8 +172,8 @@ RECRUITMENT_OFFICER_ACCOUNTS="example-officer:pbkdf2_sha256$迭代次数$盐$摘
 > cd backend && uv run python ../scripts/hash-password.py
 > ```
 >
-> 将生成的哈希填入环境变量，例如：
-> `RECRUITMENT_OFFICER_ACCOUNTS="example-officer:pbkdf2_sha256$100000$...:示例负责人"`
+> 将生成的哈希填入 `OFFICER_PASSWORD_HASH`，例如：
+> `OFFICER_PASSWORD_HASH="pbkdf2_sha256$100000$..."`
 
 ### 4. 初始化本地展示种子数据（可选）
 
@@ -311,7 +313,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 ## 安全说明
 
 - 招新负责人密码仅接受 PBKDF2-HMAC-SHA256 哈希，使用 `scripts/hash-password.py` 生成。
-- `JWT_SECRET` 与 `RECRUITMENT_OFFICER_ACCOUNTS` 不再提供硬编码默认值，未设置时应用启动失败。
+- `JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD_HASH` 不提供硬编码默认值，未设置时应用启动失败。
 - API 认证使用 JWT 令牌机制。
 - 入会申请管理接口需要 Bearer Token 认证。
 - 登录、入会申请和录取查询均带有简单的内存速率限制；生产环境固定使用一个 Uvicorn 进程，与 SQLite 单进程设计一致。
