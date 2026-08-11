@@ -6,6 +6,7 @@
 **/__pycache__
 **/.pytest_cache
 backend/.venv
+backend/config/recruitment.local.json
 backend/data
 backend/tests
 backend/.env
