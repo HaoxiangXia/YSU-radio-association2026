@@ -1,0 +1,47 @@
+# 生产 Caddy 配置模板。安装时用 sed 将 __DOMAIN__ 替换为实际域名：
+#   sed 's/__DOMAIN__/example.com/g' deployment/caddy/Caddyfile.template > /etc/caddy/Caddyfile
+# 对应关系：取代原 deployment/nginx/ 三个模板（反代、安全头、请求体上限、/ops/ 与隐藏文件 404、
+# 回环预生产入口）；HTTP→HTTPS 跳转与证书签发续期由 Caddy 自动完成，无需 certbot。
+__DOMAIN__ {
+	log {
+		output file /var/log/caddy/radio-association.access.log
+		format console
+	}
+
+	request_body {
+		max_size 3MB
+	}
+
+	# 公网屏蔽内部运维端点
+	@ops path /ops/*
+	respond @ops 404
+
+	# 屏蔽隐藏文件（ACME 挑战路径由 Caddy 内部处理，不受影响；not 规则是双保险）
+	@hiddenDotfiles {
+		path /.* */.*
+		not path /.well-known/*
+	}
+	respond @hiddenDotfiles 404
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), geolocation=(), microphone=()"
+	}
+
+	reverse_proxy 127.0.0.1:5000 {
+		transport http {
+			dial_timeout 5s
+		}
+	}
+}
+
+# 回环预生产入口（SSH 隧道访问：ssh -L 8080:127.0.0.1:8080 ...）
+:8080 {
+	bind 127.0.0.1
+	request_body {
+		max_size 3MB
+	}
+	reverse_proxy 127.0.0.1:5000
+}
