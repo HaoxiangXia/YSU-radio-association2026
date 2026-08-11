@@ -3,6 +3,8 @@
 # 对应关系：取代原 deployment/nginx/ 三个模板（反代、安全头、请求体上限、/ops/ 与隐藏文件 404、
 # 回环预生产入口）；HTTP→HTTPS 跳转与证书签发续期由 Caddy 自动完成，无需 certbot。
 __DOMAIN__ {
+	encode zstd gzip
+
 	log {
 		output file /var/log/caddy/radio-association.access.log
 		format console
@@ -22,6 +24,10 @@ __DOMAIN__ {
 		not path /.well-known/*
 	}
 	respond @hiddenDotfiles 404
+
+	# 静态资源浏览器缓存（图片/样式/脚本内容稳定；HTML 不加，保持更新即时生效）
+	@staticAssets path /image/* /html/*.css /html/*.js
+	header @staticAssets Cache-Control "public, max-age=86400"
 
 	header {
 		X-Content-Type-Options nosniff
