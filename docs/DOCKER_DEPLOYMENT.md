@@ -32,7 +32,7 @@ graph LR
 - 开发机准备（linux/amd64，安装 Docker 即可，无需 buildx）：
   - 确定首次部署的 commit SHA（`git rev-parse HEAD`）。
   - 生成 JWT 密钥：`openssl rand -hex 32`。
-  - 生成负责人密码哈希：`cd backend && uv run python ../scripts/hash-password.py`。
+  - 选定负责人明文密码（写入 `/etc/radio-association/app.env`，仅限服务器受限保存）。
   - 准备招新配置：复制 `backend/config/recruitment.example.json` 按需修改（首次上线保持 `application.enabled=false`、`admissionQuery.enabled=false` 即可）。
 
 ## 2. 服务器初始化
@@ -114,15 +114,13 @@ install -m 0640 -o root -g radio-association /dev/null /etc/radio-association/ap
 cat > /etc/radio-association/app.env <<'EOF'
 JWT_SECRET=<第1步生成的64位十六进制>
 OFFICER_USERNAME=<负责人登录用户名>
-OFFICER_PASSWORD_HASH=<第1步生成的PBKDF2哈希>
+OFFICER_PASSWORD=<负责人明文密码>
 DATABASE_PATH=/var/lib/radio-association/data/database.sqlite
 RECRUITMENT_CONFIG_PATH=/var/lib/radio-association/private/recruitment.json
 ADMISSIONS_DATA_PATH=/var/lib/radio-association/private/admissions.json
 BACKUP_STATUS_PATH=/var/lib/radio-association/state/backup-status.json
 EOF
 ```
-
-注意：`OFFICER_PASSWORD_HASH` 含 `$` 字符，保持原样**不加引号**（compose `env_file` 按字面传递，不做变量展开）。
 
 ### 3.3 招新配置（启动必需）
 
@@ -179,6 +177,14 @@ ls -l /var/lib/radio-association/data/      # database.sqlite 属主应为 radio
 ```
 
 应用启动时自动建表（WAL 模式）。`ls` 若显示 root 属主，说明 `.env` 的 `APP_UID/APP_GID` 错了，修正后 `docker compose up -d` 重建容器。
+
+注意：这里的 `.env` 与 3.2 节的 `app.env` 是**两个文件**，不要混淆：
+
+| | `deployment/docker/.env` | `/etc/radio-association/app.env` |
+|---|---|---|
+| 谁读取 | 宿主机上的 compose CLI，解析 compose.yaml 时（在 compose.yaml 所在目录自动查找，无需参数指定） | 容器内的应用进程，启动时经 yaml 的 `env_file` 指令注入 |
+| 装什么 | `RADIO_SHA`/`APP_UID`/`APP_GID`，仅用于替换 yaml 里的 `${…}` | JWT 密钥、负责人账号哈希、私有文件路径等应用配置 |
+| 怎么来 | 手动创建，git 未跟踪，`git checkout` 切版本不影响它；发布时按 8.1 用 `sed` 更新 `RADIO_SHA` | 首次部署 `install` 自 `app.env.example`，之后基本不变 |
 
 ## 5. 种子数据（仅首次）
 

@@ -52,7 +52,7 @@
 | 后端 | FastAPI + Python 3.11+ |
 | 依赖管理 | uv |
 | 数据库 | SQLite 3（Python 标准库 `sqlite3`） |
-| 认证 | JWT（PyJWT）+ PBKDF2 密码哈希 |
+| 认证 | JWT（PyJWT） |
 | 安全防护 | 登录/提交速率限制（内存固定窗口） |
 | 导出与导入 | CSV 导出、负责人网页 Excel 校验/脱敏预览/录取名单发布 |
 
@@ -151,7 +151,7 @@ uv sync
 | `DATABASE_PATH` | 否 | SQLite 数据库路径，相对路径基于仓库根目录，默认 `backend/data/database.sqlite` |
 | `JWT_SECRET` | **是** | JWT 签名密钥，生产环境必须设置为随机长字符串。未设置时应用启动失败。 |
 | `OFFICER_USERNAME` | **是** | 招新负责人登录用户名（仅一个账号）。未设置时应用启动失败。 |
-| `OFFICER_PASSWORD_HASH` | **是** | 招新负责人密码的 PBKDF2 哈希。未设置时应用启动失败。 |
+| `OFFICER_PASSWORD` | **是** | 招新负责人登录密码（明文）。未设置时应用启动失败。 |
 | `RECRUITMENT_CONFIG_PATH` | 否 | 私有招新业务配置路径；生产环境使用 `/var/lib/radio-association/private/recruitment.json`。 |
 | `ADMISSIONS_DATA_PATH` | 否 | 私有录取名单路径；生产环境使用 `/var/lib/radio-association/private/admissions.json`。 |
 
@@ -161,19 +161,10 @@ uv sync
 PORT=5000
 JWT_SECRET="your-secret-key-change-in-production"
 OFFICER_USERNAME=example-officer
-OFFICER_PASSWORD_HASH="pbkdf2_sha256$迭代次数$盐$摘要"
+OFFICER_PASSWORD=example-password
 ```
 
-> **安全提示**：`JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD_HASH` 不提供硬编码默认值。若未设置，应用启动时会直接报错。由于哈希中包含 `$` 等字符，建议用双引号包裹。
->
-> 密码必须是 PBKDF2 哈希，使用脚本生成：
->
-> ```bash
-> cd backend && uv run python ../scripts/hash-password.py
-> ```
->
-> 将生成的哈希填入 `OFFICER_PASSWORD_HASH`，例如：
-> `OFFICER_PASSWORD_HASH="pbkdf2_sha256$100000$..."`
+> **安全提示**：`JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD` 不提供硬编码默认值。若未设置，应用启动时会直接报错。密码以明文保存，请确保 `.env` 不提交到 Git 且服务器上文件权限受控。
 
 ### 4. 初始化本地展示种子数据（可选）
 
@@ -198,7 +189,17 @@ uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000
 
 服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
 
-### 6. Astro 前端页面（仅修改这些页面时需要）
+### 6. 招新业务配置（本地开发）
+
+本地开发的真实招新配置放在 `backend/config/recruitment.local.json`（已被 git 与 Docker 构建排除，不会提交）；该文件不存在时回退到 `backend/config/recruitment.example.json`（入会申请与录取查询默认均为关闭）。配置文件按以下优先级解析：`RECRUITMENT_CONFIG_PATH` 环境变量 > `recruitment.local.json`（存在时）> `recruitment.example.json`。
+
+**修改文件不会立即生效**：配置只在应用启动时加载一次并缓存在内存中，`uvicorn --reload` 只监听 Python 文件，改动 JSON 不会触发重载——改完必须重启后端进程。不想重启时，登录负责人后台在“招新设置与录取结果”里保存，该接口在写盘的同时更新内存缓存，实时生效。
+
+注意：配置中 `admissionQuery.enabled=true` 时，启动会强制加载录取名单文件（`ADMISSIONS_DATA_PATH`，默认为仓库旁的 `YSU-radio-association-private/admission-results.json`），文件缺失会导致应用拒绝启动；本地没有名单时可放一个空数组 `[]` 占位。
+
+生产环境**不使用** `recruitment.local.json`：生产配置是 `/var/lib/radio-association/private/recruitment.json`（经 `RECRUITMENT_CONFIG_PATH` 指定），日常变更由负责人在网页后台保存——实时生效且自动备份旧文件，无需重启；只有后台不可用时才按 [Docker 部署方案](docs/DOCKER_DEPLOYMENT.md) 第 8.5 节手动替换文件并 `docker restart`。
+
+### 7. Astro 前端页面（仅修改这些页面时需要）
 
 培训教学页（`/html/trainings.html`）与荣誉成就页（`/html/honors.html`）由 `frontend/` 下的 Astro 工程在构建时渲染生成，产物已提交进仓库；不修改这些页面时无需执行本步骤。
 
@@ -210,7 +211,7 @@ bun run dev:frontend         # Astro 开发服务器（需本地后端已在 500
 
 修改 `frontend/src/` 后必须重新构建并一并提交产物，CI 会校验产物与 Astro 源码保持同步。其余 12 个页面仍是 `public/html/` 下的原生 HTML，直接编辑即可。
 
-### 7. 发布录取名单
+### 8. 发布录取名单
 
 招新负责人登录后进入“招新设置与录取结果”，下载标准模板并按以下列顺序填写：
 
@@ -300,7 +301,6 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
 | init | `bun scripts/init-db.js` | 重建本地展示种子数据（破坏性，仅限明确需要的本地环境） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
-| hash-password | `cd backend && uv run python ../scripts/hash-password.py` | 生成 PBKDF2 密码哈希，用于 `.env` |
 | verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
 | verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
 
@@ -310,13 +310,13 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 
 ## 安全说明
 
-- 招新负责人密码仅接受 PBKDF2-HMAC-SHA256 哈希，使用 `scripts/hash-password.py` 生成。
-- `JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD_HASH` 不提供硬编码默认值，未设置时应用启动失败。
+- 招新负责人密码以明文配置在环境变量 `OFFICER_PASSWORD` 中，仅在服务器受限配置文件中保存。
+- `JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD` 不提供硬编码默认值，未设置时应用启动失败。
 - API 认证使用 JWT 令牌机制。
 - 入会申请管理接口需要 Bearer Token 认证。
 - 登录、入会申请和录取查询均带有简单的内存速率限制；生产环境固定使用一个 Uvicorn 进程，与 SQLite 单进程设计一致。
 - 入会申请需要确认个人信息处理说明；确认值只用于提交校验，不写入业务表。
-- 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人密码哈希。
+- 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人明文密码。
 
 ---
 
