@@ -65,4 +65,4 @@
 - 网站出现 500 错误、数据数量异常或误删；
 - 服务器、域名或证书告警。
 
-维护者使用 `radioctl backup/status/rollback/restore` 处理；不要直接复制运行中的 SQLite 文件，不要在生产环境运行 `scripts/init-db.js`，也不要删除数据库文件来“重置”问题。
+维护者使用 `radioctl backup` 手动备份；状态检查、回滚与恢复按 [部署与运维速查](OPERATIONS_QUICK_REFERENCE.md) 的 Docker 流程执行。不要直接复制运行中的 SQLite 文件，不要在生产环境运行 `scripts/init-db.js`，也不要删除数据库文件来“重置”问题。

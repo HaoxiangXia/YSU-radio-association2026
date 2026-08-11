@@ -114,7 +114,7 @@ radio-association/
 
 ### 文档入口
 
-- 接交者首先阅读 [项目交接与接手指南](docs/HANDOVER_GUIDE.md)，交接当天使用 [项目交接验收清单](docs/HANDOVER_CHECKLIST.md)。
+- 部署与重建按 [Docker + Caddy 部署方案](docs/DOCKER_DEPLOYMENT.md) 执行。
 - 招新负责人日常使用 [招新日常运行说明](docs/RECRUITMENT_OPERATIONS.md)，正式开放前完成 [个人信息保护上线确认表](docs/PRIVACY_IMPACT_CHECKLIST.md)。
 - 服务器维护使用 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)；需要理解部署设计时再阅读 [部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)。
 - 数据结构见 [数据库说明](docs/DATABASE.md)；代码命名原因保留在 `docs/adr/`。
@@ -304,9 +304,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
 | verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
 
-生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。
-
-后续接交者请从 [项目交接与接手指南](docs/HANDOVER_GUIDE.md) 开始，并在最终交接当天逐项完成 [项目交接验收清单](docs/HANDOVER_CHECKLIST.md)。日常招新不要求理解后端或服务器实现。
+生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。日常招新不要求理解后端或服务器实现。
 
 ---
 
