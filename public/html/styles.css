@@ -1874,8 +1874,17 @@ textarea.form-input {
   display: flex;
   flex-direction: column;
   gap: var(--site-section-gap);
+  /* width 设为确定的 100%：margin: 0 auto 会禁用 flex 交叉轴 stretch，
+     否则容器按 min-content 收缩布局，内部表格 min-width 会把页面撑出横向滚动。 */
+  width: 100%;
   padding-top: 3.25rem;
   padding-bottom: 4.75rem;
+}
+
+/* 子区块默认 min-width: auto 会被表格等宽内容的 min-content 顶住，需允许收缩，
+   让 overflow-x-auto 在区块内部滚动而不是撑宽整页。 */
+.site-page .page-container.subpage-content > * {
+  min-width: 0;
 }
 
 /* 内页同级区块统一间距，避免各页面的 mb-6 叠加出不同留白。 */
@@ -2149,6 +2158,17 @@ textarea.form-input {
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.82);
   scrollbar-color: rgba(59, 130, 246, 0.38) transparent;
+}
+
+/* 荣誉页榜单仅 3 列，窄屏收缩列宽即可完整展示，不需要左右滑动。 */
+.site-page.honor-page .honor-ranking .data-table {
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .site-page.honor-page .honor-ranking .table-scroll-hint {
+    display: none;
+  }
 }
 
 @media (max-width: 700px) {
