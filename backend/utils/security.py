@@ -1,52 +1,13 @@
-import base64
-import hashlib
 import hmac
-import os
 import threading
 import time
 
 from starlette.requests import Request
 
-PBKDF2_ITERATIONS = 100_000
-
-
-def hash_password(password: str) -> str:
-    """Hash a password using PBKDF2-HMAC-SHA256.
-
-    The returned string follows the format:
-    pbkdf2_sha256${iterations}${base64_salt}${base64_key}
-    """
-    salt = os.urandom(16)
-    key = hashlib.pbkdf2_hmac(
-        "sha256", password.encode("utf-8"), salt, PBKDF2_ITERATIONS
-    )
-    return (
-        f"pbkdf2_sha256${PBKDF2_ITERATIONS}"
-        f"${base64.b64encode(salt).decode('utf-8')}"
-        f"${base64.b64encode(key).decode('utf-8')}"
-    )
-
 
 def verify_password(password: str, stored: str) -> bool:
-    """Verify a password against a stored PBKDF2-HMAC-SHA256 hash.
-
-    Only hashes in the format produced by `hash_password` are accepted.
-    """
-    try:
-        if not stored.startswith("pbkdf2_sha256$"):
-            return False
-        _, iterations_text, salt_b64, key_b64 = stored.split("$", 3)
-        iterations = int(iterations_text)
-        if iterations <= 0:
-            return False
-        salt = base64.b64decode(salt_b64, validate=True)
-        expected_key = base64.b64decode(key_b64, validate=True)
-        actual_key = hashlib.pbkdf2_hmac(
-            "sha256", password.encode("utf-8"), salt, iterations
-        )
-    except (TypeError, ValueError):
-        return False
-    return hmac.compare_digest(expected_key, actual_key)
+    """Verify a password against the stored plaintext password."""
+    return hmac.compare_digest(password.encode("utf-8"), stored.encode("utf-8"))
 
 
 class InMemoryRateLimiter:

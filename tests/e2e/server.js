@@ -12,12 +12,6 @@ const databasePath = join(runtimeDirectory, "database.sqlite");
 const uvCachePath = join(runtimeDirectory, "uv-cache");
 const configPath = join(repositoryRoot, "tests", "fixtures", "recruitment.e2e.json");
 const admissionsPath = join(repositoryRoot, "tests", "fixtures", "admissions.e2e.json");
-const passwordHash = [
-  "pbkdf2_sha256",
-  "100000",
-  "dGVzdC1zYWx0LTE2Ynl0ZQ==",
-  "rKacGrMkPx8pSchW2qKHGLFxJfc6gmLbTgidpuptvDU=",
-].join("$");
 
 const child = spawn(
   "uv",
@@ -41,7 +35,7 @@ const child = spawn(
       ADMISSIONS_DATA_PATH: admissionsPath,
       JWT_SECRET: "e2e-only-jwt-secret-with-at-least-32-characters",
       OFFICER_USERNAME: "officer",
-      OFFICER_PASSWORD_HASH: passwordHash,
+      OFFICER_PASSWORD: "test-password",
     },
     stdio: "inherit",
     windowsHide: true,

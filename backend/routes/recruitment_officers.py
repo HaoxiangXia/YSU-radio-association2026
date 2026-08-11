@@ -25,12 +25,12 @@ class RecruitmentOfficerInfo(BaseModel):
 
 def load_recruitment_officer():
     username = os.environ.get("OFFICER_USERNAME")
-    password_hash = os.environ.get("OFFICER_PASSWORD_HASH")
-    if not username or not password_hash:
+    password = os.environ.get("OFFICER_PASSWORD")
+    if not username or not password:
         raise RuntimeError(
-            "OFFICER_USERNAME 或 OFFICER_PASSWORD_HASH 环境变量未设置。"
+            "OFFICER_USERNAME 或 OFFICER_PASSWORD 环境变量未设置。"
         )
-    return {"username": username, "password": password_hash, "name": username}
+    return {"username": username, "password": password, "name": username}
 
 
 def get_current_recruitment_officer(
