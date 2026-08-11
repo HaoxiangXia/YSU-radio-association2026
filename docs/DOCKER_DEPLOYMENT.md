@@ -138,20 +138,15 @@ install -o radio-association -g radio-association -m 600 \
 
 ### 4.1 开发机：构建并传输镜像
 
-在仓库根目录（先 `git checkout __SHA__` 并核对 HEAD）：
+在仓库根目录（先 `git checkout __SHA__` 并核对 HEAD）执行封装脚本：
 
 ```bash
-# 构建上下文必须是仓库根目录（Dockerfile 依赖 backend/ 与 public/ 的两层布局）
-docker build -f deployment/docker/Dockerfile -t radio-association:__SHA__ .
-
-# 记录本地镜像 ID，用于传输后核对
-docker image inspect --format '{{.Id}}' radio-association:__SHA__
-
-# 传输（镜像约 200-400 MB，gzip 压缩后更小；admin@<服务器> 换成实际登录方式）
-# 前提：admin 已加入 docker 组（见 2.2）；不要试图用 su，Ubuntu 根账户默认锁定
-docker save radio-association:__SHA__ | gzip | \
-    ssh admin@<服务器> "gunzip | docker load"
+scripts/release-image.sh
 ```
+
+脚本依次完成：校验 SHA 为 40 位、与 HEAD 一致、工作区干净且已推送远端 → `docker build`（构建上下文为仓库根目录，Dockerfile 依赖 backend/ 与 public/ 的两层布局）→ `docker save | gzip | ssh … docker load` 传输（镜像约 200-400 MB，gzip 压缩后更小；前提：admin 已加入 docker 组，见 2.2）→ 双侧 `docker image inspect` 核对镜像 ID 一致。任一环节失败即中止，不要用残缺的镜像启动。SSH 目标与私钥可用 `RADIO_SERVER`、`RADIO_SSH_KEY` 环境变量覆盖。
+
+（旧版本提交中没有该脚本时，按 8.1 节被替代前的手动命令执行，或先从新版本取出脚本。）
 
 不使用镜像仓库：服务器不依赖 Docker Hub 或任何 registry 的可达性，完整性由镜像 ID 核对保证。
 
@@ -248,12 +243,9 @@ journalctl -u caddy -n 50 --no-pager               # 确认无 obtain 错误
 ### 8.1 发布新版本
 
 ```bash
-# 开发机：构建 + 传输（同 4.1）
+# 开发机：构建 + 传输 + 双侧镜像 ID 核对（细节同 4.1）
 git checkout <新SHA> && git rev-parse HEAD   # 核对
-docker build -f deployment/docker/Dockerfile -t radio-association:<新SHA> .
-docker image inspect --format '{{.Id}}' radio-association:<新SHA>   # 记录
-docker save radio-association:<新SHA> | gzip | \
-    ssh admin@<服务器> "gunzip | docker load"
+scripts/release-image.sh
 ```
 
 ```bash

@@ -301,6 +301,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
 | init | `bun scripts/init-db.js` | 重建本地展示种子数据（破坏性，仅限明确需要的本地环境） |
 | export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
+| release:image | `scripts/release-image.sh [SHA]` | 开发机构建镜像、传输到服务器并双侧核对镜像 ID（发布细节见部署文档） |
 | verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
 | verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
 

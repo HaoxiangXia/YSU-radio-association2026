@@ -78,7 +78,7 @@ sleep 5 && curl --fail http://127.0.0.1:5000/healthz
 - 使用经过确认的完整 40 位 SHA；
 - 申请和录取查询保持关闭，当前数据库备份正常。
 
-镜像**只在开发机构建**，服务器不构建。让 Codex 完成代码检查、测试、构建和传输，给出目标 40 位 SHA 和镜像 ID。接交者在服务器 root shell 执行：
+镜像**只在开发机构建**，服务器不构建。开发机侧在仓库根目录执行 `scripts/release-image.sh`：校验目标 SHA 与 HEAD 一致、工作区干净且已推送，然后构建镜像、`docker save | ssh … docker load` 传输并双侧核对镜像 ID。接交者在服务器 root shell 执行：
 
 ```bash
 docker image inspect --format '{{.Id}}' radio-association:<新SHA>   # 与开发机核对一致
