@@ -478,7 +478,7 @@
     }
 
     async function handleResponse(response) {
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('recruitment_officer_token');
         sessionStorage.removeItem('recruitment_officer_token');
         window.location.href = '/html/admin-login.html';

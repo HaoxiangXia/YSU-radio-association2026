@@ -69,7 +69,7 @@
       .then(response => {
         if (response.ok) {
           window.location.href = '/html/membership-applications.html';
-        } else if (response.status === 401) {
+        } else if (response.status === 401 || response.status === 403) {
           localStorage.removeItem('recruitment_officer_token');
           sessionStorage.removeItem('recruitment_officer_token');
         }
