@@ -4,24 +4,15 @@
 
 .site-page.about-association-page { --page-accent: #0f72c9; --page-accent-soft: rgba(14, 116, 201, 0.09); }
 
-.site-page.about-association-page .department-card { position: relative; overflow: hidden; border-top: 3px solid var(--page-accent); background: radial-gradient(circle at 96% 0%, var(--page-accent-soft), transparent 18rem),
-    linear-gradient(145deg, #ffffff, #fafcff); }
+.site-page.about-association-page .department-card { position: relative; overflow: hidden; border-top: 3px solid var(--page-accent); }
 
 .site-page.about-association-page .department-card:nth-child(2n) { --page-accent: #5b5bd6; --page-accent-soft: rgba(91, 91, 214, 0.08); }
 
-.about-association-page .page-container.subpage-content { padding-top: 0px; padding-bottom: 0px; }
-
-@media (max-width: 800px) {
-  .about-association-page .page-container.subpage-content { padding-top: 0px; }
-}
-
 .about-association-page { background: rgb(246, 249, 254); }
 
-.about-association-page .page-container.subpage-content { padding: 0px 0px clamp(2.5rem, 7vw, 5rem); }
+.about-association-page .page-container.subpage-content { padding: 2.25rem 0px clamp(2.5rem, 7vw, 5rem); }
 
 .about-association-page .about-section { width: min(1160px, 100% - 2rem); margin: 0px auto; padding: clamp(1.25rem, 3.5vw, 2.75rem); scroll-margin-top: calc(var(--nav-height) + 1rem); }
-
-.about-association-page .section-eyebrow { margin: 0px 0px 0.4rem; color: rgb(77, 123, 198); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.12em; }
 
 .about-association-page .section-header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 
@@ -141,26 +132,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .about-association-page .department-card__media-control, .about-association-page .department-card__toggle-icon { transition: none; }
-}
-
-.about-association-page .page-container.subpage-content { padding-top: calc(var(--nav-height) + 2.5rem); }
-
-.scroll-back-cue { position: absolute; top: calc(var(--nav-height) + 0.75rem); left: 50%; z-index: 100; display: flex; flex-direction: column; align-items: center; gap: 0.45rem; padding: 0.55rem 1.1rem; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 999px; background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(6px); color: rgb(49, 93, 136); font-family: inherit; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; box-shadow: rgba(30, 79, 145, 0.1) 0px 6px 20px; transform: translateX(-50%); transition: opacity 320ms, transform 320ms, background-color 0.2s; pointer-events: auto; cursor: pointer; opacity: 0; animation: 2.4s ease-in-out 0s infinite normal none running scroll-back-cue-bounce; }
-
-.scroll-back-cue.is-visible { opacity: 1; }
-
-.scroll-back-cue:hover { background: rgba(255, 255, 255, 0.92); color: rgb(29, 78, 216); }
-
-.scroll-back-cue svg { animation: 2.4s ease-in-out 0s infinite normal none running scroll-back-cue-fade; }
-
-@keyframes scroll-back-cue-bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0px); }
-  50% { transform: translateX(-50%) translateY(-3px); }
-}
-
-@keyframes scroll-back-cue-fade {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -103,8 +103,7 @@ button:focus-visible {
 
 /* 导航栏 */
 .nav {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  background: #ffffff;
   border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   position: fixed;
@@ -244,9 +243,7 @@ button:focus-visible {
   overflow-y: auto;
   overscroll-behavior: contain;
   border-top: 1px solid #f3f4f6;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #ffffff;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   opacity: 0;
   transform: translateY(-8px);
@@ -768,14 +765,6 @@ button:focus-visible {
   background-color: rgba(239, 246, 255, 0.5);
 }
 
-.bg-green-50 {
-  background-color: #f0fdf4;
-}
-
-.bg-yellow-50 {
-  background-color: #fefce8;
-}
-
 .bg-black\/40 {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -799,14 +788,6 @@ button:focus-visible {
 
 .border-gray-100 {
   border-color: #f3f4f6;
-}
-
-.border-green-200 {
-  border-color: #bbf7d0;
-}
-
-.border-yellow-200 {
-  border-color: #fef08a;
 }
 
 .border-blue-100 {
@@ -1906,11 +1887,9 @@ textarea.form-input {
 /* 首页和内页共用的高级导航外观，链接结构保持不变 */
 .home-page .nav,
 .site-page .nav {
-  background: rgba(245, 250, 255, 0.96);
+  background: #f5faff;
   border-bottom-color: rgba(30, 78, 121, 0.18);
   box-shadow: 0 4px 14px rgba(41, 76, 112, 0.06);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
 }
 
 .home-page .nav-logo,
@@ -2118,10 +2097,7 @@ textarea.form-input {
 
 .site-page .stat-card {
   border-color: rgba(96, 165, 250, 0.18);
-  border-radius: 12px;
-  background:
-    radial-gradient(circle at 90% 0%, rgba(96, 165, 250, 0.14), transparent 6rem),
-    linear-gradient(145deg, #ffffff, #f4f7fb);
+  background: #ffffff;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.055);
 }
 
@@ -2192,7 +2168,7 @@ textarea.form-input {
   padding-top: 0.9rem;
   padding-bottom: 0.9rem;
   border-bottom-color: rgba(148, 163, 184, 0.2);
-  background: linear-gradient(180deg, #eef4fb, #f8fafc);
+  background: #f1f5f9;
   color: #334155;
   font-size: 0.78rem;
   font-weight: 700;
@@ -2390,6 +2366,18 @@ textarea.form-input {
   }
 }
 
+/* 条目级滚动 reveal（reveal.js 驱动；armed 类由 JS 添加，无 JS/减弱动效时内容直接可见） */
+.reveal-armed .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 480ms ease, transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-armed .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 @media (max-width: 900px) {
   .home-page .nav,
   .site-page .nav {
@@ -2503,22 +2491,8 @@ textarea.form-input {
   }
 }
 
-@media (max-width: 800px) {
-  .about-association-page .hero-eyebrow,
-  .about-association-page .home-card-kicker,
-  .about-association-page .home-card-date,
-  .about-association-page .home-card-link-cue,
-  .about-association-page .home-honor-kicker,
-  .about-association-page .home-honor-badge,
-  .about-association-page .home-section-index,
-  .about-association-page .department-metrics span,
-  .about-association-page .department-summary > span {
-    font-size: 0.75rem !important;
-  }
-}
-
 @media (max-width: 480px) {
-  .site-page .page-container.subpage-content {
+  .site-page .pagination {
     padding-right: 0.9rem;
     padding-left: 0.9rem;
   }
@@ -2777,27 +2751,6 @@ textarea.form-input {
 
   .site-page.honor-page .honor-section__heading > p {
     margin-top: 0.5rem;
-  }
-
-  .site-page.about-association-page .department-summary {
-    display: block;
-  }
-
-  .site-page.about-association-page .department-summary > span {
-    margin-bottom: 0.5rem;
-  }
-
-  .site-page.about-association-page .department-metrics {
-    gap: 0.25rem;
-  }
-
-  .site-page.about-association-page .department-metrics strong {
-    font-size: 1.25rem;
-  }
-
-  .site-page.about-association-page .department-metrics span {
-    font-size: 0.64rem;
-    text-align: center;
   }
 
   .site-page.query-page .query-form {

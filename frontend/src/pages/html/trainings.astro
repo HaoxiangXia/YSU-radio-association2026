@@ -1,14 +1,14 @@
 ---
-import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } from '../../data/trainings';
+import SubpageLayout from '../../layouts/SubpageLayout.astro';
+import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseScheduleSemester2 } from '../../data/trainings';
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>培训教学 - 无线电爱好者协会</title>
-  <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css?v=20260811">
+<SubpageLayout
+  title="培训教学 - 无线电爱好者协会"
+  bodyClass="site-page sub-page training-page"
+  heroTitle="培训教学"
+  heroDesc="以工程实践为核心，构建从基础入门到项目协作的学习路径。"
+  mainClass="training-content"
+>
   <style is:global>
 .cta-card {
   border-color: rgba(37, 99, 235, 0.2);
@@ -162,102 +162,97 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
 .site-page.training-page .training-cta p {
   color: #526b8e;
 }
+
+.col-session {
+  width: 5rem;
+}
   </style>
-</head>
-<body class="site-page sub-page training-page">
-  <div id="nav-placeholder"></div>
 
-  <header class="subpage-hero">
-    <div class="container subpage-hero__inner">
-      <h1>培训教学</h1>
-      <p>以工程实践为核心，构建从基础入门到项目协作的学习路径。</p>
+  <!-- 培训时间线 -->
+  <section class="card card-section mb-6 training-section training-roadmap">
+    <div class="training-section__heading">
+      <h2 class="card-title">培训时间线</h2>
     </div>
-  </header>
+    <div class="timeline" id="training-timeline">
+      {trainingTimeline.map((item) => (
+        <div class="timeline-item reveal">
+          <div class="timeline-date">{item.date}</div>
+          <div class="timeline-title">{item.title}</div>
+          <div class="timeline-desc">{item.desc}</div>
+        </div>
+      ))}
+    </div>
+  </section>
 
-  <main class="page-container subpage-content training-content">
-    <!-- 培训时间线 -->
-    <section class="card card-section mb-6 training-section training-roadmap">
-      <div class="training-section__heading">
-        <h2 class="card-title">培训时间线</h2>
-      </div>
-      <div class="timeline" id="training-timeline">
-        {trainingTimeline.map((item) => (
-          <div class="timeline-item">
-            <div class="timeline-date">{item.date}</div>
-            <div class="timeline-title">{item.title}</div>
-            <div class="timeline-desc">{item.desc}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- 课程安排 -->
-    <section class="card card-section mb-6 training-section training-schedule">
-      <div class="training-section__heading">
-        <h2 class="card-title">每周课程安排</h2>
-      </div>
-      <p class="text-gray-600 leading-relaxed">
-        2026-2027学年<br>
-        coming soon
-      </p>
-    </section>
-
-    <!-- 往期培训 -->
-    <section class="card card-section mb-6 training-section training-archive">
-      <div class="training-section__heading">
-        <h2 class="card-title">往期培训</h2>
-      </div>
-      <p class="table-scroll-hint" aria-hidden="true">左右滑动查看更多</p>
-      <h3 class="font-bold text-gray-800 mb-2">第一学期</h3>
-      <div class="overflow-x-auto mb-4">
-        <table class="data-table">
-          <thead>
+  <!-- 课程安排 -->
+  <section class="card card-section mb-6 training-section training-schedule">
+    <div class="training-section__heading">
+      <h2 class="card-title">2026-2027学年课程安排</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-session">节次</th>
+            <th>教学内容</th>
+            <th>主讲人</th>
+          </tr>
+        </thead>
+        <tbody id="course-schedule-2026">
+          {courseSchedule2026.map((item) => (
             <tr>
-              <th style="width: 5rem;">周次</th>
-              <th>课程内容</th>
+              <td class="font-medium text-gray-800">{item.session}</td>
+              <td class="text-gray-600">{item.content}</td>
+              <td class="text-gray-600">{item.instructor}</td>
             </tr>
-          </thead>
-          <tbody id="course-schedule-1">
-            {courseScheduleSemester1.map((item) => (
-              <tr>
-                <td class="font-medium text-gray-800">{item.week}</td>
-                <td class="text-gray-600">{item.content}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <h3 class="font-bold text-gray-800 mb-2">第二学期</h3>
-      <div class="overflow-x-auto">
-        <table class="data-table">
-          <thead>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 往期培训 -->
+  <section class="card card-section mb-6 training-section training-archive">
+    <div class="training-section__heading">
+      <h2 class="card-title">往期培训</h2>
+    </div>
+    <h3 class="font-bold text-gray-800 mb-2">第一学期</h3>
+    <div class="overflow-x-auto mb-4">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-session">节次</th>
+            <th>课程内容</th>
+          </tr>
+        </thead>
+        <tbody id="course-schedule-1">
+          {courseScheduleSemester1.map((item) => (
             <tr>
-              <th style="width: 5rem;">周次</th>
-              <th>课程内容</th>
+              <td class="font-medium text-gray-800">{item.session}</td>
+              <td class="text-gray-600">{item.content}</td>
             </tr>
-          </thead>
-          <tbody id="course-schedule-2">
-            {courseScheduleSemester2.map((item) => (
-              <tr>
-                <td class="font-medium text-gray-800">{item.week}</td>
-                <td class="text-gray-600">{item.content}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <div id="footer-placeholder"></div>
-
-  <button class="scrollTopBtn" title="回到顶部">↑</button>
-
-  <div class="image-viewer">
-    <img src="" alt="查看图片">
-  </div>
-
-  <script is:inline src="/html/image-assets.js?v=20260729"></script>
-  <script is:inline src="/html/common.js?v=20260729"></script>
-</body>
-</html>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <h3 class="font-bold text-gray-800 mb-2">第二学期</h3>
+    <div class="overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-session">节次</th>
+            <th>课程内容</th>
+          </tr>
+        </thead>
+        <tbody id="course-schedule-2">
+          {courseScheduleSemester2.map((item) => (
+            <tr>
+              <td class="font-medium text-gray-800">{item.session}</td>
+              <td class="text-gray-600">{item.content}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</SubpageLayout>

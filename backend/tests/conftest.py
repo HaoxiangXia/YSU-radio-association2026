@@ -112,6 +112,7 @@ def client_factory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         config: dict | None = None,
         admissions: list[dict] | None = None,
         database_path: Path | None = None,
+        base_url: str = "https://testserver",
     ):
         nonlocal counter
         counter += 1
@@ -139,7 +140,8 @@ def client_factory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         reset_runtime_state()
 
         try:
-            with TestClient(app) as client:
+            # 会话 Cookie 按请求 scheme 决定是否带 Secure：https 下 httpx cookie jar 才会回传
+            with TestClient(app, base_url=base_url) as client:
                 yield client, {
                     "config_path": config_path,
                     "admissions_path": admissions_path,

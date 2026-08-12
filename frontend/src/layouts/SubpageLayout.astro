@@ -1,0 +1,54 @@
+---
+interface Props {
+  /** <title> 文本，如 "培训教学 - 无线电爱好者协会" */
+  title: string;
+  /** <body> 的 class，如 "site-page sub-page training-page" */
+  bodyClass: string;
+  /** 页头主标题 */
+  heroTitle: string;
+  /** 页头副标题 */
+  heroDesc: string;
+  /** <main> 追加的 class，如 "training-content" */
+  mainClass?: string;
+}
+
+const { title, bodyClass, heroTitle, heroDesc, mainClass } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css?v=20260811">
+  <slot name="head" />
+</head>
+<body class={bodyClass}>
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero">
+    <div class="container subpage-hero__inner">
+      <h1>{heroTitle}</h1>
+      <p>{heroDesc}</p>
+    </div>
+  </header>
+
+  <main class:list={["page-container subpage-content", mainClass]}>
+    <slot />
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script is:inline src="/html/image-assets.js?v=20260729"></script>
+  <script is:inline src="/html/common.js?v=20260729"></script>
+  <script is:inline src="/html/reveal.js?v=20260812"></script>
+  <slot name="scripts" />
+</body>
+</html>

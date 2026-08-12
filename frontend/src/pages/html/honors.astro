@@ -1,16 +1,17 @@
 ---
+import SubpageLayout from '../../layouts/SubpageLayout.astro';
+
 import { honorFeatureCards, leagueRanking, competitionTags, honorStats, honorCertificates } from '../../data/honors';
 
 const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 1023px) calc(50vw - 3rem), 21rem';
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>荣誉成就 - 无线电爱好者协会</title>
-  <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css?v=20260811">
+<SubpageLayout
+  title="荣誉成就 - 无线电爱好者协会"
+  bodyClass="site-page sub-page honor-page"
+  heroTitle="荣誉成就"
+  heroDesc="汇总协会在竞赛、实践和校园组织建设中的阶段性成果。"
+  mainClass="honor-content"
+>
   <style is:global>
 /* 高亮行 */
 .highlight-row {
@@ -249,23 +250,16 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.col-rank {
+  width: 3rem;
+}
   </style>
-</head>
-<body class="site-page sub-page honor-page">
-  <div id="nav-placeholder"></div>
 
-  <header class="subpage-hero">
-    <div class="container subpage-hero__inner">
-      <h1>荣誉成就</h1>
-      <p>汇总协会在竞赛、实践和校园组织建设中的阶段性成果。</p>
-    </div>
-  </header>
-
-  <main class="page-container subpage-content honor-content">
     <!-- 荣誉卡片 -->
     <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6 honor-feature-grid">
       {honorFeatureCards.map((card) => (
-        <article class="card card-section honor-feature-card">
+        <article class="card card-section honor-feature-card reveal">
           <div class="honor-feature-card__topline">
             <span>{card.year}</span>
             {card.badge && <span class="badge badge-red">{card.badge}</span>}
@@ -290,7 +284,7 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
         <table class="data-table">
           <thead>
             <tr>
-              <th class="text-center" style="width: 3rem;">排名</th>
+              <th class="text-center col-rank">排名</th>
               <th>学校</th>
               <th>团支部名称</th>
             </tr>
@@ -350,7 +344,7 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
       <div class="honor-certificate-gallery">
         {honorCertificates.map((cert) => (
           <button
-            class="honor-certificate"
+            class="honor-certificate reveal"
             type="button"
             data-image={cert.image}
             data-image-alt={cert.img.alt}
@@ -373,17 +367,5 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
         ))}
       </div>
     </section>
-  </main>
-
-  <div id="footer-placeholder"></div>
-
-  <button class="scrollTopBtn" title="回到顶部">↑</button>
-
-  <div class="image-viewer">
-    <img src="" alt="查看图片">
-  </div>
-
-  <script is:inline src="/html/image-assets.js?v=20260729"></script>
-  <script is:inline src="/html/common.js?v=20260729"></script>
-</body>
-</html>
+  
+</SubpageLayout>

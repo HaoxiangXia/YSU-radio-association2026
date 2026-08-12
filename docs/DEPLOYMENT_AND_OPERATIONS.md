@@ -56,7 +56,7 @@
 - 80 只用于跳转 HTTPS 和 ACME 挑战（Caddy 内部处理）；
 - 443 反向代理到 `127.0.0.1:5000`，开启 zstd/gzip 压缩；
 - 阻止公网访问 `/ops/` 和隐藏文件；
-- 3MB 请求体上限与基础安全响应头；
+- 3MB 请求体上限与安全响应头（含 HSTS `max-age=31536000`，未加 `includeSubDomains`；严格 CSP `default-src 'self'`，无 unsafe-inline），并移除上游 `Server`/`Via` 指纹头；
 - 图片/CSS/JS 静态资源携带 `Cache-Control: max-age=86400`，HTML 不缓存；
 - 访问日志写入 `/var/log/caddy/radio-association.access.log`（console 格式，自动滚动），不记录查询字符串之外的敏感头。
 

@@ -1,0 +1,63 @@
+---
+import { getResponsiveImageData } from '../data/responsive-images';
+
+const { department, index, prefix } = Astro.props;
+const sizes = '(max-width: 700px) calc(100vw - 3rem), (max-width: 959px) calc(50vw - 3rem), 31rem';
+const images = Array.isArray(department.images) && department.images.length
+  ? department.images
+  : [{ src: '/image/activities/farewell/photo-03.jpg', alt: `${department.name}活动照片` }];
+const firstImage = images[0];
+const firstImageData = getResponsiveImageData(firstImage.src, sizes);
+const statOne = department.stats.activities || department.stats.projects || department.stats.models || department.stats.softwares || department.stats.events || '-';
+const statTwo = department.stats.years || department.stats.awards || department.stats.printers || department.stats.websites || department.stats.honors || '-';
+---
+<article class="department-card reveal" data-department-index={`${prefix}-${index}`}>
+  <div class="department-card__media" data-images={JSON.stringify(images)}>
+    <div class="department-card__gallery">
+      <button type="button" class="department-card__preview" data-image={firstImage.src} data-image-alt={firstImage.alt} aria-label={`查看${firstImage.alt}完整图片`}>
+        <img
+          class="department-card__photo"
+          src={firstImageData.src}
+          srcset={firstImageData.srcset || undefined}
+          sizes={firstImageData.sizes}
+          width={firstImageData.width || undefined}
+          height={firstImageData.height || undefined}
+          alt={firstImage.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </button>
+      {images.length > 1 && (
+        <Fragment>
+          <button type="button" class="department-card__media-control department-card__media-control--previous" data-gallery-direction="-1" aria-label="查看上一张图片">‹</button>
+          <button type="button" class="department-card__media-control department-card__media-control--next" data-gallery-direction="1" aria-label="查看下一张图片">›</button>
+          <span class="department-card__media-count" aria-live="polite">1 / {images.length}</span>
+        </Fragment>
+      )}
+    </div>
+    <div class="department-card__meta">
+      <div class="department-card__identity">
+        <h3 class="department-card__name">{department.name}</h3>
+        <div class="department-card__tags">{department.tags.slice(0, 3).map((tag) => <span class="tag">{tag}</span>)}</div>
+      </div>
+      <div class="department-card__metrics">
+        <div><strong>{department.stats.members}</strong><span>部门成员</span></div>
+        <div><strong>{statOne}</strong><span>{department.statLabel1}</span></div>
+        <div><strong>{statTwo}</strong><span>{department.statLabel2}</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="department-card__content">
+    <p class="department-card__desc">{department.description}</p>
+    <button type="button" class="department-card__toggle" aria-expanded="false" aria-controls={`dept-detail-${prefix}-${index}`}>
+      <span>了解详情</span><span class="department-card__toggle-icon" aria-hidden="true">↓</span>
+    </button>
+    <div class="department-card__detail" id={`dept-detail-${prefix}-${index}`} aria-hidden="false">
+      <div class="department-card__lists">
+        <div class="department-card__list"><h4>主要职责</h4><ul>{department.responsibilities.slice(0, 4).map((item) => <li>{item}</li>)}</ul></div>
+        <div class="department-card__list"><h4>部门特色</h4><ul>{department.features.slice(0, 4).map((item) => <li>{item}</li>)}</ul></div>
+        <div class="department-card__list"><h4>学习内容</h4><ul>{department.learn.slice(0, 4).map((item) => <li>{item}</li>)}</ul></div>
+      </div>
+    </div>
+  </div>
+</article>

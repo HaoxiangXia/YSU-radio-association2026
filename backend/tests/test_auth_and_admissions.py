@@ -20,7 +20,7 @@ def login(client):
         json={"username": "officer", "password": TEST_PASSWORD},
     )
     assert response.status_code == 200
-    return {"Authorization": f"Bearer {response.json()['token']}"}
+    # 会话经 Set-Cookie 写入 TestClient 的 cookie jar，后续请求自动携带
 
 
 def workbook_bytes(*, formula: bool = False, extra_header: bool = False) -> bytes:
@@ -55,16 +55,33 @@ def test_login_success_verify_and_wrong_password(default_client):
         "/api/recruitment-officers/login",
         json={"username": "officer", "password": TEST_PASSWORD},
     )
-    token = success.json()["token"]
-    verified = client.get(
-        "/api/recruitment-officers/verify",
-        headers={"Authorization": f"Bearer {token}"},
-    )
+    verified = client.get("/api/recruitment-officers/verify")
 
     assert wrong.status_code == 401
     assert success.status_code == 200
+    assert "token" not in success.json()
+    set_cookie = success.headers["set-cookie"].lower()
+    assert "httponly" in set_cookie
+    assert "secure" in set_cookie
+    assert "samesite=strict" in set_cookie
     assert verified.status_code == 200
     assert verified.json()["officer"]["username"] == "officer"
+
+
+def test_login_over_http_omits_secure_flag(client_factory):
+    # 内网/本地 HTTP 访问：Secure Cookie 会被浏览器拒存，登录后被弹回登录页（回归）
+    with client_factory(base_url="http://testserver") as (client, _):
+        success = client.post(
+            "/api/recruitment-officers/login",
+            json={"username": "officer", "password": TEST_PASSWORD},
+        )
+        verified = client.get("/api/recruitment-officers/verify")
+
+        assert success.status_code == 200
+        set_cookie = success.headers["set-cookie"].lower()
+        assert "httponly" in set_cookie
+        assert "secure" not in set_cookie
+        assert verified.status_code == 200
 
 
 def test_successful_login_clears_failure_budget(default_client):
@@ -97,14 +114,10 @@ def test_expired_and_invalid_tokens_are_rejected(default_client):
         algorithm="HS256",
     )
 
-    expired_response = client.get(
-        "/api/recruitment-officers/verify",
-        headers={"Authorization": f"Bearer {expired}"},
-    )
-    invalid_response = client.get(
-        "/api/recruitment-officers/verify",
-        headers={"Authorization": "Bearer not-a-token"},
-    )
+    client.cookies.set(recruitment_officers.SESSION_COOKIE_NAME, expired)
+    expired_response = client.get("/api/recruitment-officers/verify")
+    client.cookies.set(recruitment_officers.SESSION_COOKIE_NAME, "not-a-token")
+    invalid_response = client.get("/api/recruitment-officers/verify")
 
     assert expired_response.status_code == 401
     assert invalid_response.status_code == 403
@@ -211,15 +224,11 @@ def test_admissions_management_requires_authentication(default_client):
 def test_officer_can_preview_publish_and_then_open_query(client_factory, config_copy):
     config = config_copy(admission_enabled=False)
     with client_factory(config=config, admissions=[]) as (client, state):
-        headers = login(client)
-        template = client.get(
-            "/api/admissions/manage/template.xlsx",
-            headers=headers,
-        )
+        login(client)
+        template = client.get("/api/admissions/manage/template.xlsx")
         preview = client.post(
             "/api/admissions/manage/preview",
             headers={
-                **headers,
                 "Content-Type": (
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ),
@@ -228,13 +237,11 @@ def test_officer_can_preview_publish_and_then_open_query(client_factory, config_
         )
         publish = client.post(
             "/api/admissions/manage/publish",
-            headers=headers,
             json={"previewId": preview.json()["previewId"]},
         )
         config["admissionQuery"]["enabled"] = True
         opened = client.put(
             "/api/recruitment/manage/config",
-            headers=headers,
             json=config,
         )
         query = client.post(
@@ -257,20 +264,17 @@ def test_officer_can_preview_publish_and_then_open_query(client_factory, config_
 
 def test_formula_is_rejected_and_publish_requires_closed_query(default_client):
     client, _ = default_client
-    headers = login(client)
+    login(client)
     invalid_preview = client.post(
         "/api/admissions/manage/preview",
-        headers=headers,
         content=workbook_bytes(formula=True),
     )
     valid_preview = client.post(
         "/api/admissions/manage/preview",
-        headers=headers,
         content=workbook_bytes(),
     )
     publish = client.post(
         "/api/admissions/manage/publish",
-        headers=headers,
         json={"previewId": valid_preview.json()["previewId"]},
     )
 
@@ -283,10 +287,9 @@ def test_formula_is_rejected_and_publish_requires_closed_query(default_client):
 
 def test_extra_excel_columns_and_expanded_workbook_are_rejected(default_client):
     client, _ = default_client
-    headers = login(client)
+    login(client)
     extra_column = client.post(
         "/api/admissions/manage/preview",
-        headers=headers,
         content=workbook_bytes(extra_header=True),
     )
 
@@ -299,3 +302,48 @@ def test_extra_excel_columns_and_expanded_workbook_are_rejected(default_client):
 
     assert extra_column.status_code == 422
     assert "只能包含这些表头" in extra_column.json()["detail"]
+
+
+def test_logout_revokes_session_on_server(default_client):
+    client, _ = default_client
+    login(client)
+    token = client.cookies.get(recruitment_officers.SESSION_COOKIE_NAME)
+    assert client.get("/api/recruitment-officers/verify").status_code == 200
+
+    assert client.post("/api/recruitment-officers/logout").status_code == 200
+
+    # 注销后原会话被服务端吊销：把原 cookie 放回去也必须 401
+    client.cookies.set(recruitment_officers.SESSION_COOKIE_NAME, token)
+    assert client.get("/api/recruitment-officers/verify").status_code == 401
+
+
+def test_api_docs_are_disabled_in_production(default_client):
+    client, _ = default_client
+    assert client.get("/docs").status_code == 404
+    assert client.get("/redoc").status_code == 404
+    assert client.get("/openapi.json").status_code == 404
+
+
+def test_cross_site_state_changing_requests_are_rejected(default_client):
+    client, _ = default_client
+    payload = {"studentId": "202600000001", "phone": "13800000001"}
+
+    cross_site_origin = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Origin": "https://untrusted.example"},
+    )
+    cross_site_fetch = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Sec-Fetch-Site": "cross-site"},
+    )
+    same_site = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Origin": "http://testserver", "Sec-Fetch-Site": "same-origin"},
+    )
+
+    assert cross_site_origin.status_code == 403
+    assert cross_site_fetch.status_code == 403
+    assert same_site.status_code == 200

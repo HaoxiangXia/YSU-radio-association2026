@@ -4,7 +4,6 @@ import { expect, test } from "@playwright/test";
 const publicPages = [
   "/html/index.html?intro=0",
   "/html/about-association.html",
-  "/html/about-association-detail.html",
   "/html/activities.html",
   "/html/competition-activities.html",
   "/html/recreational-activities.html",
@@ -27,12 +26,24 @@ function monitorPage(page) {
     problems.push(`请求失败：${request.method()} ${request.url()}`);
   });
   page.on("response", (response) => {
+    // 匿名访问登录页时 checkAuth 探测会话得到 401，属预期响应（HttpOnly Cookie 无法在前端判存）
+    if (response.status() === 401 && response.url().endsWith("/api/recruitment-officers/verify")) {
+      return;
+    }
     if (response.status() >= 400) {
       problems.push(`资源响应异常：${response.status()} ${response.url()}`);
     }
   });
   page.on("console", (message) => {
-    if (message.type() === "error") problems.push(`控制台错误：${message.text()}`);
+    if (message.type() !== "error") return;
+    // 上述预期 401 对应的控制台资源加载报错一并豁免（response 监听已按 URL 覆盖真实异常）
+    if (
+      message.text().includes("401") &&
+      message.location()?.url?.endsWith("/api/recruitment-officers/verify")
+    ) {
+      return;
+    }
+    problems.push(`控制台错误：${message.text()}`);
   });
   return problems;
 }
@@ -93,7 +104,7 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
 
   expect(problems).toEqual([]);
 
-  await page.goto("/html/about-association-detail.html");
+  await page.goto("/html/about-association.html");
   const departmentMediaAudit = await page.locator(".department-card").evaluateAll((cards) =>
     cards.map((card) => {
       const gallery = card.querySelector(".department-card__gallery");
@@ -127,11 +138,13 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
 
   if (testInfo.project.name.startsWith("mobile")) {
     await page.goto("/html/honors.html");
-    await expect(page.locator(".table-scroll-hint")).toBeVisible();
+    // 荣誉页榜单仅 3 列，窄屏直接收缩列宽展示，按设计无横向滚动提示（styles.css，411afca）
+    await expect(page.locator(".table-scroll-hint")).toBeHidden();
     await page.goto("/html/trainings.html");
-    await expect(page.locator(".table-scroll-hint")).toBeVisible();
+    // 培训页表格列少，窄屏直接收缩展示，不再提供横向滚动提示
+    await expect(page.locator(".table-scroll-hint")).toHaveCount(0);
 
-    await page.goto("/html/about-association-detail.html");
+    await page.goto("/html/about-association.html");
     await expect(page.locator(".department-card__media-control").first()).toBeVisible();
     const controlBox = await page.locator(".department-card__media-control").first().boundingBox();
     expect(controlBox.width).toBeGreaterThanOrEqual(43.5);
@@ -155,7 +168,6 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
       await page.setViewportSize(viewport);
       for (const path of [
         "/html/about-association.html",
-        "/html/about-association-detail.html",
       ]) {
         await page.goto(path);
         await loadLazyContent(page);
@@ -198,7 +210,8 @@ test("mobile menu stays above video and scrolls inside a short viewport", async 
   if (!testInfo.project.name.startsWith("mobile")) return;
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/html/about-association.html");
+  await page.goto("/html/index.html?intro=0");
+  await page.locator("video").first().evaluate((el) => el.scrollIntoView({ block: "start" }));
 
   const menuButton = page.locator(".menu-btn");
   const menu = page.locator(".mobile-menu");

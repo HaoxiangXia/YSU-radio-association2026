@@ -1,0 +1,10 @@
+
+.site-page.recreational-page .activity-record {
+  --page-accent: #6d4de0;
+  --page-accent-soft: rgba(109, 77, 224, 0.1);
+}
+
+.site-page.activity-page .activity-record__details--equal {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+  

@@ -4,10 +4,15 @@ export default defineConfig({
   build: {
     // src/pages/html/trainings.astro → dist/html/trainings.html（保持原 URL）
     format: 'file',
-    // 把 <style is:global> 的 CSS 内联进 HTML，使 dist 只产出单个 HTML、无 _astro 资源目录
-    inlineStylesheets: 'always',
+    // 外链 CSS 产物（dist/_astro/），配合严格 CSP（style-src 'self'，无 unsafe-inline）；
+    // 构建脚本负责把 dist/_astro 同步到 public/ 下
+    inlineStylesheets: 'never',
   },
   vite: {
+    build: {
+      // 产物一律走外链文件：内联脚本/样式会被严格 CSP（无 unsafe-inline）拦截
+      assetsInlineLimit: 0,
+    },
     server: {
       // astro dev 下把其余路径代理到本地后端（5000），保证样式/脚本/图片可加载
       proxy: {
@@ -18,6 +23,8 @@ export default defineConfig({
           bypass(req) {
             if (req.url?.startsWith('/html/trainings.html')) return req.url;
             if (req.url?.startsWith('/html/honors.html')) return req.url;
+            if (req.url?.startsWith('/html/index.html')) return req.url;
+            if (req.url?.startsWith('/html/about-association.html')) return req.url;
           },
         },
         '/image': 'http://127.0.0.1:5000',

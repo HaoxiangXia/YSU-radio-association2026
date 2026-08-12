@@ -1,0 +1,87 @@
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.notice-card {
+  border-top: 3px solid var(--color-primary);
+  background: #ffffff;
+}
+
+.form-error {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.site-page .notice-card {
+  border-top: 3px solid var(--site-blue);
+  background: #ffffff;
+}
+
+.site-page .form-error {
+  min-height: 0.5rem;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+/* 入会申请和查询：仅增强展示层，不改变控件和业务行为 */
+.site-page.membership-application-page .membership-application-notice {
+  position: relative;
+  padding-left: clamp(1.35rem, 3vw, 2.25rem);
+}
+
+.site-page.recruit-page .recruit-form {
+  border-color: rgba(59, 130, 246, 0.2);
+  background: #ffffff;
+}
+
+.site-page.membership-application-page .membership-application-form__heading {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.site-page.membership-application-page .membership-application-form__heading h2 {
+  margin-bottom: 0.4rem;
+  color: var(--site-ink);
+  font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+}
+
+.site-page.membership-application-page .membership-application-form__heading p {
+  color: var(--site-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-page.membership-application-page .membership-application-form > div:not(.membership-application-form__heading) {
+  padding-bottom: 0.2rem;
+}
+
+.privacy-confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.privacy-confirmation input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+}
+
+.privacy-confirmation label {
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+  

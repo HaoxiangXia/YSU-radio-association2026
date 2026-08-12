@@ -48,6 +48,27 @@ def get_db():
         yield connection
 
 
+def revoke_token(connection: sqlite3.Connection, jti: str, expires_at: int) -> None:
+    """Invalidate a session token and opportunistically prune expired entries."""
+    expiry = datetime.fromtimestamp(expires_at, timezone.utc).isoformat()
+    connection.execute(
+        "INSERT OR REPLACE INTO revoked_tokens (jti, expires_at) VALUES (?, ?)",
+        (jti, expiry),
+    )
+    connection.execute(
+        "DELETE FROM revoked_tokens WHERE expires_at < ?",
+        (datetime.now(timezone.utc).isoformat(),),
+    )
+    connection.commit()
+
+
+def is_token_revoked(connection: sqlite3.Connection, jti: str) -> bool:
+    row = connection.execute(
+        "SELECT 1 FROM revoked_tokens WHERE jti = ?", (jti,)
+    ).fetchone()
+    return row is not None
+
+
 def _create_base_schema(connection: sqlite3.Connection) -> None:
     connection.executescript(
         """
@@ -100,6 +121,11 @@ def _create_base_schema(connection: sqlite3.Connection) -> None:
             expectation TEXT,
             createdAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
             updatedAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS revoked_tokens (
+            jti TEXT PRIMARY KEY,
+            expires_at TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS trainings (

@@ -18,7 +18,7 @@ def login(client):
         json={"username": "officer", "password": TEST_PASSWORD},
     )
     assert response.status_code == 200
-    return {"Authorization": f"Bearer {response.json()['token']}"}
+    # 会话经 Set-Cookie 写入 TestClient 的 cookie jar，后续请求自动携带
 
 
 def test_public_config_excludes_private_fields(default_client):
@@ -101,14 +101,13 @@ def test_managed_config_requires_authentication(default_client, config_copy):
 
 def test_officer_can_atomically_update_business_config(default_client, config_copy):
     client, state = default_client
-    headers = login(client)
+    login(client)
     updated = config_copy()
     updated["application"]["privacyNotice"] = "更新后的个人信息处理说明"
     updated["contact"]["channelText"] = "更新后的联系说明"
 
     response = client.put(
         "/api/recruitment/manage/config",
-        headers=headers,
         json=updated,
     )
     public = client.get("/api/recruitment/config")
