@@ -1,4 +1,6 @@
 ---
+import SubpageLayout from '../../layouts/SubpageLayout.astro';
+
 import { departments } from '../../data/departments';
 import { topHonors, recentEvents } from '../../data/about';
 import DepartmentCard from '../../components/DepartmentCard.astro';
@@ -6,27 +8,15 @@ import DepartmentCard from '../../components/DepartmentCard.astro';
 const technicalDepartments = departments.filter((department) => department.category === 'technical');
 const nonTechnicalDepartments = departments.filter((department) => department.category === 'non-technical');
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>关于协会 - 无线电爱好者协会</title>
-  <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css?v=20260811">
-  <link rel="stylesheet" href="/html/about-association.css?v=20260811">
-</head>
-<body class="site-page sub-page about-page about-association-page">
-  <div id="nav-placeholder"></div>
+<SubpageLayout
+  title="关于协会 - 无线电爱好者协会"
+  bodyClass="site-page sub-page about-page about-association-page"
+  heroTitle="关于协会"
+  heroDesc="了解协会历史、部门设置与成员成长路径"
+  mainClass="about-association-content departments-content"
+>
+  <link slot="head" rel="stylesheet" href="/html/about-association.css?v=20260811">
 
-  <header class="subpage-hero">
-    <div class="container subpage-hero__inner">
-      <h1>关于协会</h1>
-      <p>了解协会历史、部门设置与成员成长路径</p>
-    </div>
-  </header>
-
-  <main class="page-container subpage-content about-association-content departments-content">
     <section id="departments" class="about-section about-departments card card-section">
       <div class="section-header">
         <div>
@@ -79,18 +69,7 @@ const nonTechnicalDepartments = departments.filter((department) => department.ca
         ))}
       </div>
     </section>
-  </main>
-
-  <div id="footer-placeholder"></div>
-  <button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
-
-  <div class="image-viewer">
-    <img src="" alt="查看图片">
-  </div>
-
-  <script is:inline src="/html/image-assets.js?v=20260729"></script>
-  <script is:inline src="/html/common.js?v=20260729"></script>
-  <script is:inline src="/html/reveal.js?v=20260812"></script>
+  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       setupDepartmentCards();
@@ -198,5 +177,4 @@ const nonTechnicalDepartments = departments.filter((department) => department.ca
       });
     }
   </script>
-</body>
-</html>
+</SubpageLayout>
