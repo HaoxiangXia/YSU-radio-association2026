@@ -17,7 +17,7 @@ const gallerySizes = '(max-width: 640px) calc(50vw - 2.5rem), (max-width: 1024px
 
   <div id="recreational-list" class="content-stack">
     {recreationalActivities.map((activity, index) => (
-      <article class="card card-section activity-record activity-record--community">
+      <article class="card card-section activity-record activity-record--community reveal">
         <div class="activity-record__rail">
           <span class="activity-record__index">{String(index + 1).padStart(2, '0')}</span>
           <span class="activity-record__date">{activity.date}</span>
