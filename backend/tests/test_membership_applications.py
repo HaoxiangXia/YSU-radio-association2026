@@ -15,7 +15,7 @@ def login(client):
         json={"username": "officer", "password": TEST_PASSWORD},
     )
     assert response.status_code == 200
-    return {"Authorization": f"Bearer {response.json()['token']}"}
+    # 会话经 Set-Cookie 写入 TestClient 的 cookie jar，后续请求自动携带
 
 
 def seed_applications(database_path, count):
@@ -148,7 +148,8 @@ def test_application_persists_across_app_restart(client_factory, tmp_path):
         assert response.status_code == 201
 
     with client_factory(database_path=database_path) as (client, _):
-        response = client.get("/api/membership-applications", headers=login(client))
+        login(client)
+        response = client.get("/api/membership-applications")
 
     assert response.status_code == 200
     assert response.json()["pagination"]["count"] == 1
@@ -157,21 +158,14 @@ def test_application_persists_across_app_restart(client_factory, tmp_path):
 def test_admin_pagination_filters_stats_detail_and_delete(default_client):
     client, state = default_client
     seed_applications(state["database_path"], 25)
-    headers = login(client)
+    login(client)
 
-    page = client.get(
-        "/api/membership-applications?page=2&limit=10",
-        headers=headers,
-    )
+    page = client.get("/api/membership-applications?page=2&limit=10")
     filtered = client.get(
-        "/api/membership-applications?college=机械工程学院&grade=2026级&limit=100",
-        headers=headers,
+        "/api/membership-applications?college=机械工程学院&grade=2026级&limit=100"
     )
-    searched = client.get(
-        "/api/membership-applications?search=申请人0007",
-        headers=headers,
-    )
-    stats = client.get("/api/membership-applications/stats", headers=headers)
+    searched = client.get("/api/membership-applications?search=申请人0007")
+    stats = client.get("/api/membership-applications/stats")
 
     assert page.status_code == 200
     assert len(page.json()["membership_applications"]) == 10
@@ -187,18 +181,9 @@ def test_admin_pagination_filters_stats_detail_and_delete(default_client):
     assert stats.json()["gradeCount"] == 2
 
     item_id = searched.json()["membership_applications"][0]["id"]
-    detail = client.get(
-        f"/api/membership-applications/{item_id}",
-        headers=headers,
-    )
-    deleted = client.delete(
-        f"/api/membership-applications/{item_id}",
-        headers=headers,
-    )
-    missing = client.get(
-        f"/api/membership-applications/{item_id}",
-        headers=headers,
-    )
+    detail = client.get(f"/api/membership-applications/{item_id}")
+    deleted = client.delete(f"/api/membership-applications/{item_id}")
+    missing = client.get(f"/api/membership-applications/{item_id}")
 
     assert detail.status_code == 200
     assert detail.json()["name"] == "申请人0007"
@@ -232,10 +217,8 @@ def test_csv_exports_all_rows_with_bom_and_formula_protection(default_client):
         )
         db.commit()
 
-    response = client.get(
-        "/api/membership-applications/export.csv",
-        headers=login(client),
-    )
+    login(client)
+    response = client.get("/api/membership-applications/export.csv")
 
     assert response.status_code == 200
     assert response.content.startswith(b"\xef\xbb\xbf")

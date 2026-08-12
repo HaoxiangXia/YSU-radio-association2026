@@ -2,18 +2,16 @@
     let currentPreviewId = null;
     let admissionQueryEnabled = false;
 
-    function getToken() {
-      return localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
-    }
-
-    function authHeaders(extra = {}) {
-      return { Authorization: `Bearer ${getToken()}`, ...extra };
-    }
-
     function clearAuthAndRedirect() {
-      localStorage.removeItem('recruitment_officer_token');
-      sessionStorage.removeItem('recruitment_officer_token');
       window.location.href = '/html/admin-login.html';
+    }
+
+    async function logout() {
+      // 服务端吊销会话后跳转；请求失败也照常跳回登录页
+      try {
+        await fetch('/api/recruitment-officers/logout', { method: 'POST' });
+      } catch (error) {}
+      clearAuthAndRedirect();
     }
 
     async function checkedResponse(response) {
@@ -74,7 +72,7 @@
     async function loadConfig() {
       setFeedback('config-feedback', '正在读取设置。');
       try {
-        const response = await checkedResponse(await fetch('/api/recruitment/manage/config', { headers: authHeaders() }));
+        const response = await checkedResponse(await fetch('/api/recruitment/manage/config'));
         const body = await response.json();
         fillConfig(body.config);
         setFeedback('config-feedback', `已读取 ${body.config.cycle} 招新周期设置。`);
@@ -128,7 +126,7 @@
       try {
         const response = await checkedResponse(await fetch('/api/recruitment/manage/config', {
           method: 'PUT',
-          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(config),
         }));
         const body = await response.json();
@@ -146,7 +144,7 @@
 
     async function loadAdmissionsStatus() {
       try {
-        const response = await checkedResponse(await fetch('/api/admissions/manage/status', { headers: authHeaders() }));
+        const response = await checkedResponse(await fetch('/api/admissions/manage/status'));
         const status = await response.json();
         admissionQueryEnabled = status.queryEnabled === true;
         let message = status.published
@@ -163,7 +161,7 @@
     async function downloadTemplate() {
       setFeedback('admissions-feedback', '正在生成模板。');
       try {
-        const response = await checkedResponse(await fetch('/api/admissions/manage/template.xlsx', { headers: authHeaders() }));
+        const response = await checkedResponse(await fetch('/api/admissions/manage/template.xlsx'));
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -238,7 +236,7 @@
       try {
         const response = await checkedResponse(await fetch('/api/admissions/manage/preview', {
           method: 'POST',
-          headers: authHeaders({ 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+          headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
           body: file,
         }));
         const body = await response.json();
@@ -268,7 +266,7 @@
       try {
         const response = await checkedResponse(await fetch('/api/admissions/manage/publish', {
           method: 'POST',
-          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ previewId: currentPreviewId }),
         }));
         const body = await response.json();
@@ -284,7 +282,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      if (!getToken()) {
+      try {
+        const session = await fetch('/api/recruitment-officers/verify');
+        if (!session.ok) {
+          clearAuthAndRedirect();
+          return;
+        }
+      } catch (error) {
         clearAuthAndRedirect();
         return;
       }
@@ -294,7 +298,7 @@
       document.getElementById('download-template-button').addEventListener('click', downloadTemplate);
       document.getElementById('preview-button').addEventListener('click', previewWorkbook);
       document.getElementById('publish-button').addEventListener('click', publishAdmissions);
-      document.getElementById('logout-button').addEventListener('click', clearAuthAndRedirect);
+      document.getElementById('logout-button').addEventListener('click', logout);
       await loadConfig();
       await loadAdmissionsStatus();
     });

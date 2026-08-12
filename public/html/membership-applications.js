@@ -6,14 +6,6 @@
     let searchTimer;
     let latestLoadRequest = 0;
 
-    function getToken() {
-      return localStorage.getItem('recruitment_officer_token') || sessionStorage.getItem('recruitment_officer_token');
-    }
-
-    function getAuthHeaders() {
-      return { Authorization: `Bearer ${getToken()}` };
-    }
-
     function setFeedback(message = '', isError = false) {
       const feedback = document.getElementById('admin-feedback');
       feedback.textContent = message;
@@ -106,8 +98,6 @@
 
     async function handleResponse(response) {
       if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('recruitment_officer_token');
-        sessionStorage.removeItem('recruitment_officer_token');
         window.location.href = '/html/admin-login.html';
         throw new Error('登录已失效');
       }
@@ -128,7 +118,7 @@
 
     async function loadSupportData() {
       try {
-        const response = await handleResponse(await fetch('/api/membership-applications/stats', { headers: getAuthHeaders() }));
+        const response = await handleResponse(await fetch('/api/membership-applications/stats'));
         const stats = await response.json();
         document.getElementById('stat-total').textContent = stats.total;
         document.getElementById('stat-today').textContent = stats.todayCount;
@@ -146,16 +136,12 @@
     }
 
     async function loadData(page = 1) {
-      if (!getToken()) {
-        window.location.href = '/html/admin-login.html';
-        return;
-      }
       const requestId = ++latestLoadRequest;
       currentPage = page;
       setFeedback('正在加载入会申请…');
       const params = new URLSearchParams({ ...readFilters(), page: String(page), limit: String(pageSize) });
       try {
-        const response = await handleResponse(await fetch(`/api/membership-applications?${params}`, { headers: getAuthHeaders() }));
+        const response = await handleResponse(await fetch(`/api/membership-applications?${params}`));
         const data = await response.json();
         if (requestId !== latestLoadRequest) return false;
         currentItems = data.membership_applications || [];
@@ -201,7 +187,7 @@
       if (!confirm(`确定删除 ${item.name} 的入会申请？此操作不能撤销。`)) return;
       setFeedback('正在删除…');
       try {
-        const response = await handleResponse(await fetch(`/api/membership-applications/${item.id}`, { method: 'DELETE', headers: getAuthHeaders() }));
+        const response = await handleResponse(await fetch(`/api/membership-applications/${item.id}`, { method: 'DELETE' }));
         const result = await response.json();
         await loadData(currentPage);
         await loadSupportData();
@@ -219,7 +205,6 @@
         const params = new URLSearchParams(readFilters());
         const response = await handleResponse(await fetch(
           `/api/membership-applications/export.csv?${params}`,
-          { headers: getAuthHeaders() },
         ));
         const blob = await response.blob();
         const link = document.createElement('a');
@@ -239,7 +224,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      if (!getToken()) {
+      try {
+        const session = await fetch('/api/recruitment-officers/verify');
+        if (!session.ok) {
+          window.location.href = '/html/admin-login.html';
+          return;
+        }
+      } catch (error) {
         window.location.href = '/html/admin-login.html';
         return;
       }
@@ -249,9 +240,11 @@
       document.getElementById('detail-modal').addEventListener('click', (event) => {
         if (event.target === event.currentTarget) closeDetail();
       });
-      document.getElementById('logout-button').addEventListener('click', () => {
-        localStorage.removeItem('recruitment_officer_token');
-        sessionStorage.removeItem('recruitment_officer_token');
+      document.getElementById('logout-button').addEventListener('click', async () => {
+        // 服务端吊销会话后跳转；请求失败也照常跳回登录页
+        try {
+          await fetch('/api/recruitment-officers/logout', { method: 'POST' });
+        } catch (error) {}
         window.location.href = '/html/admin-login.html';
       });
       document.getElementById('search-input').addEventListener('input', () => {

@@ -139,7 +139,8 @@ def client_factory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         reset_runtime_state()
 
         try:
-            with TestClient(app) as client:
+            # 会话 Cookie 带 Secure 属性：httpx cookie jar 只在 https 下回传
+            with TestClient(app, base_url="https://testserver") as client:
                 yield client, {
                     "config_path": config_path,
                     "admissions_path": admissions_path,

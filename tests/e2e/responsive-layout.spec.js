@@ -27,12 +27,24 @@ function monitorPage(page) {
     problems.push(`请求失败：${request.method()} ${request.url()}`);
   });
   page.on("response", (response) => {
+    // 匿名访问登录页时 checkAuth 探测会话得到 401，属预期响应（HttpOnly Cookie 无法在前端判存）
+    if (response.status() === 401 && response.url().endsWith("/api/recruitment-officers/verify")) {
+      return;
+    }
     if (response.status() >= 400) {
       problems.push(`资源响应异常：${response.status()} ${response.url()}`);
     }
   });
   page.on("console", (message) => {
-    if (message.type() === "error") problems.push(`控制台错误：${message.text()}`);
+    if (message.type() !== "error") return;
+    // 上述预期 401 对应的控制台资源加载报错一并豁免（response 监听已按 URL 覆盖真实异常）
+    if (
+      message.text().includes("401") &&
+      message.location()?.url?.endsWith("/api/recruitment-officers/verify")
+    ) {
+      return;
+    }
+    problems.push(`控制台错误：${message.text()}`);
   });
   return problems;
 }
