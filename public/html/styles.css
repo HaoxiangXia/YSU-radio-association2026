@@ -2479,22 +2479,8 @@ textarea.form-input {
   }
 }
 
-@media (max-width: 800px) {
-  .about-association-page .hero-eyebrow,
-  .about-association-page .home-card-kicker,
-  .about-association-page .home-card-date,
-  .about-association-page .home-card-link-cue,
-  .about-association-page .home-honor-kicker,
-  .about-association-page .home-honor-badge,
-  .about-association-page .home-section-index,
-  .about-association-page .department-metrics span,
-  .about-association-page .department-summary > span {
-    font-size: 0.75rem !important;
-  }
-}
-
 @media (max-width: 480px) {
-  .site-page .page-container.subpage-content {
+  .site-page .pagination {
     padding-right: 0.9rem;
     padding-left: 0.9rem;
   }
@@ -2753,27 +2739,6 @@ textarea.form-input {
 
   .site-page.honor-page .honor-section__heading > p {
     margin-top: 0.5rem;
-  }
-
-  .site-page.about-association-page .department-summary {
-    display: block;
-  }
-
-  .site-page.about-association-page .department-summary > span {
-    margin-bottom: 0.5rem;
-  }
-
-  .site-page.about-association-page .department-metrics {
-    gap: 0.25rem;
-  }
-
-  .site-page.about-association-page .department-metrics strong {
-    font-size: 1.25rem;
-  }
-
-  .site-page.about-association-page .department-metrics span {
-    font-size: 0.64rem;
-    text-align: center;
   }
 
   .site-page.query-page .query-form {
