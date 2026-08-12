@@ -301,10 +301,33 @@ def test_logout_revokes_session_on_server(default_client):
     assert client.get("/api/recruitment-officers/verify").status_code == 401
 
 
-
-
 def test_api_docs_are_disabled_in_production(default_client):
     client, _ = default_client
     assert client.get("/docs").status_code == 404
     assert client.get("/redoc").status_code == 404
     assert client.get("/openapi.json").status_code == 404
+
+
+def test_cross_site_state_changing_requests_are_rejected(default_client):
+    client, _ = default_client
+    payload = {"studentId": "202600000001", "phone": "13800000001"}
+
+    cross_site_origin = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Origin": "https://untrusted.example"},
+    )
+    cross_site_fetch = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Sec-Fetch-Site": "cross-site"},
+    )
+    same_site = client.post(
+        "/api/admissions/query",
+        json=payload,
+        headers={"Origin": "http://testserver", "Sec-Fetch-Site": "same-origin"},
+    )
+
+    assert cross_site_origin.status_code == 403
+    assert cross_site_fetch.status_code == 403
+    assert same_site.status_code == 200
