@@ -186,7 +186,7 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
       </div>
       <div class="timeline" id="training-timeline">
         {trainingTimeline.map((item) => (
-          <div class="timeline-item">
+          <div class="timeline-item reveal">
             <div class="timeline-date">{item.date}</div>
             <div class="timeline-title">{item.title}</div>
             <div class="timeline-desc">{item.desc}</div>
@@ -263,5 +263,6 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
 
   <script is:inline src="/html/image-assets.js?v=20260729"></script>
   <script is:inline src="/html/common.js?v=20260729"></script>
+  <script is:inline src="/html/reveal.js?v=20260812"></script>
 </body>
 </html>

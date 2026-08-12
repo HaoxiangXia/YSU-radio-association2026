@@ -269,7 +269,7 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
     <!-- 荣誉卡片 -->
     <div id="honors-cards" class="grid md:grid-cols-3 gap-4 mb-6 honor-feature-grid">
       {honorFeatureCards.map((card) => (
-        <article class="card card-section honor-feature-card">
+        <article class="card card-section honor-feature-card reveal">
           <div class="honor-feature-card__topline">
             <span>{card.year}</span>
             {card.badge && <span class="badge badge-red">{card.badge}</span>}
@@ -354,7 +354,7 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
       <div class="honor-certificate-gallery">
         {honorCertificates.map((cert) => (
           <button
-            class="honor-certificate"
+            class="honor-certificate reveal"
             type="button"
             data-image={cert.image}
             data-image-alt={cert.img.alt}
@@ -389,5 +389,6 @@ const certificateSizes = '(max-width: 639px) calc(100vw - 3rem), (max-width: 102
 
   <script is:inline src="/html/image-assets.js?v=20260729"></script>
   <script is:inline src="/html/common.js?v=20260729"></script>
+  <script is:inline src="/html/reveal.js?v=20260812"></script>
 </body>
 </html>
