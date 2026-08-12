@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && cp dist/html/trainings.html dist/html/honors.html dist/html/index.html dist/html/about-association.html ../public/html/"
+    "build": "astro build && cp dist/html/trainings.html dist/html/honors.html dist/html/index.html dist/html/about-association.html ../public/html/ && rm -rf ../public/_astro && cp -r dist/_astro ../public/_astro"
   },
   "dependencies": {
     "astro": "^7.1.6"

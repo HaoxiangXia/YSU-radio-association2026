@@ -29,6 +29,10 @@ __DOMAIN__ {
 	@staticAssets path /image/* /html/*.css /html/*.js
 	header @staticAssets Cache-Control "public, max-age=86400"
 
+	# Astro 构建产物文件名带内容哈希，内容变化即新文件名，可 immutable 长缓存
+	@hashedAssets path /_astro/*
+	header @hashedAssets Cache-Control "public, max-age=31536000, immutable"
+
 	header {
 		X-Content-Type-Options nosniff
 		X-Frame-Options SAMEORIGIN
