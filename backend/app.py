@@ -37,11 +37,23 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="燕山大学无线电爱好者协会", version="1.0.0", lifespan=lifespan)
+# W-03：生产环境关闭 Swagger/ReDoc/OpenAPI，仅 APP_ENV=development 时开放
+_api_docs_enabled = os.environ.get("APP_ENV", "production") == "development"
+
+app = FastAPI(
+    title="燕山大学无线电爱好者协会",
+    version="1.0.0",
+    lifespan=lifespan,
+    docs_url="/docs" if _api_docs_enabled else None,
+    redoc_url="/redoc" if _api_docs_enabled else None,
+    openapi_url="/openapi.json" if _api_docs_enabled else None,
+)
 
 @app.get("/")
 async def root():
     return RedirectResponse(url="/html/index.html")
+
+
 
 
 # API routers

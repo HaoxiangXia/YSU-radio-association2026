@@ -301,3 +301,10 @@ def test_logout_revokes_session_on_server(default_client):
     assert client.get("/api/recruitment-officers/verify").status_code == 401
 
 
+
+
+def test_api_docs_are_disabled_in_production(default_client):
+    client, _ = default_client
+    assert client.get("/docs").status_code == 404
+    assert client.get("/redoc").status_code == 404
+    assert client.get("/openapi.json").status_code == 404
