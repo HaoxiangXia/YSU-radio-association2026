@@ -221,7 +221,7 @@ curl -s http://__DOMAIN__/ | head -1               # 预期 308 跳转 HTTPS
 journalctl -u caddy -n 50 --no-pager               # 确认无 obtain 错误
 ```
 
-与原 Nginx 方案的行为对照：HTTP→HTTPS 跳转、证书签发续期由 Caddy 自动完成；`X-Forwarded-For/Proto` 由 `reverse_proxy` 自动设置（容器内 uvicorn 已配 `--proxy-headers --forwarded-allow-ips 127.0.0.1`）；请求体上限、`/ops/` 与隐藏文件 404、安全响应头一一对应。限流在应用层（`backend/utils/security.py`），不受影响。
+与原 Nginx 方案的行为对照：HTTP→HTTPS 跳转、证书签发续期由 Caddy 自动完成；`X-Forwarded-For/Proto` 由 `reverse_proxy` 自动设置（容器内 uvicorn 已配 `--proxy-headers --forwarded-allow-ips '*'`，以信任来自宿主机 Docker 网关的 Caddy 转发头；Compose 仍只将后端端口绑定到宿主机 `127.0.0.1`，不得改为公网监听）；请求体上限、`/ops/` 与隐藏文件 404、安全响应头一一对应。限流在应用层（`backend/utils/security.py`），不受影响。
 
 ## 7. 首次上线验收清单
 

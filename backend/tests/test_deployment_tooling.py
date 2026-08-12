@@ -42,9 +42,10 @@ def test_deployment_assets_keep_loopback_and_limits():
     assert "env_file: /etc/radio-association/app.env" in compose
     assert "user:" in compose
 
-    # 镜像健康检查与反代头信任仅限回环
+    # 宿主端口只绑定回环，因此容器可安全信任来自宿主 Caddy 的转发头；
+    # 不能限定为 127.0.0.1，因为宿主进入容器时来源是 Docker 网关地址。
     assert "/healthz" in dockerfile
-    assert "--forwarded-allow-ips\", \"127.0.0.1\"" in dockerfile
+    assert "--forwarded-allow-ips\", \"*\"" in dockerfile
 
     # Caddy 承担公网入口：预生产只绑回环，请求体上限与运维端点屏蔽
     assert "bind 127.0.0.1" in caddyfile
