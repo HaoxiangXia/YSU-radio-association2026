@@ -18,7 +18,7 @@ export const topHonors = [
   },
 ];
 
-// 最新动态：竞赛摘要（完整数据见 public/html/data.js 的 competitions，供竞赛活动页客户端渲染）
+// 最新动态：竞赛摘要（完整数据见 frontend/src/data/activities.js 的 competitions）
 export const recentEvents = [
   {
     id: 'zhanwang-cup-2026',

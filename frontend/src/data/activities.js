@@ -1,7 +1,5 @@
-// 无线电爱好者协会 - 网站数据
-
 // 竞赛活动
-const competitions = [
+export const competitions = [
   {
     id: 'zhanwang-cup-2026',
     name: '展望杯嵌入式大赛',
@@ -83,7 +81,7 @@ const competitions = [
 ];
 
 // 文娱活动
-const recreationalActivities = [
+export const recreationalActivities = [
   {
     name: '欢送师兄师姐晚会',
     date: '2025年6月25日',

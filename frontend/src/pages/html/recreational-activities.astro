@@ -1,0 +1,67 @@
+---
+import SubpageLayout from '../../layouts/SubpageLayout.astro';
+import { recreationalActivities } from '../../data/activities';
+import { getResponsiveImageData } from '../../data/responsive-images';
+
+const gallerySizes = '(max-width: 640px) calc(50vw - 2.5rem), (max-width: 1024px) calc(33vw - 2rem), 13rem';
+---
+<SubpageLayout
+  title="文娱活动 - 无线电爱好者协会"
+  bodyClass="site-page sub-page activity-page recreational-page"
+  heroTitle="文娱活动"
+  heroDesc="记录社团文化、团队建设与成员共同参与的校园活动。"
+>
+  <link slot="head" rel="stylesheet" href="/html/recreational-activities.css?v=20260811">
+
+  <a href="/html/activities.html" class="back-link">← 返回活动</a>
+
+  <div id="recreational-list" class="content-stack">
+    {recreationalActivities.map((activity, index) => (
+      <article class="card card-section activity-record activity-record--community">
+        <div class="activity-record__rail">
+          <span class="activity-record__index">{String(index + 1).padStart(2, '0')}</span>
+          <span class="activity-record__date">{activity.date}</span>
+        </div>
+
+        <div class="activity-record__content">
+          <h2 class="card-title">{activity.name}</h2>
+          <p class="activity-record__summary">{activity.description}</p>
+
+          <div class="activity-record__details activity-record__details--equal">
+            <div class="info-panel activity-record__note">
+              <h3>参与人员</h3>
+              <p>{activity.participants}</p>
+            </div>
+
+            <div class="info-panel activity-record__note">
+              <h3>活动成果</h3>
+              <p>{activity.achievements}</p>
+            </div>
+          </div>
+
+          {activity.images?.length > 0 && (
+            <section class="activity-gallery" aria-label={`${activity.name}活动图片`}>
+              {activity.images.map((image, imageIndex) => {
+                const imageData = getResponsiveImageData(image, gallerySizes);
+                return (
+                  <button type="button" class="activity-gallery__item" data-image={image} data-image-alt={`${activity.name}活动现场照片 ${imageIndex + 1}`} aria-label={`查看${activity.name}活动照片 ${imageIndex + 1}`}>
+                    <img
+                      src={imageData.src}
+                      srcset={imageData.srcset || undefined}
+                      sizes={imageData.sizes}
+                      width={imageData.width || undefined}
+                      height={imageData.height || undefined}
+                      alt={`${activity.name}活动现场照片 ${imageIndex + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                    >
+                  </button>
+                );
+              })}
+            </section>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</SubpageLayout>
