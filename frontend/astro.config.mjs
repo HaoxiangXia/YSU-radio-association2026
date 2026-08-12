@@ -18,6 +18,8 @@ export default defineConfig({
           bypass(req) {
             if (req.url?.startsWith('/html/trainings.html')) return req.url;
             if (req.url?.startsWith('/html/honors.html')) return req.url;
+            if (req.url?.startsWith('/html/index.html')) return req.url;
+            if (req.url?.startsWith('/html/about-association.html')) return req.url;
           },
         },
         '/image': 'http://127.0.0.1:5000',

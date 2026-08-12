@@ -1,0 +1,205 @@
+---
+import { departments } from '../../data/departments';
+import { topHonors, recentEvents } from '../../data/about';
+import DepartmentCard from '../../components/DepartmentCard.astro';
+
+const technicalDepartments = departments.filter((department) => department.category === 'technical');
+const nonTechnicalDepartments = departments.filter((department) => department.category === 'non-technical');
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于协会 - 无线电爱好者协会</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/html/styles.css?v=20260811">
+  <link rel="stylesheet" href="/html/about-association.css?v=20260811">
+</head>
+<body class="site-page sub-page about-page about-association-page">
+  <div id="nav-placeholder"></div>
+
+  <header class="subpage-hero">
+    <div class="container subpage-hero__inner">
+      <h1>关于协会</h1>
+      <p>了解协会历史、部门设置与成员成长路径</p>
+    </div>
+  </header>
+
+  <main class="page-container subpage-content about-association-content departments-content">
+    <section id="departments" class="about-section about-departments card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">DEPARTMENTS</p>
+          <h2 class="card-title">部门介绍</h2>
+          <p class="section-desc">探索五个部门的方向、职责与成长路径。</p>
+        </div>
+      </div>
+      <h3 class="department-group-title">技术部门</h3>
+      <div class="department-grid" id="department-grid-technical">
+        {technicalDepartments.map((department, index) => <DepartmentCard department={department} index={index} prefix="tech" />)}
+      </div>
+      <h3 class="department-group-title">非技术部门</h3>
+      <div class="department-grid" id="department-grid-non-technical">
+        {nonTechnicalDepartments.map((department, index) => <DepartmentCard department={department} index={index} prefix="non-tech" />)}
+      </div>
+    </section>
+
+    <section id="news" class="about-section about-news card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">RECENT UPDATES</p>
+          <h2 class="card-title">最新动态</h2>
+        </div>
+        <a href="/html/competition-activities.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="news-list" id="recent-events">
+        {recentEvents.map((event) => (
+          <a href={`/html/competition-activities.html#${event.id}`} class="news-card">
+            <div class="news-card__meta">{event.date}</div>
+            <h3>{event.name}</h3>
+            <p>{event.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section id="honors" class="about-section about-honors card card-section">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">HONORS</p>
+          <h2 class="card-title">荣誉成就</h2>
+        </div>
+        <a href="/html/honors.html" class="more-link">查看更多 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="honor-list" id="honors-grid">
+        {topHonors.map((honor) => (
+          <article class="honor-card">
+            <h3>{honor.title}</h3>
+            <p>{honor.description}</p>
+            {honor.year && <span class="honor-card__year">{honor.year}</span>}
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
+
+  <div class="image-viewer">
+    <img src="" alt="查看图片">
+  </div>
+
+  <script is:inline src="/html/image-assets.js?v=20260729"></script>
+  <script is:inline src="/html/common.js?v=20260729"></script>
+  <script is:inline src="/html/vendor/gsap.min.js"></script>
+  <script is:inline src="/html/vendor/ScrollTrigger.min.js"></script>
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      setupDepartmentCards();
+      setupDepartmentGalleries();
+      setupReveals();
+    });
+
+    // 卡片展开/收起（紧凑视口）：取自原 about-association.js renderDepartments 的交互部分
+    function setupDepartmentCards() {
+      const compactLayout = window.matchMedia('(max-width: 959px)');
+      const cards = [...document.querySelectorAll('.department-card')];
+      if (!cards.length) return;
+
+      const setExpanded = (card, expanded) => {
+        const button = card.querySelector('.department-card__toggle');
+        const detail = card.querySelector('.department-card__detail');
+        card.classList.toggle('is-expanded', expanded);
+        button.setAttribute('aria-expanded', String(expanded));
+        detail.setAttribute('aria-hidden', String(!expanded));
+      };
+      const syncLayout = () => cards.forEach((card) => setExpanded(card, !compactLayout.matches));
+
+      const toggleCard = (card) => {
+        if (!compactLayout.matches) return;
+        const shouldExpand = !card.classList.contains('is-expanded');
+        cards.forEach((other) => { if (other !== card) setExpanded(other, false); });
+        setExpanded(card, shouldExpand);
+      };
+
+      cards.forEach((card) => {
+        const toggle = card.querySelector('.department-card__toggle');
+        toggle.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleCard(card);
+        });
+        card.addEventListener('click', (event) => {
+          if (event.target.closest('.department-card__media, .tag, .department-card__toggle')) return;
+          toggleCard(card);
+        });
+      });
+      compactLayout.addEventListener('change', syncLayout);
+      syncLayout();
+    }
+
+    // 画廊切换：逐字取自原 about-association.js setupDepartmentGalleries
+    function setupDepartmentGalleries() {
+      document.querySelectorAll('.department-card__media').forEach((gallery) => {
+        const images = JSON.parse(gallery.dataset.images || '[]');
+        if (images.length < 2) return;
+
+        const image = gallery.querySelector('.department-card__photo');
+        const preview = gallery.querySelector('.department-card__preview');
+        const counter = gallery.querySelector('.department-card__media-count');
+        let currentIndex = 0;
+
+        gallery.addEventListener('click', (event) => {
+          const control = event.target.closest('[data-gallery-direction]');
+          if (!control) return;
+          event.preventDefault();
+          event.stopPropagation();
+          currentIndex = (currentIndex + Number(control.dataset.galleryDirection) + images.length) % images.length;
+          const current = images[currentIndex];
+          applyResponsiveImage(image, current.src, '(max-width: 700px) calc(100vw - 3rem), (max-width: 959px) calc(50vw - 3rem), 31rem');
+          image.alt = current.alt;
+          preview.dataset.image = current.src;
+          preview.dataset.imageAlt = current.alt;
+          preview.setAttribute('aria-label', `查看${current.alt}完整图片`);
+          counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        });
+      });
+    }
+
+    // 滚动进入动画：逐字取自原 detail 页内联脚本（GSAP 未加载或偏好减弱动效时跳过）
+    function setupReveals() {
+      if (typeof gsap === 'undefined') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.from('.department-card', {
+        y: 24,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: '#departments',
+          start: 'top 75%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      gsap.from('.honor-card', {
+        y: 18,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        stagger: 0.06,
+        scrollTrigger: {
+          trigger: '#honors',
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+    }
+  </script>
+</body>
+</html>
