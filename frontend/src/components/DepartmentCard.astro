@@ -11,7 +11,7 @@ const firstImageData = getResponsiveImageData(firstImage.src, sizes);
 const statOne = department.stats.activities || department.stats.projects || department.stats.models || department.stats.softwares || department.stats.events || '-';
 const statTwo = department.stats.years || department.stats.awards || department.stats.printers || department.stats.websites || department.stats.honors || '-';
 ---
-<article class="department-card" data-department-index={`${prefix}-${index}`}>
+<article class="department-card reveal" data-department-index={`${prefix}-${index}`}>
   <div class="department-card__media" data-images={JSON.stringify(images)}>
     <div class="department-card__gallery">
       <button type="button" class="department-card__preview" data-image={firstImage.src} data-image-alt={firstImage.alt} aria-label={`查看${firstImage.alt}完整图片`}>
