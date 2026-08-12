@@ -2366,6 +2366,18 @@ textarea.form-input {
   }
 }
 
+/* 条目级滚动 reveal（reveal.js 驱动；armed 类由 JS 添加，无 JS/减弱动效时内容直接可见） */
+.reveal-armed .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 480ms ease, transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-armed .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 @media (max-width: 900px) {
   .home-page .nav,
   .site-page .nav {
