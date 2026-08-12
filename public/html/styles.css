@@ -484,8 +484,9 @@ button:focus-visible {
 /* 管理页操作按钮（表格行操作、导航栏退出登录） */
 .action-btn {
   padding: 0.25rem 0.5rem;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 6px;
+  background: none;
   font-size: 0.75rem;
   cursor: pointer;
   transition: background-color 200ms ease, color 200ms ease, opacity 200ms ease;
@@ -509,7 +510,7 @@ button:focus-visible {
   background: rgba(239, 68, 68, 0.18);
 }
 
-/* 导航栏最右端的退出登录按钮 */
+/* 导航栏最右端的退出登录按钮：外观同 .action-btn.delete，仅做定位与触控高度 */
 .nav .nav-links {
   margin-left: auto;
 }
@@ -520,8 +521,8 @@ button:focus-visible {
   justify-content: center;
   min-height: 2.75rem;
   margin-left: 0.5rem;
-  padding: 0.6rem 0.9rem;
-  font-size: 0.85rem;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
   white-space: nowrap;
 }
 

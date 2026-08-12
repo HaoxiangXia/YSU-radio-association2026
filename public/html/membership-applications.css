@@ -76,34 +76,7 @@
   color: white;
 }
 
-/* 管理页面复用样式 */
-.action-btn {
-  padding: 0.25rem 0.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: background-color 200ms ease, color 200ms ease, opacity 200ms ease;
-}
-
-.action-btn.view {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--color-primary);
-}
-
-.action-btn.view:hover {
-  background: rgba(37, 99, 235, 0.18);
-}
-
-.action-btn.delete {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
-
-.action-btn.delete:hover {
-  background: rgba(239, 68, 68, 0.18);
-}
-
+/* 管理页面复用样式（action-btn 已上移至 styles.css 共享） */
 .action-group {
   display: flex;
   gap: 0.25rem;
@@ -202,7 +175,7 @@
   background: #f1f5f9;
 }
 
-.site-page.recruitment-officer-page .action-btn {
+.site-page.recruitment-officer-page .action-btn:not(.nav-logout) {
   min-height: 2rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 6px;
