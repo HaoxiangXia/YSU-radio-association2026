@@ -10,13 +10,7 @@
     function showResult({ title, message = '', status = '', department = '', kind = 'neutral' }) {
       const resultDiv = document.getElementById('query-result');
       const card = document.createElement('div');
-      const colorClasses = {
-        error: 'bg-red-50 border-red-200',
-        accepted: 'bg-green-50 border-green-200',
-        rejected: 'bg-yellow-50 border-yellow-200',
-        neutral: 'bg-gray-50 border-gray-200',
-      };
-      card.className = `${colorClasses[kind]} border rounded-lg p-4`;
+      card.className = 'bg-gray-50 border-gray-200 border rounded-lg p-4';
 
       const center = document.createElement('div');
       center.className = 'text-center';

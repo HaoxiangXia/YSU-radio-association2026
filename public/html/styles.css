@@ -765,14 +765,6 @@ button:focus-visible {
   background-color: rgba(239, 246, 255, 0.5);
 }
 
-.bg-green-50 {
-  background-color: #f0fdf4;
-}
-
-.bg-yellow-50 {
-  background-color: #fefce8;
-}
-
 .bg-black\/40 {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -796,14 +788,6 @@ button:focus-visible {
 
 .border-gray-100 {
   border-color: #f3f4f6;
-}
-
-.border-green-200 {
-  border-color: #bbf7d0;
-}
-
-.border-yellow-200 {
-  border-color: #fef08a;
 }
 
 .border-blue-100 {
