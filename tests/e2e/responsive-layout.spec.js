@@ -141,7 +141,8 @@ test("公开页面在目标视口无横向溢出且只加载响应式图片", as
     // 荣誉页榜单仅 3 列，窄屏直接收缩列宽展示，按设计无横向滚动提示（styles.css，411afca）
     await expect(page.locator(".table-scroll-hint")).toBeHidden();
     await page.goto("/html/trainings.html");
-    await expect(page.locator(".table-scroll-hint")).toBeVisible();
+    // 培训页表格列少，窄屏直接收缩展示，不再提供横向滚动提示
+    await expect(page.locator(".table-scroll-hint")).toHaveCount(0);
 
     await page.goto("/html/about-association.html");
     await expect(page.locator(".department-card__media-control").first()).toBeVisible();

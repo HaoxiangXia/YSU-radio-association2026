@@ -1,5 +1,5 @@
 ---
-import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } from '../../data/trainings';
+import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseScheduleSemester2 } from '../../data/trainings';
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -163,7 +163,7 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
   color: #526b8e;
 }
 
-.col-week {
+.col-session {
   width: 5rem;
 }
   </style>
@@ -198,12 +198,28 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
     <!-- 课程安排 -->
     <section class="card card-section mb-6 training-section training-schedule">
       <div class="training-section__heading">
-        <h2 class="card-title">每周课程安排</h2>
+        <h2 class="card-title">2026-2027学年课程安排</h2>
       </div>
-      <p class="text-gray-600 leading-relaxed">
-        2026-2027学年<br>
-        coming soon
-      </p>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-session">节次</th>
+              <th>教学内容</th>
+              <th>主讲人</th>
+            </tr>
+          </thead>
+          <tbody id="course-schedule-2026">
+            {courseSchedule2026.map((item) => (
+              <tr>
+                <td class="font-medium text-gray-800">{item.session}</td>
+                <td class="text-gray-600">{item.content}</td>
+                <td class="text-gray-600">{item.instructor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- 往期培训 -->
@@ -211,20 +227,19 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
       <div class="training-section__heading">
         <h2 class="card-title">往期培训</h2>
       </div>
-      <p class="table-scroll-hint" aria-hidden="true">左右滑动查看更多</p>
       <h3 class="font-bold text-gray-800 mb-2">第一学期</h3>
       <div class="overflow-x-auto mb-4">
         <table class="data-table">
           <thead>
             <tr>
-              <th class="col-week">周次</th>
+              <th class="col-session">节次</th>
               <th>课程内容</th>
             </tr>
           </thead>
           <tbody id="course-schedule-1">
             {courseScheduleSemester1.map((item) => (
               <tr>
-                <td class="font-medium text-gray-800">{item.week}</td>
+                <td class="font-medium text-gray-800">{item.session}</td>
                 <td class="text-gray-600">{item.content}</td>
               </tr>
             ))}
@@ -236,14 +251,14 @@ import { trainingTimeline, courseScheduleSemester1, courseScheduleSemester2 } fr
         <table class="data-table">
           <thead>
             <tr>
-              <th class="col-week">周次</th>
+              <th class="col-session">节次</th>
               <th>课程内容</th>
             </tr>
           </thead>
           <tbody id="course-schedule-2">
             {courseScheduleSemester2.map((item) => (
               <tr>
-                <td class="font-medium text-gray-800">{item.week}</td>
+                <td class="font-medium text-gray-800">{item.session}</td>
                 <td class="text-gray-600">{item.content}</td>
               </tr>
             ))}

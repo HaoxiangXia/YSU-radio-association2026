@@ -9,28 +9,44 @@ export const trainingTimeline = [
   },
 ];
 
+// 2026-2027学年课程安排
+export const courseSchedule2026 = [
+  { session: '第1节', content: 'C语言', instructor: '孙毅恒' },
+  { session: '第2节', content: '计算机原理', instructor: '孙佳烁' },
+  { session: '第3节', content: 'C语言', instructor: '孙毅恒' },
+  { session: '第4节', content: 'Git与包管理器', instructor: '夏浩翔' },
+  { session: '第5节', content: '嵌入式GPIO引脚基本原理和EXTI', instructor: '宋一泽' },
+  { session: '第6节', content: '嵌入式串口，I2C,SPI通信原理与使用', instructor: '梁浩天' },
+  { session: '第7节', content: '嵌入式时钟与定时器', instructor: '张旭' },
+  { session: '第8节', content: '嘉立创软件基本使用与元器件选型', instructor: '闫裕彬' },
+  { session: '第9节', content: 'LDO与BUCK电路原理和原理图绘制', instructor: '白旭康' },
+  { session: '第10节', content: 'LDO与BUCK电路PCB绘制', instructor: '白旭康' },
+  { session: '第11节', content: 'SW的绘制与操作', instructor: '崔鹏程' },
+  { session: '第12节', content: '结构设计与实操', instructor: '沈彧' },
+];
+
 // 培训课程表（第一学期）
 export const courseScheduleSemester1 = [
-  { week: '第1周', content: '无线电基础与应用初探' },
-  { week: '第2周', content: 'C语言环境配置与基础复习（数组前）' },
-  { week: '第3周', content: 'C语言数组进阶、函数与指针基础（结合嵌入式案例）' },
-  { week: '第4周', content: 'C语言结构体与指针进阶（结合嵌入式案例）' },
-  { week: '第5周', content: '嵌入式GPIO（IN/OUT）、按键、点灯（CubeMX配置）' },
-  { week: '第6周', content: '嵌入式外部中断、按键中断' },
-  { week: '第7周', content: '嵌入式定时器（中断、PWM）+ USART基础（CubeMX配置）' },
-  { week: '第8周', content: '嘉立创EDA基本使用（绘制方法、搜索器件、文件配置）' },
-  { week: '第9周', content: 'LDO电路、BUCK电路讲解与绘制' },
-  { week: '第10周', content: '绘制原理图与PCB（初步完成）' },
-  { week: '第11周', content: 'SW绘图基础与界面操作' },
-  { week: '第12周', content: '结构设计实操' },
+  { session: '第1节', content: '无线电基础与应用初探' },
+  { session: '第2节', content: 'C语言环境配置与基础复习（数组前）' },
+  { session: '第3节', content: 'C语言数组进阶、函数与指针基础（结合嵌入式案例）' },
+  { session: '第4节', content: 'C语言结构体与指针进阶（结合嵌入式案例）' },
+  { session: '第5节', content: '嵌入式GPIO（IN/OUT）、按键、点灯（CubeMX配置）' },
+  { session: '第6节', content: '嵌入式外部中断、按键中断' },
+  { session: '第7节', content: '嵌入式定时器（中断、PWM）+ USART基础（CubeMX配置）' },
+  { session: '第8节', content: '嘉立创EDA基本使用（绘制方法、搜索器件、文件配置）' },
+  { session: '第9节', content: 'LDO电路、BUCK电路讲解与绘制' },
+  { session: '第10节', content: '绘制原理图与PCB（初步完成）' },
+  { session: '第11节', content: 'SW绘图基础与界面操作' },
+  { session: '第12节', content: '结构设计实操' },
 ];
 
 // 培训课程表（第二学期）
 export const courseScheduleSemester2 = [
-  { week: '第1周', content: '电机驱动（例TB6612）与编码器读取、模块式开发' },
-  { week: '第2周', content: '控制入门与PID闭环（vofa）' },
-  { week: '第3周', content: '状态机编程与调试功能' },
-  { week: '第4周', content: 'MPU6050数据的读取与处理' },
-  { week: '第5周', content: '绘制最小系统板及打板下单' },
-  { week: '第6周', content: '焊接' },
+  { session: '第1节', content: '电机驱动（例TB6612）与编码器读取、模块式开发' },
+  { session: '第2节', content: '控制入门与PID闭环（vofa）' },
+  { session: '第3节', content: '状态机编程与调试功能' },
+  { session: '第4节', content: 'MPU6050数据的读取与处理' },
+  { session: '第5节', content: '绘制最小系统板及打板下单' },
+  { session: '第6节', content: '焊接' },
 ];
