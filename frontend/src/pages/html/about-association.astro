@@ -136,8 +136,11 @@ const nonTechnicalDepartments = departments.filter((department) => department.ca
       syncLayout();
     }
 
-    // 画廊切换：逐字取自原 about-association.js setupDepartmentGalleries
+    // 画廊切换：手动 ‹ › 基础上增加自动播放（悬停/聚焦/页面隐藏/离屏时暂停，偏好减弱动效时禁用）
     function setupDepartmentGalleries() {
+      const AUTOPLAY_MS = 4000;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
       document.querySelectorAll('.department-card__media').forEach((gallery) => {
         const images = JSON.parse(gallery.dataset.images || '[]');
         if (images.length < 2) return;
@@ -147,12 +150,8 @@ const nonTechnicalDepartments = departments.filter((department) => department.ca
         const counter = gallery.querySelector('.department-card__media-count');
         let currentIndex = 0;
 
-        gallery.addEventListener('click', (event) => {
-          const control = event.target.closest('[data-gallery-direction]');
-          if (!control) return;
-          event.preventDefault();
-          event.stopPropagation();
-          currentIndex = (currentIndex + Number(control.dataset.galleryDirection) + images.length) % images.length;
+        const show = (nextIndex) => {
+          currentIndex = (nextIndex + images.length) % images.length;
           const current = images[currentIndex];
           applyResponsiveImage(image, current.src, '(max-width: 700px) calc(100vw - 3rem), (max-width: 959px) calc(50vw - 3rem), 31rem');
           image.alt = current.alt;
@@ -160,7 +159,44 @@ const nonTechnicalDepartments = departments.filter((department) => department.ca
           preview.dataset.imageAlt = current.alt;
           preview.setAttribute('aria-label', `查看${current.alt}完整图片`);
           counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        };
+
+        let timer = null;
+        let inView = true;
+        const canPlay = () =>
+          inView && !document.hidden && !reducedMotion.matches && !gallery.matches(':hover, :focus-within');
+        const stop = () => {
+          if (timer === null) return;
+          clearInterval(timer);
+          timer = null;
+        };
+        const start = () => {
+          stop();
+          if (canPlay()) timer = setInterval(() => show(currentIndex + 1), AUTOPLAY_MS);
+        };
+
+        gallery.addEventListener('click', (event) => {
+          const control = event.target.closest('[data-gallery-direction]');
+          if (!control) return;
+          event.preventDefault();
+          event.stopPropagation();
+          show(currentIndex + Number(control.dataset.galleryDirection));
+          start();
         });
+
+        gallery.addEventListener('mouseenter', stop);
+        gallery.addEventListener('mouseleave', start);
+        gallery.addEventListener('focusin', stop);
+        gallery.addEventListener('focusout', start);
+        document.addEventListener('visibilitychange', start);
+        reducedMotion.addEventListener('change', start);
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver((entries) => {
+            inView = entries[0].isIntersecting;
+            start();
+          }).observe(gallery);
+        }
+        start();
       });
     }
 
