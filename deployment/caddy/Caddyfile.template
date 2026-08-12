@@ -34,6 +34,13 @@ __DOMAIN__ {
 		X-Frame-Options SAMEORIGIN
 		Referrer-Policy strict-origin-when-cross-origin
 		Permissions-Policy "camera=(), geolocation=(), microphone=()"
+		# W-01：仅 HTTPS 站点发 HSTS；确认所有子域均可 HTTPS 后再评估 includeSubDomains
+		Strict-Transport-Security "max-age=31536000"
+		# W-02：全站资源同源、无内联脚本/样式，无需 unsafe-inline；style 属性已移入 CSS
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
+		# W-05：抹掉上游 uvicorn 的 Server 与代理 Via 指纹（header 响应处理在代理写回后执行，可删上游头）
+		-Server
+		-Via
 	}
 
 	reverse_proxy 127.0.0.1:5000 {
