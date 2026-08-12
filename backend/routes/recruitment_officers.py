@@ -118,13 +118,15 @@ def login(req: LoginRequest, request: Request, response: Response):
         "exp": now + expires_delta,
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    # Secure 仅随 HTTPS 请求下发：生产经 Caddy 反代（--proxy-headers）时 scheme 为 https；
+    # 内网/本地 HTTP 访问若仍带 Secure，浏览器拒绝存储 Cookie，登录后会被弹回登录页
     response.set_cookie(
         SESSION_COOKIE_NAME,
         token,
         max_age=REMEMBER_SESSION_SECONDS if req.remember else None,
         path=SESSION_COOKIE_PATH,
         httponly=True,
-        secure=True,
+        secure=request.url.scheme == "https",
         samesite="strict",
     )
     return {

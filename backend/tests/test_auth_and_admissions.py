@@ -68,6 +68,22 @@ def test_login_success_verify_and_wrong_password(default_client):
     assert verified.json()["officer"]["username"] == "officer"
 
 
+def test_login_over_http_omits_secure_flag(client_factory):
+    # 内网/本地 HTTP 访问：Secure Cookie 会被浏览器拒存，登录后被弹回登录页（回归）
+    with client_factory(base_url="http://testserver") as (client, _):
+        success = client.post(
+            "/api/recruitment-officers/login",
+            json={"username": "officer", "password": TEST_PASSWORD},
+        )
+        verified = client.get("/api/recruitment-officers/verify")
+
+        assert success.status_code == 200
+        set_cookie = success.headers["set-cookie"].lower()
+        assert "httponly" in set_cookie
+        assert "secure" not in set_cookie
+        assert verified.status_code == 200
+
+
 def test_successful_login_clears_failure_budget(default_client):
     client, _ = default_client
     payload = {"username": "officer", "password": "wrong"}
