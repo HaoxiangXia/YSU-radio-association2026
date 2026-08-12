@@ -4,8 +4,7 @@
 
 .site-page.about-association-page { --page-accent: #0f72c9; --page-accent-soft: rgba(14, 116, 201, 0.09); }
 
-.site-page.about-association-page .department-card { position: relative; overflow: hidden; border-top: 3px solid var(--page-accent); background: radial-gradient(circle at 96% 0%, var(--page-accent-soft), transparent 18rem),
-    linear-gradient(145deg, #ffffff, #fafcff); }
+.site-page.about-association-page .department-card { position: relative; overflow: hidden; border-top: 3px solid var(--page-accent); }
 
 .site-page.about-association-page .department-card:nth-child(2n) { --page-accent: #5b5bd6; --page-accent-soft: rgba(91, 91, 214, 0.08); }
 
