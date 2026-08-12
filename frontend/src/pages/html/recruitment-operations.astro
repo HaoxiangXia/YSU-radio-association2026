@@ -290,7 +290,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
     grid-column: auto;
   }
   .operations-actions > *,
-  .operations-toolbar .btn-outline {
+  .operations-toolbar .btn-solid {
     width: 100%;
     min-height: 2.75rem;
   }
@@ -306,17 +306,17 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
 
   <div class="operations-toolbar" aria-label="负责人页面导航">
     <div class="operations-toolbar__group">
-      <a class="btn-outline" href="/html/membership-applications.html">← 返回入会申请管理</a>
+      <a class="btn-solid" href="/html/membership-applications.html">← 返回入会申请管理</a>
     </div>
     <div class="operations-toolbar__group">
-      <button class="btn-outline" type="button" id="logout-button">退出登录</button>
+      <button class="btn-solid" type="button" id="logout-button">退出登录</button>
     </div>
   </div>
 
   <section class="card operations-card" aria-labelledby="config-heading">
     <div class="operations-heading">
       <h2 id="config-heading">招新业务设置</h2>
-      <button class="btn-outline" type="button" id="reload-config-button">重新读取</button>
+      <button class="btn-solid" type="button" id="reload-config-button">重新读取</button>
     </div>
     <p class="operations-heading__sub">所有修改保存后立即生效，请先核对再提交。</p>
     <form id="config-form" class="operations-form-grid">
@@ -409,11 +409,11 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
   <section class="card operations-card" aria-labelledby="admissions-heading">
     <div class="operations-heading">
       <h2 id="admissions-heading">录取名单</h2>
-      <button class="btn-outline" type="button" id="reload-admissions-button">刷新状态</button>
+      <button class="btn-solid" type="button" id="reload-admissions-button">刷新状态</button>
     </div>
     <p class="admissions-status" id="admissions-status">正在读取录取名单状态。</p>
     <div class="operations-actions">
-      <button class="btn-outline" type="button" id="download-template-button">下载 Excel 模板</button>
+      <button class="btn-solid" type="button" id="download-template-button">下载 Excel 模板</button>
       <input class="form-input" id="admissions-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
       <button class="btn-solid" type="button" id="preview-button">校验并预览</button>
     </div>
