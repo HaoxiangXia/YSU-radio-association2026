@@ -117,6 +117,7 @@ radio-association/
 - 部署与重建按 [Docker + Caddy 部署方案](docs/DOCKER_DEPLOYMENT.md) 执行。
 - 招新负责人日常使用 [招新日常运行说明](docs/RECRUITMENT_OPERATIONS.md)，正式开放前完成 [个人信息保护上线确认表](docs/PRIVACY_IMPACT_CHECKLIST.md)。
 - 服务器维护使用 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)；需要理解部署设计时再阅读 [部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)。
+- 需要复现容量验证时使用 [入会申请接口隔离压测说明](docs/LOAD_TESTING.md)；2026-08-12 实测结果见 [500 并发隔离压测报告](docs/LOAD_TESTING_REPORT_2026-08-12.md)。
 - 数据结构见 [数据库说明](docs/DATABASE.md)；代码命名原因保留在 `docs/adr/`。
 
 ---
