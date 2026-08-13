@@ -103,6 +103,15 @@
   letter-spacing: 0.03em;
 }
 
+/* 电脑端标题保持单行：clamp 按视口缩放，nowrap 不会溢出（最宽约需 69% 视口宽） */
+@media (min-width: 801px) {
+  .home-page .hero-content h1 {
+    max-width: none;
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+}
+
 .home-page .hero-buttons {
   display: flex;
   justify-content: center;
