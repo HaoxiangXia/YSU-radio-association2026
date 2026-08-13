@@ -27,7 +27,7 @@ def workbook_bytes(*, formula: bool = False, extra_header: bool = False) -> byte
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = "录取名单"
-    headers = ["姓名", "学号", "申请手机号", "录取部门", "录取状态"]
+    headers = ["姓名", "学号", "申请手机号", "录取部门"]
     if extra_header:
         headers.append("备注")
     worksheet.append(headers)
@@ -35,8 +35,7 @@ def workbook_bytes(*, formula: bool = False, extra_header: bool = False) -> byte
         "新同学",
         "202600000008",
         "13800000008",
-        "机械部门",
-        "=\"已录取\"" if formula else "已录取",
+        "=\"机械\"" if formula else "机械",
     ))
     output = io.BytesIO()
     workbook.save(output)
