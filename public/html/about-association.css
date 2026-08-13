@@ -1,4 +1,4 @@
-.about-association-page { --home-electric-blue: #2563eb; --home-cyan: #0891b2; --home-panel-light: #dceafb; --home-surface-blue: #f1f6fd; --home-line-blue: rgba(37, 99, 235, 0.2); min-height: 100svh; padding-top: 0px; background: rgb(245, 248, 252); }
+.about-association-page { --home-electric-blue: #2563eb; --home-cyan: #0891b2; --home-panel-light: #dceafb; --home-surface-blue: #f1f6fd; --home-line-blue: rgba(37, 99, 235, 0.2); min-height: 100svh; background: rgb(245, 248, 252); }
 
 .about-association-page main { background: rgb(248, 250, 255); }
 
