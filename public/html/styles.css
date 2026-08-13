@@ -264,8 +264,9 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.85rem 1rem;
+  padding: 0.5rem 1rem;
   font-size: 0.9375rem;
+  line-height: 1.4;
   color: #4b5563;
   border-radius: 8px;
   transition: color 180ms ease, background-color 180ms ease, transform 150ms ease;
@@ -298,7 +299,7 @@ button:focus-visible {
   }
 
   .mobile-menu a {
-    min-height: 2.75rem;
+    min-height: 2.25rem;
   }
 }
 
