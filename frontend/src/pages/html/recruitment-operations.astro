@@ -302,6 +302,101 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
     font-size: 1rem;
   }
 }
+
+/* ===== 扁平化风格覆写（与入会申请管理页一致） ===== */
+
+/* 页面背景：纯白 */
+.site-page.recruitment-operations-page {
+  background: #ffffff;
+}
+
+/* 去掉内容容器顶部装饰条 */
+.site-page.recruitment-operations-page .page-container.subpage-content::before {
+  content: none;
+}
+
+/* 卡片：纯白、1px 细边、小圆角、无阴影无渐变 */
+.site-page.recruitment-operations-page .card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+/* 去掉卡片顶部 3px accent 条 */
+.site-page.recruitment-operations-page .operations-card {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* 分区标题：蓝色竖条 */
+.site-page.recruitment-operations-page .operations-heading h2 {
+  position: relative;
+  padding-left: 0.75rem;
+}
+
+.site-page.recruitment-operations-page .operations-heading h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 1em;
+  background: var(--color-primary);
+  transform: translateY(-50%);
+}
+
+/* 按钮：纯色实心，去掉渐变与投影 */
+.site-page.recruitment-operations-page .btn-solid {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.site-page.recruitment-operations-page .btn-solid:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  box-shadow: none;
+}
+
+/* 输入聚焦：保留蓝色描边，去掉光晕 */
+.site-page.recruitment-operations-page .form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* 开关容器：白底细边，去掉灰底 */
+.site-page.recruitment-operations-page .operations-toggle {
+  border-color: #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+/* 状态条：去掉左侧 3px 色条与灰底，统一 1px 细边 */
+.site-page.recruitment-operations-page .admissions-status {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+/* 预览统计 chip：白底细边 */
+.site-page.recruitment-operations-page .preview-summary span {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+}
+
+/* 预览表格：白表头、小圆角 */
+.site-page.recruitment-operations-page .preview-table-wrap {
+  border-color: #e5e7eb;
+  border-radius: 8px;
+}
+
+.site-page.recruitment-operations-page .preview-table thead th {
+  background: #ffffff;
+  border-bottom-color: #e5e7eb;
+}
+
+/* ===== 扁平化覆写结束 ===== */
   </style>
 
   <div class="operations-toolbar" aria-label="负责人页面导航">
@@ -422,7 +517,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       <ul class="preview-errors" id="preview-errors"></ul>
       <div class="preview-table-wrap">
         <table class="preview-table">
-          <thead><tr><th>姓名</th><th>学号</th><th>申请手机号</th><th>录取部门</th><th>状态</th></tr></thead>
+          <thead><tr><th>姓名</th><th>学号</th><th>申请手机号</th><th>录取部门</th></tr></thead>
           <tbody id="preview-body"></tbody>
         </table>
       </div>
@@ -640,7 +735,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       previewBody.replaceChildren();
       body.preview.forEach((record) => {
         const row = document.createElement('tr');
-        ['name', 'studentId', 'phone', 'department', 'status'].forEach((field) => {
+        ['name', 'studentId', 'phone', 'department'].forEach((field) => {
           const cell = document.createElement('td');
           cell.textContent = record[field] || '-';
           row.appendChild(cell);
