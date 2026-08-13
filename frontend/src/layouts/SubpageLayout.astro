@@ -10,9 +10,11 @@ interface Props {
   heroDesc: string;
   /** <main> 追加的 class，如 "training-content" */
   mainClass?: string;
+  /** 使用紧凑页头（管理页） */
+  heroCompact?: boolean;
 }
 
-const { title, bodyClass, heroTitle, heroDesc, mainClass } = Astro.props;
+const { title, bodyClass, heroTitle, heroDesc, mainClass, heroCompact = false } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -27,7 +29,7 @@ const { title, bodyClass, heroTitle, heroDesc, mainClass } = Astro.props;
 <body class={bodyClass}>
   <div id="nav-placeholder"></div>
 
-  <header class="subpage-hero">
+  <header class:list={["subpage-hero", { "subpage-hero--compact": heroCompact }]}>
     <div class="container subpage-hero__inner">
       <h1>{heroTitle}</h1>
       <p>{heroDesc}</p>

@@ -296,6 +296,16 @@ function initPage() {
   if (navPlaceholder) {
     navPlaceholder.innerHTML = getNavHTML();
   }
+
+  // 管理页：退出登录按钮移入导航栏最右端
+  const logoutButton = document.getElementById('logout-button');
+  if (logoutButton) {
+    logoutButton.className = 'action-btn delete nav-logout';
+    const navContainer = document.querySelector('.nav .container');
+    if (navContainer) {
+      navContainer.appendChild(logoutButton);
+    }
+  }
   
   // 插入页脚
   const footerPlaceholder = document.getElementById('footer-placeholder');

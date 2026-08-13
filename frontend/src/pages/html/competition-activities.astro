@@ -17,7 +17,7 @@ const gallerySizes = '(max-width: 640px) calc(50vw - 2.5rem), (max-width: 1024px
 
   <div id="competitions-list" class="content-stack">
     {competitions.map((comp, index) => (
-      <article id={comp.id} class="card card-section activity-record activity-record--competition" tabindex="-1">
+      <article id={comp.id} class="card card-section activity-record activity-record--competition reveal" tabindex="-1">
         <div class="activity-record__rail">
           <span class="activity-record__index">{String(index + 1).padStart(2, '0')}</span>
           <span class="activity-record__date">{comp.date}</span>

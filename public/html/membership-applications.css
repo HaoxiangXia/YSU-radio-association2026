@@ -76,34 +76,7 @@
   color: white;
 }
 
-/* 管理页面复用样式 */
-.action-btn {
-  padding: 0.25rem 0.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: background-color 200ms ease, color 200ms ease, opacity 200ms ease;
-}
-
-.action-btn.view {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--color-primary);
-}
-
-.action-btn.view:hover {
-  background: rgba(37, 99, 235, 0.18);
-}
-
-.action-btn.delete {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
-
-.action-btn.delete:hover {
-  background: rgba(239, 68, 68, 0.18);
-}
-
+/* 管理页面复用样式（action-btn 已上移至 styles.css 共享） */
 .action-group {
   display: flex;
   gap: 0.25rem;
@@ -202,7 +175,7 @@
   background: #f1f5f9;
 }
 
-.site-page.recruitment-officer-page .action-btn {
+.site-page.recruitment-officer-page .action-btn:not(.nav-logout) {
   min-height: 2rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 6px;
@@ -216,6 +189,109 @@
 }
 
 .admin-feedback.is-error { color: #dc2626; }
+
+/* 页面上方操作区：右对齐横排 */
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 700px) {
+  .page-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .page-actions .btn-sm {
+    min-height: 2.75rem;
+  }
+}
+
+/* ===== 扁平化风格覆写（参考：纯白底、1px 细边、无阴影无渐变） ===== */
+
+/* 页面背景：纯白，去掉浅蓝 */
+.site-page.membership-applications-page {
+  background: #ffffff;
+}
+
+/* 内容容器顶部的蓝色装饰条去掉，分区标题改用蓝色竖条 */
+.site-page.membership-applications-page .page-container.subpage-content::before {
+  content: none;
+}
+
+.site-page.membership-applications-page .recruitment-officer-table-header span:first-child {
+  position: relative;
+  padding-left: 0.75rem;
+}
+
+.site-page.membership-applications-page .recruitment-officer-table-header span:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 1em;
+  background: var(--color-primary);
+  transform: translateY(-50%);
+}
+
+/* 卡片：纯白、1px 细边、小圆角、无阴影无渐变 */
+.site-page.membership-applications-page .card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+/* 统计卡：去掉顶部 accent 条与阴影，与列表卡同一形态 */
+.site-page.membership-applications-page .stat-card,
+.site-page.membership-applications-page .stat-card--accent {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+/* 按钮：纯色实心，去掉渐变与投影 */
+.site-page.membership-applications-page .btn-solid {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.site-page.membership-applications-page .btn-solid:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  box-shadow: none;
+}
+
+/* 表头：白底 + 细分隔线，去掉灰底块感 */
+.site-page.membership-applications-page .recruitment-officer-table-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.site-page.membership-applications-page .data-table th {
+  background: #ffffff;
+  border-bottom-color: #e5e7eb;
+}
+
+/* 详情字段：白底细边，去掉灰底 */
+.site-page.membership-applications-page .detail-value {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+/* 搜索框聚焦：保留蓝色描边，去掉光晕 */
+.site-page.membership-applications-page .search-bar input:focus,
+.site-page.membership-applications-page .search-bar select:focus {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* ===== 扁平化覆写结束 ===== */
 
 @media (max-width: 700px) {
   .search-bar input,
