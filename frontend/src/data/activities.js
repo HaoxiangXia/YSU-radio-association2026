@@ -16,6 +16,7 @@ export const competitions = [
       '/image/competitions/zhanwang-cup/photo-05.jpg',
       '/image/competitions/zhanwang-cup/photo-06.jpg',
       '/image/competitions/zhanwang-cup/photo-07.jpg',
+      '/image/competitions/zhanwang-cup/photo-08.jpg',
     ],
   },
   {
@@ -92,7 +93,6 @@ export const recreationalActivities = [
       '/image/activities/farewell/photo-01.jpg',
       '/image/activities/farewell/photo-02.jpg',
       '/image/activities/farewell/photo-03.jpg',
-      '/image/activities/farewell/photo-04.jpg',
       '/image/activities/farewell/photo-05.jpg',
     ],
   },
