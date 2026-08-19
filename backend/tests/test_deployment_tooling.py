@@ -59,6 +59,17 @@ def test_deployment_assets_keep_loopback_and_limits():
     assert "radioctl backup" in backup_service
 
 
+def test_static_webp_uses_browser_compatible_content_type(default_client):
+    client, _ = default_client
+    response = client.get(
+        "/image/honors/2025-engineering-practice-national-special-880.webp"
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/webp"
+    assert response.content.startswith(b"RIFF")
+
+
 @pytest.mark.skipif(os.name == "nt", reason="CI 在 Linux 上执行 Bash 语法检查")
 def test_bash_scripts_parse():
     if not shutil.which("bash"):

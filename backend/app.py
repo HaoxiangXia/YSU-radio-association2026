@@ -1,10 +1,17 @@
 from contextlib import asynccontextmanager
 
+import mimetypes
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse, RedirectResponse
+
+
+# Debian slim images do not always register WebP in the system MIME database.
+# Caddy sends X-Content-Type-Options: nosniff, so an octet-stream response would
+# be rejected by browsers even when the file itself is a valid WebP image.
+mimetypes.add_type("image/webp", ".webp")
 
 # Load local defaults without overriding explicit process/test configuration.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
