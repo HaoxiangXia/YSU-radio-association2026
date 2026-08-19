@@ -66,13 +66,16 @@ const sourceImageFiles = existingFiles.filter(
 const sourceKeys = new Set(
   sourceImageFiles.map((path) => `/image/${path.slice(sourcePrefix.length)}`),
 );
-// Historical material intentionally retained for possible future reuse, but not
-// presented as part of the current competition records.
+// Historical material intentionally retained for future reuse or cache
+// compatibility, but not presented as part of the current page records.
 const archivedSourceKeys = new Set([
   "/image/competitions/zhanwang-cup/photo-01.jpg",
   "/image/competitions/zhanwang-cup/photo-02.jpg",
   "/image/competitions/zhanwang-cup/photo-03.jpg",
   "/image/competitions/zhanwang-cup/photo-04.jpg",
+  "/image/honors/2025-digital-media-national-first.jpg",
+  "/image/honors/2026-business-elite-national-first.jpg",
+  "/image/honors/2026-enterprise-simulation-national-second.jpg",
 ]);
 const standaloneImages = new Map([
   [
