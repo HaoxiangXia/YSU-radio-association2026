@@ -57,27 +57,15 @@ export const honorStats = [
 // 近三年代表性获奖证书
 export const honorCertificates = [
   {
-    image: '/image/honors/2026-business-elite-national-first.jpg',
-    title: '全国高校商业精英挑战赛创新创业竞赛一等奖',
-    meta: '2026年 · 国家级',
+    image: '/image/honors/2024-robot-ai-innovation-productivity-national-first.jpg',
+    title: '中国机器人及人工智能大赛全国总决赛新质生产力创新设计专项赛一等奖',
+    meta: '2024年 · 国家级',
     img: {
-      src: '/image/honors/2026-business-elite-national-first-1200.webp',
-      srcset: '/image/honors/2026-business-elite-national-first-1200.webp 1200w, /image/honors/2026-business-elite-national-first-1600.webp 1600w, /image/honors/2026-business-elite-national-first-1815.webp 1815w',
-      width: 1815,
-      height: 1280,
-      alt: '2026年全国高校商业精英挑战赛创新创业竞赛一等奖证书',
-    },
-  },
-  {
-    image: '/image/honors/2026-enterprise-simulation-national-second.jpg',
-    title: '全国企业竞争模拟大赛二等奖',
-    meta: '2026年 · 国家级',
-    img: {
-      src: '/image/honors/2026-enterprise-simulation-national-second-1200.webp',
-      srcset: '/image/honors/2026-enterprise-simulation-national-second-1200.webp 1200w, /image/honors/2026-enterprise-simulation-national-second-1600.webp 1600w, /image/honors/2026-enterprise-simulation-national-second-1810.webp 1810w',
-      width: 1810,
-      height: 1279,
-      alt: '2026年全国企业竞争模拟大赛二等奖证书',
+      src: '/image/honors/2024-robot-ai-innovation-productivity-national-first-1200.webp',
+      srcset: '/image/honors/2024-robot-ai-innovation-productivity-national-first-1200.webp 1200w, /image/honors/2024-robot-ai-innovation-productivity-national-first-1600.webp 1600w, /image/honors/2024-robot-ai-innovation-productivity-national-first-2000.webp 2000w',
+      width: 3509,
+      height: 2481,
+      alt: '2024年中国机器人及人工智能大赛全国总决赛新质生产力创新设计专项赛一等奖证书',
     },
   },
   {
@@ -94,19 +82,6 @@ export const honorCertificates = [
     },
   },
   {
-    image: '/image/honors/2025-robot-fighting-national-first.png',
-    title: '中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖',
-    meta: '2025年 · 国家级',
-    ariaLabel: '查看2025年中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖证书',
-    img: {
-      src: '/image/honors/2025-robot-fighting-national-first-1200.webp',
-      srcset: '/image/honors/2025-robot-fighting-national-first-1200.webp 1200w, /image/honors/2025-robot-fighting-national-first-1527.webp 1527w',
-      width: 1527,
-      height: 1079,
-      alt: '2025年中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖证书',
-    },
-  },
-  {
     image: '/image/honors/2025-raicom-ros-national-first.jpg',
     title: '睿抗机器人开发者大赛ROS全国一等奖',
     meta: '2025年 · 国家级',
@@ -119,15 +94,40 @@ export const honorCertificates = [
     },
   },
   {
-    image: '/image/honors/2025-digital-media-national-first.jpg',
-    title: '全国大学生数字媒体科技作品及创意竞赛全国一等奖',
+    image: '/image/honors/2025-icpc-asia-shenyang-bronze.jpg',
+    title: '第50届ICPC国际大学生程序设计竞赛亚洲区域赛（沈阳）铜奖',
+    meta: '2025年 · 亚洲区域赛',
+    img: {
+      src: '/image/honors/2025-icpc-asia-shenyang-bronze-1200.webp',
+      srcset: '/image/honors/2025-icpc-asia-shenyang-bronze-1200.webp 1200w, /image/honors/2025-icpc-asia-shenyang-bronze-1600.webp 1600w, /image/honors/2025-icpc-asia-shenyang-bronze-1920.webp 1920w',
+      width: 1920,
+      height: 1440,
+      alt: '2025年第50届ICPC国际大学生程序设计竞赛亚洲区域赛沈阳站铜奖奖牌与纪念袋',
+    },
+  },
+  {
+    image: '/image/honors/2025-engineering-practice-temperature-difference-national-special.jpg',
+    title: '中国大学生工程实践与创新能力大赛温差电动车赛项特等奖',
     meta: '2025年 · 国家级',
     img: {
-      src: '/image/honors/2025-digital-media-national-first-1200.webp',
-      srcset: '/image/honors/2025-digital-media-national-first-1200.webp 1200w, /image/honors/2025-digital-media-national-first-1600.webp 1600w, /image/honors/2025-digital-media-national-first-1810.webp 1810w',
-      width: 1810,
-      height: 1280,
-      alt: '2025年全国大学生数字媒体科技作品及创意竞赛全国总决赛一等奖证书',
+      src: '/image/honors/2025-engineering-practice-temperature-difference-national-special-720.webp',
+      srcset: '/image/honors/2025-engineering-practice-temperature-difference-national-special-720.webp 720w',
+      width: 720,
+      height: 509,
+      alt: '2025年中国大学生工程实践与创新能力大赛温差电动车赛项特等奖证书',
+    },
+  },
+  {
+    image: '/image/honors/2025-robot-fighting-national-first.png',
+    title: '中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖',
+    meta: '2025年 · 国家级',
+    ariaLabel: '查看2025年中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖证书',
+    img: {
+      src: '/image/honors/2025-robot-fighting-national-first-1200.webp',
+      srcset: '/image/honors/2025-robot-fighting-national-first-1200.webp 1200w, /image/honors/2025-robot-fighting-national-first-1527.webp 1527w',
+      width: 1527,
+      height: 1079,
+      alt: '2025年中国智能机器人格斗及竞技大赛轮式机器人格斗A一等奖证书',
     },
   },
 ];
