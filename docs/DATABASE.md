@@ -93,8 +93,22 @@
 | `expectation` | TEXT | 期望（可空） |
 | `createdAt` | TEXT | 默认 `strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`，UTC ISO8601 |
 | `updatedAt` | TEXT | 同上默认值；应用层目前不做更新操作 |
-
 查询能力（`backend/models/membership_application.py` 的 `find_all`）：分页（`page`/`limit`）、按 `college`/`grade` 过滤、`search` 模糊搜索、排序（`sort_by` 白名单：`createdAt`、`name`、`studentId`、`college`、`grade`；`sort_order` 仅限 `asc`/`desc`）。
+
+### `membership_application_operation_records` — 入会申请删除操作记录
+
+| 列 | 类型 | 说明 |
+|---|---|---|
+| `id` | INTEGER PRIMARY KEY AUTOINCREMENT | 操作记录 ID |
+| `operation` | TEXT NOT NULL | 当前固定为 `delete` |
+| `membershipApplicationId` | INTEGER NOT NULL | 被删除申请的 ID；申请删除后仍保留 |
+| `applicationName` | TEXT NOT NULL | 删除前姓名 |
+| `studentId` | TEXT NOT NULL | 删除前学号 |
+| `recruitmentOfficerId` | TEXT NOT NULL | 执行操作的招新负责人标识 |
+| `createdAt` | TEXT NOT NULL | 默认 UTC ISO8601 操作时间 |
+
+该表不设置指向 `membership_applications` 的外键，因为源申请删除后操作记录仍需用于追溯。记录只保留姓名和学号等最小字段，不保存电话、邮箱、自我介绍或期望；必须与对应招新周期的申请资料在同一获批准的人工清理批次中处理。
+
 
 ### `schema_migrations` — 迁移记录
 
@@ -113,6 +127,12 @@
 - 应用迁移前若检测到重复学号，抛出 `DatabaseMigrationError` 并**中止启动**，不自动删除或修改任何数据——需人工清理后重启。
 - 迁移前默认自动备份整库到 `backend/data/migration-backups/`（文件名含迁移名与时间戳）；`initialize_database(backup_before_migrations=False)` 可关闭。
 - 迁移在 `BEGIN IMMEDIATE` 事务中执行，失败即回滚。
+
+### 操作记录迁移 `0002_membership_application_delete_operation_records`
+
+- 创建 `membership_application_operation_records` 表及其时间倒序索引。
+- 迁移是幂等的，表和迁移记录同时存在时跳过；缺少任一项时补建并写入迁移记录。
+- 该记录只由成功删除入会申请的操作产生；失败、未授权或申请不存在不会产生记录。
 
 ## 不在数据库中的数据
 

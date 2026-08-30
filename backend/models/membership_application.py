@@ -112,13 +112,50 @@ def find_by_id(db: sqlite3.Connection, id: int):
     return dict(row) if row else None
 
 
-def delete_by_id(db: sqlite3.Connection, id: int):
-    row = db.execute("SELECT * FROM membership_applications WHERE id = ?", (id,)).fetchone()
-    if not row:
-        return None
-    db.execute("DELETE FROM membership_applications WHERE id = ?", (id,))
-    db.commit()
-    return dict(row)
+def delete_by_id(db: sqlite3.Connection, id: int, recruitment_officer_id: str):
+    try:
+        db.execute("BEGIN IMMEDIATE")
+        row = db.execute("SELECT * FROM membership_applications WHERE id = ?", (id,)).fetchone()
+        if not row:
+            db.rollback()
+            return None
+        db.execute("DELETE FROM membership_applications WHERE id = ?", (id,))
+        db.execute(
+            """
+            INSERT INTO membership_application_operation_records
+                (operation, membershipApplicationId, applicationName, studentId, recruitmentOfficerId)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            ("delete", row["id"], row["name"], row["studentId"], recruitment_officer_id),
+        )
+        db.commit()
+        return dict(row)
+    except sqlite3.Error:
+        db.rollback()
+        raise
+
+
+def find_delete_operation_records(
+    db: sqlite3.Connection,
+    page: int = 1,
+    limit: int = 50,
+):
+    offset = (page - 1) * limit
+    count_row = db.execute(
+        "SELECT COUNT(*) AS total FROM membership_application_operation_records"
+    ).fetchone()
+    total = count_row["total"] if count_row else 0
+    rows = db.execute(
+        """
+        SELECT id, operation, membershipApplicationId, applicationName,
+               studentId, recruitmentOfficerId, createdAt
+        FROM membership_application_operation_records
+        ORDER BY createdAt DESC, id DESC
+        LIMIT ? OFFSET ?
+        """,
+        (limit, offset),
+    ).fetchall()
+    return {"operation_records": [dict(row) for row in rows], "total": total}
 
 
 def count(db: sqlite3.Connection, query: dict | None = None):

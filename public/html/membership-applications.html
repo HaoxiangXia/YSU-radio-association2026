@@ -89,6 +89,33 @@
       <div class="pagination" id="pagination"></div>
     </div>
 
+    <!-- 操作记录 -->
+    <div class="card card-section recruitment-officer-table-card mb-6">
+      <div class="recruitment-officer-table-header">
+        <span class="font-semibold text-sm text-gray-700">操作记录</span>
+        <span class="text-sm text-gray-400" id="operation-records-count">共 0 条</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="operation-records-table">
+          <thead>
+            <tr>
+              <th>操作</th>
+              <th>申请 ID</th>
+              <th>姓名</th>
+              <th>学号</th>
+              <th>负责人</th>
+              <th>操作时间</th>
+            </tr>
+          </thead>
+          <tbody id="operation-records-body">
+            <tr><td colspan="6" class="p-8 text-center text-gray-400">暂无操作记录</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="operation-records-pagination"></div>
+      <p id="operation-records-feedback" class="admin-feedback" role="status"></p>
+    </div>
+
     <!-- 详情弹窗 -->
     <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
       <div class="modal modal--detail">

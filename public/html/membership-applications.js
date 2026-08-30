@@ -3,6 +3,8 @@
     let currentPage = 1;
     let currentItems = [];
     let pagination = { current: 1, total: 0, count: 0 };
+    let operationRecordItems = [];
+    let operationRecordPagination = { current: 1, total: 0, count: 0 };
     let searchTimer;
     let latestLoadRequest = 0;
 
@@ -66,6 +68,58 @@
         body.appendChild(row);
       });
       renderPagination();
+    }
+
+    function renderOperationRecords() {
+      const body = document.getElementById('operation-records-body');
+      body.replaceChildren();
+      document.getElementById('operation-records-count').textContent = `共 ${operationRecordPagination.count} 条`;
+      if (!operationRecordItems.length) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 6;
+        cell.className = 'p-8 text-center text-gray-400';
+        cell.textContent = '暂无操作记录';
+        row.appendChild(cell);
+        body.appendChild(row);
+        renderOperationRecordPagination();
+        return;
+      }
+
+      operationRecordItems.forEach((item) => {
+        const row = document.createElement('tr');
+        row.appendChild(createCell(item.operation === 'delete' ? '删除入会申请' : item.operation, '操作', 'text-sm'));
+        row.appendChild(createCell(item.membershipApplicationId, '申请 ID', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.applicationName, '姓名', 'font-medium text-sm'));
+        row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.recruitmentOfficerId, '负责人', 'text-sm text-gray-600'));
+        row.appendChild(createCell(item.createdAt, '操作时间', 'text-sm text-gray-600'));
+        body.appendChild(row);
+      });
+      renderOperationRecordPagination();
+    }
+
+    function renderOperationRecordPagination() {
+      const container = document.getElementById('operation-records-pagination');
+      container.replaceChildren();
+      if (operationRecordPagination.total <= 1) return;
+      const addButton = (label, page, disabled, active = false) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = disabled;
+        button.classList.toggle('active', active);
+        button.addEventListener('click', () => loadOperationRecords(page));
+        container.appendChild(button);
+      };
+      const currentPage = operationRecordPagination.current;
+      addButton('上一页', currentPage - 1, currentPage <= 1);
+      const start = Math.max(1, currentPage - 2);
+      const end = Math.min(operationRecordPagination.total, currentPage + 2);
+      for (let page = start; page <= end; page += 1) {
+        addButton(String(page), page, false, page === currentPage);
+      }
+      addButton('下一页', currentPage + 1, currentPage >= operationRecordPagination.total);
     }
 
     function renderPagination() {
@@ -163,6 +217,29 @@
       }
     }
 
+    async function loadOperationRecords(page = 1) {
+      const feedback = document.getElementById('operation-records-feedback');
+      feedback.textContent = '正在加载操作记录…';
+      try {
+        const params = new URLSearchParams({ page: String(page), limit: String(pageSize) });
+        const response = await handleResponse(await fetch(`/api/membership-applications/operation-records?${params}`));
+        const data = await response.json();
+        operationRecordItems = data.operation_records || [];
+        operationRecordPagination = data.pagination || { current: 1, total: 0, count: 0 };
+        renderOperationRecords();
+        feedback.classList.remove('is-error');
+        feedback.textContent = operationRecordItems.length ? '' : '暂无操作记录。';
+        return true;
+      } catch (error) {
+        operationRecordItems = [];
+        operationRecordPagination = { current: 1, total: 0, count: 0 };
+        renderOperationRecords();
+        feedback.textContent = error.message || '操作记录加载失败，请稍后重试。';
+        feedback.classList.add('is-error');
+        return false;
+      }
+    }
+
     function viewDetail(item) {
       const labels = { name: '姓名', studentId: '学号', college: '学院', grade: '年级', phone: '联系电话', email: '电子邮箱', self_introduction: '自我介绍', expectation: '加入期望', createdAt: '提交时间' };
       const content = document.getElementById('detail-content');
@@ -189,8 +266,7 @@
       try {
         const response = await handleResponse(await fetch(`/api/membership-applications/${item.id}`, { method: 'DELETE' }));
         const result = await response.json();
-        await loadData(currentPage);
-        await loadSupportData();
+        await Promise.all([loadData(currentPage), loadSupportData(), loadOperationRecords()]);
         setFeedback(result.message || '已删除。');
       } catch (error) {
         setFeedback(error.message || '删除失败，请稍后重试。', true);
@@ -234,7 +310,7 @@
         window.location.href = '/html/admin-login.html';
         return;
       }
-      document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData()]));
+      document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData(), loadOperationRecords(1)]));
       document.getElementById('export-button').addEventListener('click', exportCsv);
       document.getElementById('detail-close-button').addEventListener('click', closeDetail);
       document.getElementById('detail-modal').addEventListener('click', (event) => {
@@ -253,6 +329,6 @@
       });
       ['college-filter', 'grade-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => loadData(1)));
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); });
-      await Promise.all([loadData(), loadSupportData()]);
+      await Promise.all([loadData(), loadSupportData(), loadOperationRecords()]);
     });
   

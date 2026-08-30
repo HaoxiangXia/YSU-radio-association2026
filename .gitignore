@@ -29,7 +29,7 @@ public/image/*.mp4
 工作簿1.xlsx
 ~$*.xlsx
 AGENTS.md
-CONTEXT.md
+# CONTEXT.md (removed from ignore to track vocabulary)
 PLAN.md
 artifacts/
 playwright-report/

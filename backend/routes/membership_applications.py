@@ -208,6 +208,26 @@ def export_membership_applications(
     )
 
 
+
+@router.get("/operation-records")
+def list_operation_records(
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=1000),
+    db=Depends(get_db),
+    officer=Depends(get_current_recruitment_officer),
+):
+    result = membership_application_model.find_delete_operation_records(
+        db, page=page, limit=limit
+    )
+    return {
+        "operation_records": result["operation_records"],
+        "pagination": {
+            "current": page,
+            "total": (result["total"] + limit - 1) // limit,
+            "count": result["total"],
+        },
+    }
+
 @router.get("/{membership_application_id}")
 def get_membership_application(membership_application_id: int, db=Depends(get_db), officer=Depends(get_current_recruitment_officer)):
     row = membership_application_model.find_by_id(db, membership_application_id)
@@ -218,7 +238,15 @@ def get_membership_application(membership_application_id: int, db=Depends(get_db
 
 @router.delete("/{membership_application_id}")
 def delete_membership_application(membership_application_id: int, db=Depends(get_db), officer=Depends(get_current_recruitment_officer)):
-    row = membership_application_model.delete_by_id(db, membership_application_id)
+    try:
+        row = membership_application_model.delete_by_id(
+            db, membership_application_id, officer.id
+        )
+    except sqlite3.Error:
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "删除入会申请失败，请稍后再试",
+        )
     if not row:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "未找到入会申请")
     return {"message": "删除成功"}

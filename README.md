@@ -264,6 +264,7 @@ bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
 | GET | `/api/membership-applications/{membership_application_id}` | 获取指定入会申请详情 |
 | GET | `/api/membership-applications/export.csv` | 导出当前筛选条件下的入会申请 |
 | DELETE | `/api/membership-applications/{membership_application_id}` | 删除指定入会申请 |
+| GET | `/api/membership-applications/operation-records` | 获取入会申请删除操作记录（分页） |
 | GET/PUT | `/api/recruitment/manage/config` | 读取或更新招新业务设置 |
 | GET | `/api/admissions/manage/status` | 获取录取名单发布状态 |
 | GET | `/api/admissions/manage/template.xlsx` | 下载录取名单模板 |

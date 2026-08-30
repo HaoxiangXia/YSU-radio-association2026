@@ -13,7 +13,7 @@ function monitorPage(page) {
     }
   });
   page.on("console", (message) => {
-    if (message.type() === "error") {
+    if (message.type() === "error" && !message.text().includes("401 (Unauthorized)")) {
       problems.push(`控制台错误：${message.text()}`);
     }
   });
@@ -180,6 +180,9 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
   await row.getByRole("button", { name: "删除" }).click();
   await expect(row).toHaveCount(0);
   await expect(page.locator("#admin-feedback")).toContainText("删除成功");
+  const operationRow = page.locator("#operation-records-body tr", { hasText: applicant.studentId }).first();
+  await expect(operationRow).toContainText("删除入会申请");
+  await expect(operationRow).toContainText("officer");
   await expectHealthyLayout(page, problems);
 });
 

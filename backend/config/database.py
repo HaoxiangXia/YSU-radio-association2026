@@ -9,6 +9,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DB_PATH = REPOSITORY_ROOT / "backend" / "data" / "database.sqlite"
 STUDENT_ID_INDEX = "ux_membership_applications_student_id"
 STUDENT_ID_MIGRATION = "0001_unique_membership_application_student_id"
+OPERATION_RECORDS_MIGRATION = "0002_membership_application_delete_operation_records"
 
 
 class DatabaseMigrationError(RuntimeError):
@@ -154,6 +155,14 @@ def _index_exists(connection: sqlite3.Connection, index_name: str) -> bool:
     return row is not None
 
 
+def _table_exists(connection: sqlite3.Connection, table_name: str) -> bool:
+    row = connection.execute(
+        "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
+        (table_name,),
+    ).fetchone()
+    return row is not None
+
+
 def _migration_recorded(connection: sqlite3.Connection, migration_name: str) -> bool:
     row = connection.execute(
         "SELECT 1 FROM schema_migrations WHERE name = ?",
@@ -240,6 +249,63 @@ def _apply_unique_student_id_migration(
     return backup_path
 
 
+def _apply_operation_records_migration(
+    connection: sqlite3.Connection,
+    db_path: Path,
+    backup_before_migrations: bool,
+) -> Path | None:
+    table_name = "membership_application_operation_records"
+    index_name = "idx_membership_application_operation_records_created_at"
+    table_exists = _table_exists(connection, table_name)
+    index_exists = _index_exists(connection, index_name)
+    migration_recorded = _migration_recorded(connection, OPERATION_RECORDS_MIGRATION)
+    if table_exists and index_exists and migration_recorded:
+        return None
+
+    backup_path = None
+    if backup_before_migrations:
+        backup_path = _backup_before_migration(
+            connection,
+            db_path,
+            OPERATION_RECORDS_MIGRATION,
+        )
+
+    applied_at = datetime.now(timezone.utc).isoformat()
+    try:
+        connection.execute("BEGIN IMMEDIATE")
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS membership_application_operation_records (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                operation TEXT NOT NULL CHECK (operation = 'delete'),
+                membershipApplicationId INTEGER NOT NULL,
+                applicationName TEXT NOT NULL,
+                studentId TEXT NOT NULL,
+                recruitmentOfficerId TEXT NOT NULL,
+                createdAt TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE INDEX IF NOT EXISTS idx_membership_application_operation_records_created_at
+            ON membership_application_operation_records(createdAt DESC, id DESC)
+            """
+        )
+        connection.execute(
+            """
+            INSERT OR IGNORE INTO schema_migrations (name, appliedAt)
+            VALUES (?, ?)
+            """,
+            (OPERATION_RECORDS_MIGRATION, applied_at),
+        )
+        connection.commit()
+    except sqlite3.Error as exc:
+        connection.rollback()
+        raise DatabaseMigrationError("数据库迁移失败，变更已回滚") from exc
+    return backup_path
+
+
 def initialize_database(
     db_path: str | Path | None = None,
     *,
@@ -250,9 +316,19 @@ def initialize_database(
     with get_db_connection(resolved_path) as connection:
         connection.execute("PRAGMA journal_mode = WAL")
         _create_base_schema(connection)
+        backup_paths = []
         backup_path = _apply_unique_student_id_migration(
             connection,
             resolved_path,
             backup_before_migrations,
         )
-    return [backup_path] if backup_path else []
+        if backup_path:
+            backup_paths.append(backup_path)
+        backup_path = _apply_operation_records_migration(
+            connection,
+            resolved_path,
+            backup_before_migrations,
+        )
+        if backup_path:
+            backup_paths.append(backup_path)
+    return backup_paths

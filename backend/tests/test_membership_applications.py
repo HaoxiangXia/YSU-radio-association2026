@@ -154,6 +154,28 @@ def test_application_persists_across_app_restart(client_factory, tmp_path):
     assert response.status_code == 200
     assert response.json()["pagination"]["count"] == 1
 
+def test_operation_records_persist_across_app_restart(client_factory, tmp_path):
+    database_path = tmp_path / "persistent-operation-records.sqlite"
+    with client_factory(database_path=database_path) as (client, _):
+        created = client.post(
+            "/api/membership-applications",
+            json=make_application(student_id="202600000005"),
+        )
+        assert created.status_code == 201
+        login(client)
+        applications = client.get("/api/membership-applications").json()
+        application_id = applications["membership_applications"][0]["id"]
+        deleted = client.delete(f"/api/membership-applications/{application_id}")
+        assert deleted.status_code == 200
+
+    with client_factory(database_path=database_path) as (client, _):
+        login(client)
+        records = client.get("/api/membership-applications/operation-records")
+
+    assert records.status_code == 200
+    assert records.json()["pagination"]["count"] == 1
+    assert records.json()["operation_records"][0]["studentId"] == "202600000005"
+
 
 def test_admin_pagination_filters_stats_detail_and_delete(default_client):
     client, state = default_client
@@ -184,12 +206,77 @@ def test_admin_pagination_filters_stats_detail_and_delete(default_client):
     detail = client.get(f"/api/membership-applications/{item_id}")
     deleted = client.delete(f"/api/membership-applications/{item_id}")
     missing = client.get(f"/api/membership-applications/{item_id}")
+    duplicate_delete = client.delete(f"/api/membership-applications/{item_id}")
+    records = client.get("/api/membership-applications/operation-records")
 
     assert detail.status_code == 200
     assert detail.json()["name"] == "申请人0007"
     assert deleted.status_code == 200
     assert missing.status_code == 404
+    assert duplicate_delete.status_code == 404
+    assert records.status_code == 200
+    assert records.json()["pagination"]["count"] == 1
+    record = records.json()["operation_records"][0]
+    assert record["operation"] == "delete"
+    assert record["membershipApplicationId"] == item_id
+    assert record["applicationName"] == "申请人0007"
+    assert record["studentId"] == "202600000107"
+    assert record["recruitmentOfficerId"] == "officer"
+    assert record["createdAt"]
+    assert not {"phone", "email", "self_introduction", "expectation"} & record.keys()
 
+
+
+def test_operation_records_are_paginated_in_reverse_creation_order(default_client):
+    client, state = default_client
+    seed_applications(state["database_path"], 3)
+    login(client)
+    applications = client.get("/api/membership-applications?limit=100").json()[
+        "membership_applications"
+    ]
+
+    for application in applications:
+        assert client.delete(f"/api/membership-applications/{application['id']}").status_code == 200
+
+    first_page = client.get("/api/membership-applications/operation-records?page=1&limit=2")
+    second_page = client.get("/api/membership-applications/operation-records?page=2&limit=2")
+
+    assert first_page.status_code == 200
+    assert first_page.json()["pagination"] == {"current": 1, "total": 2, "count": 3}
+    assert [
+        record["membershipApplicationId"]
+        for record in first_page.json()["operation_records"]
+    ] == [3, 2]
+    assert [
+        record["membershipApplicationId"]
+        for record in second_page.json()["operation_records"]
+    ] == [1]
+
+
+def test_delete_rolls_back_when_operation_record_insert_fails(default_client):
+    client, state = default_client
+    seed_applications(state["database_path"], 1)
+    with sqlite3.connect(state["database_path"]) as db:
+        db.execute(
+            """
+            CREATE TRIGGER fail_operation_record_insert
+            BEFORE INSERT ON membership_application_operation_records
+            BEGIN
+                SELECT RAISE(ABORT, 'operation record failure');
+            END
+            """
+        )
+        db.commit()
+
+    login(client)
+    deleted = client.delete("/api/membership-applications/1")
+    application = client.get("/api/membership-applications/1")
+    records = client.get("/api/membership-applications/operation-records")
+
+    assert deleted.status_code == 500
+    assert application.status_code == 200
+    assert records.status_code == 200
+    assert records.json()["pagination"]["count"] == 0
 
 def test_admin_endpoints_require_authentication(default_client):
     client, _ = default_client
@@ -198,6 +285,7 @@ def test_admin_endpoints_require_authentication(default_client):
         ("get", "/api/membership-applications/stats"),
         ("get", "/api/membership-applications/export.csv"),
         ("delete", "/api/membership-applications/1"),
+        ("get", "/api/membership-applications/operation-records"),
     ]:
         response = getattr(client, method)(path)
         assert response.status_code == 401
