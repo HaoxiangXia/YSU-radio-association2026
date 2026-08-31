@@ -293,6 +293,112 @@
 
 /* ===== 扁平化覆写结束 ===== */
 
+/* ===== 统计图表面板 ===== */
+.chart-panel {
+  padding: 0;
+}
+
+.chart-panel__tabs {
+  display: none;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chart-tab {
+  flex: 1;
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.chart-tab:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chart-tab.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.chart-panel__views {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.chart-view__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.chart-view__title {
+  position: relative;
+  padding-left: 0.75rem;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chart-view__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 1em;
+  background: var(--color-primary);
+  transform: translateY(-50%);
+}
+
+.chart-view__meta {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.chart-view__canvas {
+  width: 100%;
+  height: 260px;
+}
+
+@media (max-width: 700px) {
+  .chart-panel__tabs {
+    display: flex;
+  }
+  .chart-panel__views {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  .chart-view {
+    display: none;
+  }
+  .chart-view.is-active {
+    display: block;
+  }
+  .chart-view__canvas {
+    height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-tab {
+    transition: none;
+  }
+}
+
 @media (max-width: 700px) {
   .search-bar input,
   .search-bar select {

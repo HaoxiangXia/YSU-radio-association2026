@@ -6,7 +6,7 @@
   <title>入会申请管理 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css?v=20260813">
-  <link rel="stylesheet" href="/html/membership-applications.css?v=20260813">
+  <link rel="stylesheet" href="/html/membership-applications.css?v=20260831">
 </head>
 <body class="site-page sub-page recruitment-officer-page membership-applications-page">
   <div id="nav-placeholder"></div>
@@ -25,23 +25,27 @@
       <button type="button" class="btn-solid btn-sm" id="logout-button">退出登录</button>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <div class="stat-card stat-card--accent">
-        <div class="stat-value" id="stat-total">-</div>
-        <div class="stat-label">总申请</div>
+    <!-- 统计图表 -->
+    <div class="card card-section chart-panel mb-6">
+      <div class="chart-panel__tabs" role="tablist" aria-label="统计图表切换">
+        <button type="button" class="chart-tab is-active" id="chart-tab-trend" role="tab" aria-selected="true" aria-controls="chart-trend" data-chart="trend">近七日申请</button>
+        <button type="button" class="chart-tab" id="chart-tab-college" role="tab" aria-selected="false" aria-controls="chart-college" data-chart="college" tabindex="-1">学院分布</button>
       </div>
-      <div class="stat-card stat-card--accent">
-        <div class="stat-value" id="stat-today">-</div>
-        <div class="stat-label">今日新增</div>
-      </div>
-      <div class="stat-card stat-card--accent">
-        <div class="stat-value" id="stat-colleges">-</div>
-        <div class="stat-label">涉及学院</div>
-      </div>
-      <div class="stat-card stat-card--accent">
-        <div class="stat-value" id="stat-grades">-</div>
-        <div class="stat-label">涉及年级</div>
+      <div class="chart-panel__views">
+        <div class="chart-view is-active" id="chart-trend" role="tabpanel" aria-labelledby="chart-tab-trend">
+          <div class="chart-view__heading">
+            <span class="chart-view__title">近七日申请数量</span>
+            <span class="chart-view__meta" id="chart-trend-meta">统计中…</span>
+          </div>
+          <div class="chart-view__canvas" id="trend-chart"></div>
+        </div>
+        <div class="chart-view" id="chart-college" role="tabpanel" aria-labelledby="chart-tab-college">
+          <div class="chart-view__heading">
+            <span class="chart-view__title">学院分布</span>
+            <span class="chart-view__meta" id="chart-college-meta">共 0 个学院</span>
+          </div>
+          <div class="chart-view__canvas" id="college-chart"></div>
+        </div>
       </div>
     </div>
 
@@ -140,6 +144,7 @@
 
   <script src="/html/image-assets.js?v=20260819"></script>
   <script src="/html/common.js?v=20260729"></script>
-  <script src="/html/membership-applications.js?v=20260813"></script>
+  <script src="/html/vendor/echarts.min.js?v=20260831"></script>
+  <script src="/html/membership-applications.js?v=20260831"></script>
 </body>
 </html>

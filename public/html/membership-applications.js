@@ -170,24 +170,128 @@
       select.value = selected;
     }
 
-    async function loadSupportData() {
-      try {
-        const response = await handleResponse(await fetch('/api/membership-applications/stats'));
-        const stats = await response.json();
-        document.getElementById('stat-total').textContent = stats.total;
-        document.getElementById('stat-today').textContent = stats.todayCount;
-        document.getElementById('stat-colleges').textContent = stats.collegeCount;
-        document.getElementById('stat-grades').textContent = stats.gradeCount;
-        updateFilterOptions('college-filter', '所有学院', (stats.collegeStats || []).map((row) => row._id));
-        updateFilterOptions('grade-filter', '所有年级', (stats.gradeStats || []).map((row) => row._id));
-      } catch (error) {
-        ['stat-total', 'stat-today', 'stat-colleges', 'stat-grades'].forEach((id) => {
-          document.getElementById(id).textContent = '-';
-        });
-        document.getElementById('college-filter').title = '筛选项暂时无法更新';
-        document.getElementById('grade-filter').title = '筛选项暂时无法更新';
-      }
+    const chartState = {
+      trend: { chart: null, loaded: false },
+      college: { chart: null, loaded: false },
+    };
+    let activeChart = 'trend';
+
+    function formatDateKey(date) {
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
+
+    function buildTrendSeries(items) {
+      const counts = new Map();
+      items.forEach((item) => {
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime())) return;
+        const key = formatDateKey(created);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+      const days = [];
+      const today = new Date();
+      for (let offset = 6; offset >= 0; offset -= 1) {
+        const day = new Date(today);
+        day.setUTCDate(day.getUTCDate() - offset);
+        const key = formatDateKey(day);
+        days.push({ key, count: counts.get(key) || 0 });
+      }
+      return days;
+    }
+
+    function setChartMeta(id, text) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = text;
+    }
+
+    function renderTrendChart(days) {
+      const canvas = document.getElementById('trend-chart');
+      if (!canvas || typeof echarts === 'undefined') return;
+      if (!chartState.trend.chart) chartState.trend.chart = echarts.init(canvas);
+      chartState.trend.chart.setOption({
+        grid: { left: 40, right: 24, top: 32, bottom: 32 },
+        tooltip: { trigger: 'axis' },
+        xAxis: {
+          type: 'category',
+          data: days.map((day) => day.key.slice(5)),
+          axisLine: { lineStyle: { color: '#e5e7eb' } },
+          axisLabel: { color: '#6b7280' },
+        },
+        yAxis: {
+          type: 'value',
+          minInterval: 1,
+          axisLabel: { color: '#6b7280' },
+          splitLine: { lineStyle: { color: '#f3f4f6' } },
+        },
+        series: [{
+          name: '申请数量',
+          type: 'line',
+          data: days.map((day) => day.count),
+          smooth: false,
+          symbolSize: 6,
+          lineStyle: { color: '#2563eb', width: 2 },
+          itemStyle: { color: '#2563eb' },
+          areaStyle: { color: 'rgba(37, 99, 235, 0.08)' },
+        }],
+      });
+      chartState.trend.loaded = true;
+    }
+
+    function renderCollegeChart(stats) {
+      const canvas = document.getElementById('college-chart');
+      if (!canvas || typeof echarts === 'undefined') return;
+      const rows = stats.collegeStats || [];
+      const total = rows.reduce((sum, row) => sum + row.count, 0);
+      setChartMeta('chart-college-meta', `共 ${stats.collegeCount} 个学院 · ${total} 份申请`);
+      if (!chartState.college.chart) chartState.college.chart = echarts.init(canvas);
+      chartState.college.chart.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}<br/>申请 {c} 份（{d}%）' },
+        legend: { bottom: 0, textStyle: { color: '#6b7280' }, type: 'scroll' },
+        series: [{
+          name: '学院分布',
+          type: 'pie',
+          radius: ['44%', '70%'],
+          center: ['50%', '46%'],
+          avoidLabelOverlap: true,
+          itemStyle: { borderRadius: 4, borderColor: '#ffffff', borderWidth: 2 },
+          label: { color: '#374151' },
+          data: rows.map((row) => ({ name: row._id, value: row.count })),
+        }],
+      });
+      chartState.college.loaded = true;
+    }
+
+    function resizeCharts() {
+      Object.values(chartState).forEach((entry) => {
+        if (entry.chart) entry.chart.resize();
+      });
+    }
+
+    function switchChart(name) {
+      activeChart = name;
+      document.querySelectorAll('.chart-tab').forEach((tab) => {
+        const isActive = tab.dataset.chart === name;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.tabIndex = isActive ? 0 : -1;
+      });
+      document.querySelectorAll('.chart-view').forEach((view) => {
+        const isActive = view.id === `chart-${name}`;
+        view.classList.toggle('is-active', isActive);
+        if (window.matchMedia('(max-width: 700px)').matches) {
+          view.hidden = !isActive;
+        } else {
+          view.hidden = false;
+        }
+      });
+      if (name === 'trend' && chartState.trend.chart) chartState.trend.chart.resize();
+      if (name === 'college' && chartState.college.chart) chartState.college.chart.resize();
+    }
+
+
 
     async function loadData(page = 1) {
       const requestId = ++latestLoadRequest;
@@ -214,6 +318,36 @@
         renderTable();
         setFeedback(error.message || '加载失败，请稍后重试。', true);
         return false;
+      }
+    }
+
+
+    async function loadSupportData() {
+      try {
+        const response = await handleResponse(await fetch('/api/membership-applications/stats'));
+        const stats = await response.json();
+        const days = buildTrendSeries(await loadAllApplicationsForTrend());
+        renderTrendChart(days);
+        renderCollegeChart(stats);
+        const trendTotal = days.reduce((sum, day) => sum + day.count, 0);
+        setChartMeta('chart-trend-meta', `近七日共 ${trendTotal} 份`);
+        updateFilterOptions('college-filter', '所有学院', (stats.collegeStats || []).map((row) => row._id));
+        updateFilterOptions('grade-filter', '所有年级', (stats.gradeStats || []).map((row) => row._id));
+      } catch (error) {
+        setChartMeta('chart-trend-meta', '统计加载失败');
+        setChartMeta('chart-college-meta', '统计加载失败');
+        document.getElementById('college-filter').title = '筛选项暂时无法更新';
+        document.getElementById('grade-filter').title = '筛选项暂时无法更新';
+      }
+    }
+
+    async function loadAllApplicationsForTrend() {
+      try {
+        const response = await handleResponse(await fetch('/api/membership-applications?limit=1000'));
+        const data = await response.json();
+        return data.membership_applications || [];
+      } catch (error) {
+        return [];
       }
     }
 
@@ -313,6 +447,28 @@
       document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData(), loadOperationRecords(1)]));
       document.getElementById('export-button').addEventListener('click', exportCsv);
       document.getElementById('detail-close-button').addEventListener('click', closeDetail);
+
+      document.querySelectorAll('.chart-tab').forEach((tab) => {
+        tab.addEventListener('click', () => switchChart(tab.dataset.chart));
+        tab.addEventListener('keydown', (event) => {
+          const tabs = ['trend', 'college'];
+          const index = tabs.indexOf(tab.dataset.chart);
+          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+            switchChart(next);
+            document.getElementById(`chart-tab-${next}`).focus();
+          }
+        });
+      });
+      const viewportMode = window.matchMedia('(max-width: 700px)');
+      const applyViewportMode = () => switchChart(activeChart);
+      if (viewportMode.addEventListener) {
+        viewportMode.addEventListener('change', applyViewportMode);
+      }
+      applyViewportMode();
+
+
       document.getElementById('detail-modal').addEventListener('click', (event) => {
         if (event.target === event.currentTarget) closeDetail();
       });
