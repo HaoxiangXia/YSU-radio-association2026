@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>无线电爱好者协会 | 燕山大学</title>
   <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/html/styles.css?v=20260813">
+  <link rel="stylesheet" href="/html/styles.css?v=20260903c">
   <link rel="stylesheet" href="/html/site-intro.css">
   <style is:global>
 .home-page {
@@ -229,8 +229,8 @@
 @media (max-height: 720px), (min-width: 801px) and (max-height: 850px) {
   .home-page .hero-content {
     justify-content: center;
-    padding-top: calc(var(--nav-height) + 0.75rem);
-    padding-bottom: 0;
+    padding-top: calc(2 * (var(--nav-height) + 0.75rem));
+    padding-bottom: calc(var(--nav-height) + 0.75rem);
   }
 
   .home-page .hero-content h1 {
@@ -265,6 +265,7 @@
 .home-page .about-assoc-intro__body p { font-size: clamp(0.95rem, 1.25vw, 1.05rem); line-height: 1.75; color: rgb(71, 85, 105); }
 .home-page .about-assoc-intro__body p.mb-4 { margin-bottom: 0.6rem; }
 .home-page .about-assoc-intro__body p .font-semibold, .home-page .about-assoc-intro__body p .font-medium { color: rgb(30, 41, 59); }
+.home-page .about-assoc-intro__body p:last-child { margin-bottom: 0; }
 .home-page .about-assoc-intro__media .aspect-video { aspect-ratio: 16 / 9; border-radius: var(--radius); background: rgb(241, 245, 249); overflow: hidden; }
 .home-page .about-assoc-intro__stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
 
@@ -274,14 +275,15 @@
 .home-page .about-assoc-intro__stats .stat-label { color: #5c6b83; }
 
 @media (max-width: 800px) {
-  .home-page .hero-content h1 { margin-bottom: 0.85rem; }
-  .home-page .hero-content p { margin-bottom: 1rem; }
-  .home-page .card.about-assoc-intro { grid-template-columns: minmax(0px, 1fr); gap: 0.85rem; margin-bottom: 1rem; padding: 0.85rem; }
-  .home-page .about-assoc-intro__body p { font-size: 0.9rem; line-height: 1.55; overflow-wrap: anywhere; }
-  .home-page .about-assoc-intro__body p.mb-4 { margin-bottom: 0.5rem; }
-  .home-page .about-assoc-intro__stats { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
-  .home-page .about-assoc-intro__stats .stat-card { padding: 0.45rem 0.25rem; }
-  .home-page .about-assoc-intro__media .aspect-video { aspect-ratio: auto; height: clamp(8rem, 17vh, 9.5rem); }
+  .home-page .hero-content { justify-content: flex-start; padding-top: calc(var(--nav-height) + 2.9rem); padding-bottom: 0.75rem; overflow-y: auto; }
+  .home-page .hero-content h1 { margin-bottom: 0.6rem; }
+  .home-page .hero-content p { margin-bottom: 0.85rem; }
+  .home-page .card.about-assoc-intro { grid-template-columns: minmax(0px, 1fr); gap: 0.75rem; margin-bottom: 0.85rem; padding: 0.85rem; }
+  .home-page .about-assoc-intro__body p { font-size: 0.88rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .home-page .about-assoc-intro__body p.mb-4 { margin-bottom: 0.45rem; }
+  .home-page .about-assoc-intro__stats { grid-template-columns: repeat(4, 1fr); gap: 0.45rem; margin-top: 0.45rem; }
+  .home-page .about-assoc-intro__stats .stat-card { padding: 0.4rem 0.25rem; }
+  .home-page .about-assoc-intro__media .aspect-video { aspect-ratio: auto; height: clamp(7rem, 15vh, 8.5rem); }
 }
 
 @media (max-width: 440px) {
