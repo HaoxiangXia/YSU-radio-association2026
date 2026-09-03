@@ -471,6 +471,10 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
           <label class="form-label" for="contact-qq">QQ群号（可留空）</label>
           <input class="form-input" id="contact-qq" name="contactQq" maxlength="30" inputmode="numeric">
         </div>
+        <div>
+          <label class="form-label" for="contact-qq-link">QQ群链接（可留空）</label>
+          <input class="form-input" id="contact-qq-link" name="contactQqLink" maxlength="500" type="url" placeholder="https://qm.qq.com/q/...">
+        </div>
         <div class="operations-field--wide">
           <label class="form-label" for="contact-channel">联系说明</label>
           <textarea class="form-input" id="contact-channel" name="contactChannel" rows="3" maxlength="500" required></textarea>
@@ -592,6 +596,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       form.elements.admissionEnabled.checked = config.admissionQuery.enabled === true;
       form.elements.contactLabel.value = config.contact.label;
       form.elements.contactQq.value = config.contact.qq || '';
+      form.elements.contactQqLink.value = config.contact.qqLink || '';
       form.elements.contactChannel.value = config.contact.channelText;
       form.elements.colleges.value = config.options.colleges.join('\n');
       form.elements.grades.value = config.options.grades.join('\n');
@@ -629,6 +634,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
         contact: {
           label: form.elements.contactLabel.value.trim(),
           qq: form.elements.contactQq.value.trim(),
+          qqLink: form.elements.contactQqLink.value.trim(),
           channelText: form.elements.contactChannel.value.trim(),
         },
         options: {

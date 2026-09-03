@@ -79,6 +79,7 @@ class AdmissionQueryConfig(StrictConfigModel):
 class ContactConfig(StrictConfigModel):
     label: str = Field(min_length=1, max_length=100)
     qq: str = Field(default="", max_length=30)
+    qq_link: str = Field(default="", alias="qqLink", max_length=500)
     channel_text: str = Field(alias="channelText", min_length=1, max_length=500)
 
 

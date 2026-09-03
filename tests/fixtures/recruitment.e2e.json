@@ -14,6 +14,7 @@
   "contact": {
     "label": "测试联系方式",
     "qq": "10000",
+    "qqLink": "https://qm.qq.com/q/gMPH8LyVy2",
     "channelText": "仅用于自动化测试"
   },
   "options": {

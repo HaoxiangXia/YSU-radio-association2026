@@ -1502,9 +1502,39 @@ textarea.form-input {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  color: #6b7280;
+  color: var(--color-primary);
   font-size: 0.875rem;
 }
+
+.qq-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+
+.qq-copy-btn {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.qq-copy-btn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.qq-copy-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 
 .qq-icon {
   display: inline-flex;
@@ -2441,6 +2471,17 @@ textarea.form-input {
 .site-page .footer a:hover {
   color: #1d4ed8;
 }
+
+.home-page .footer a.qq-contact,
+.site-page .footer a.qq-contact {
+  color: #1d4ed8;
+}
+
+.home-page .footer a.qq-contact:hover,
+.site-page .footer a.qq-contact:hover {
+  color: #1e40af;
+}
+
 
 .home-page .footer-bottom,
 .site-page .footer-bottom {

@@ -260,10 +260,59 @@ function renderRecruitmentContact(element, contact = {}) {
   const content = [document.createTextNode(firstLine)];
 
   if (contact.qq) {
-    content.push(
-      document.createElement('br'),
-      document.createTextNode(`QQ群号：${contact.qq}`),
-    );
+    const group = document.createElement('span');
+    group.className = 'qq-group';
+    group.append(document.createTextNode(`QQ群号：`));
+
+    if (contact.qqLink) {
+      const link = document.createElement('a');
+      link.className = 'qq-contact';
+      link.href = contact.qqLink;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = contact.qq;
+      group.append(link);
+    } else {
+      group.append(document.createTextNode(contact.qq));
+    }
+
+    content.push(group);
+
+    const copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'qq-copy-btn';
+    copyButton.textContent = '复制群号';
+    copyButton.addEventListener('click', async () => {
+      let copied = false;
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(contact.qq);
+          copied = true;
+        } catch (error) {
+          copied = false;
+        }
+      }
+      if (!copied) {
+        // 非安全上下文（如局域网 HTTP）下 Clipboard API 不可用，回退到隐藏输入框
+        const helper = document.createElement('textarea');
+        helper.value = contact.qq;
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        try {
+          copied = document.execCommand('copy');
+        } catch (error) {
+          copied = false;
+        }
+        helper.remove();
+      }
+      copyButton.textContent = copied ? '已复制' : `群号：${contact.qq}`;
+      setTimeout(() => {
+        copyButton.textContent = '复制群号';
+      }, 2000);
+    });
+    content.push(copyButton);
   }
 
   element.replaceChildren(...content);
