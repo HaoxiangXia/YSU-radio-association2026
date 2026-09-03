@@ -22,7 +22,9 @@
 
 .about-association-page .more-link { flex: 0 0 auto; color: rgb(37, 99, 235); font-size: 0.9rem; font-weight: 650; text-decoration: none; }
 
-.about-association-page .more-link:hover, .about-association-page .more-link:focus-visible { color: rgb(29, 78, 216); text-decoration: underline; }
+.about-association-page .more-link::after { content: none; }
+
+.about-association-page .more-link:hover, .about-association-page .more-link:focus-visible { color: rgb(29, 78, 216); text-decoration: none; }
 
 .about-association-page .department-group-title { margin: clamp(1.75rem, 4vw, 2.5rem) 0px 1rem; color: rgb(49, 93, 136); font-size: 0.9rem; letter-spacing: 0.08em; }
 
@@ -120,8 +122,6 @@
 
 @media (max-width: 700px) {
   .about-association-page .about-section { width: min(100% - 1.5rem, 1160px); }
-
-  .about-association-page .section-header { align-items: flex-start; flex-direction: column; }
 
   .about-association-page .department-grid, .about-association-page .news-list, .about-association-page .honor-list { grid-template-columns: minmax(0px, 1fr); }
 }
