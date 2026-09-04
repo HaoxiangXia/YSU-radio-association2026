@@ -12,10 +12,10 @@
     "enabled": false
   },
   "contact": {
-    "label": "招新联系方式",
+    "label": "招新通知方式",
     "qq": "836660390",
     "qqLink": "https://qm.qq.com/q/gMPH8LyVy2",
-    "channelText": "请加入协会 QQ 群了解后续通知。"
+    "channelText": "请加入协会招新 QQ 群获取后续通知。"
   },
   "options": {
     "colleges": [
