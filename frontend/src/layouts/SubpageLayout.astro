@@ -12,9 +12,11 @@ interface Props {
   mainClass?: string;
   /** 使用紧凑页头（管理页） */
   heroCompact?: boolean;
+  /** 导航模式：global 用 common.js 全局导航；custom 由页面通过 nav slot 提供 */
+  navMode?: 'global' | 'custom';
 }
 
-const { title, bodyClass, heroTitle, heroDesc, mainClass, heroCompact = false } = Astro.props;
+const { title, bodyClass, heroTitle, heroDesc, mainClass, heroCompact = false, navMode = 'global' } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -27,7 +29,7 @@ const { title, bodyClass, heroTitle, heroDesc, mainClass, heroCompact = false } 
   <slot name="head" />
 </head>
 <body class={bodyClass}>
-  <div id="nav-placeholder"></div>
+  {navMode === 'custom' ? <slot name="nav" /> : <div id="nav-placeholder"></div>}
 
   <header class:list={["subpage-hero", { "subpage-hero--compact": heroCompact }]}>
     <div class="container subpage-hero__inner">

@@ -1,9 +1,9 @@
 // 招新题组页：tab 切换（与管理员页 chart-tab 同一交互模式：点击 + 左右方向键 + URL hash 深链）
 (function () {
-  var names = ['python', 'c'];
+  var names = ['c', 'python'];
 
   function switchQuestions(name, updateHash) {
-    if (names.indexOf(name) === -1) name = 'python';
+    if (names.indexOf(name) === -1) name = 'c';
     document.querySelectorAll('.questions-tab').forEach(function (tab) {
       var isActive = tab.dataset.questions === name;
       tab.classList.toggle('is-active', isActive);

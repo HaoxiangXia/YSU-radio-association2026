@@ -1,148 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>计算机部招新题组 - 无线电爱好者协会</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/html/styles.css?v=20260903c"><link rel="stylesheet" href="/_astro/recruitment-questions.DXmDUN0g.css"></head><body class="site-page sub-page recruitment-questions-page"><div id="nav-placeholder"></div><header class="subpage-hero subpage-hero--compact"><div class="container subpage-hero__inner"><h1>计算机部招新题组</h1><p>Python 与 C 语言两套题组，供报名计算机部的同学参考准备。</p></div></header><main class="page-container subpage-content questions-content"><a href="/html/membership-application.html" class="back-link">← 返回入会申请</a><div class="card card-section questions-panel"><div class="questions-tabs" role="tablist" aria-label="题组切换"><button type="button" class="questions-tab is-active" id="questions-tab-python" role="tab" aria-selected="true" aria-controls="questions-python" data-questions="python">Python 题组</button><button type="button" class="questions-tab" id="questions-tab-c" role="tab" aria-selected="false" aria-controls="questions-c" data-questions="c" tabindex="-1">C 语言题组</button></div><div class="questions-views"><div class="questions-view is-active questions-prose" id="questions-python" role="tabpanel" aria-labelledby="questions-tab-python"><h1 id="计算机部招新-python-题组">计算机部招新 Python 题组</h1>
-<blockquote>
-<p>共 15 题：基础 3 题、提高 8 题、压轴 4 题。重点考察代码理解、Python 基础和解决问题的思路，不要求死记偏门语法。</p>
-</blockquote>
-<h2 id="基础题">基础题</h2>
-<h3 id="1-input-与类型转换">1. input() 与类型转换</h3>
-<p>下面程序本意是输入年龄并判断是否成年。它有什么问题？应如何修改？</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">age </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> input</span><span style="color:#E1E4E8">()</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> age </span><span style="color:#F97583">&gt;=</span><span style="color:#79B8FF"> 18</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"adult"</span><span style="color:#E1E4E8">)</span></span>
-<span class="line"><span style="color:#F97583">else</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"minor"</span><span style="color:#E1E4E8">)</span></span></code></pre>
-<h3 id="2-循环条件与累加">2. 循环、条件与累加</h3>
-<p>写出最终输出，并说明循环在做什么。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">total </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">6</span><span style="color:#E1E4E8">):</span></span>
-<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#E1E4E8">        total </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> i</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(total)</span></span></code></pre>
-<h3 id="3-return-和-print">3. return 和 print</h3>
-<p>写出程序输出，并解释最后一行为什么是这个结果。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> double</span><span style="color:#E1E4E8">(x):</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(x </span><span style="color:#F97583">*</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> double(</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">)</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(y)</span></span></code></pre>
-<h2 id="提高题">提高题</h2>
-<h3 id="4-列表引用与别名">4. 列表引用与别名</h3>
-<p>写出两行输出，并解释为什么。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> a</span></span>
-<span class="line"><span style="color:#E1E4E8">b.append(</span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(b)</span></span></code></pre>
-<h3 id="5-列表推导式">5. 列表推导式</h3>
-<p>写出输出，并用普通 for 循环说明等价逻辑。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">6</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [x </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> nums </span><span style="color:#F97583">if</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result)</span></span></code></pre>
-<h3 id="6-用字典统计频次">6. 用字典统计频次</h3>
-<p>写出最终输出，并说明 <code>get</code> 的作用。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">text </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "abacaba"</span></span>
-<span class="line"><span style="color:#E1E4E8">count </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> ch </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> text:</span></span>
-<span class="line"><span style="color:#E1E4E8">    count[ch] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> count.get(ch, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(count)</span></span></code></pre>
-<h3 id="7-set-的用途">7. set 的用途</h3>
-<p>写出结果，并说明 set 适合解决什么问题。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"><span style="color:#E1E4E8">unique </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> set</span><span style="color:#E1E4E8">(nums)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(unique))</span></span></code></pre>
-<h3 id="8-局部变量与全局变量">8. 局部变量与全局变量</h3>
-<p>写出输出，并解释两个 x 的关系。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">x </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 10</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> f</span><span style="color:#E1E4E8">():</span></span>
-<span class="line"><span style="color:#E1E4E8">    x </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 5</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(x)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">f()</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(x)</span></span></code></pre>
-<h3 id="9-sorted-与-listsort">9. sorted() 与 list.sort()</h3>
-<p>写出输出，并说明 <code>sorted()</code> 与 <code>list.sort()</code> 的区别。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> sorted</span><span style="color:#E1E4E8">(a)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(b)</span></span></code></pre>
-<h3 id="10-遍历时修改列表">10. 遍历时修改列表</h3>
-<p>程序想删除所有的 2。它能正确实现吗？为什么？</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> nums:</span></span>
-<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#E1E4E8">        nums.remove(x)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(nums)</span></span></code></pre>
-<h3 id="11-异常处理">11. 异常处理</h3>
-<p>分别说明输入 <code>abc</code>、<code>0</code>、<code>2</code> 时程序会发生什么。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">try</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#E1E4E8">    n </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> int</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">input</span><span style="color:#E1E4E8">())</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#F97583"> /</span><span style="color:#E1E4E8"> n)</span></span>
-<span class="line"><span style="color:#F97583">except</span><span style="color:#79B8FF"> ValueError</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"invalid number"</span><span style="color:#E1E4E8">)</span></span>
-<span class="line"><span style="color:#F97583">except</span><span style="color:#79B8FF"> ZeroDivisionError</span><span style="color:#E1E4E8">:</span></span>
-<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"cannot divide by zero"</span><span style="color:#E1E4E8">)</span></span></code></pre>
-<h2 id="压轴题">压轴题</h2>
-<h3 id="12-可变默认参数">12. 可变默认参数</h3>
-<p>判断两行输出，并解释为什么。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> add_item</span><span style="color:#E1E4E8">(item, bucket</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[]):</span></span>
-<span class="line"><span style="color:#E1E4E8">    bucket.append(item)</span></span>
-<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> bucket</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(add_item(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">))</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(add_item(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">))</span></span></code></pre>
-<h3 id="13-浅拷贝与嵌套列表">13. 浅拷贝与嵌套列表</h3>
-<p>写出 <code>print(a)</code> 的结果，并解释为什么 a 也发生变化。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [[</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">], [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">]]</span></span>
-<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> a.copy()</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">b[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">][</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 99</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span></code></pre>
-<h3 id="14-补全代码最大值及其下标">14. 补全代码：最大值及其下标</h3>
-<p>补全代码，使程序输出最大值及其第一次出现的下标。给定列表应输出 <code>-2 1</code>。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#F97583">-</span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">max_num </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______</span></span>
-<span class="line"><span style="color:#E1E4E8">max_index </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(nums)):</span></span>
-<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> ______:</span></span>
-<span class="line"><span style="color:#E1E4E8">        ______</span></span>
-<span class="line"><span style="color:#E1E4E8">        ______</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(max_num, max_index)</span></span></code></pre>
-<h3 id="15-补全代码统计及格学生与平均分">15. 补全代码：统计及格学生与平均分</h3>
-<p>补全代码：把成绩不低于 60 的学生姓名加入 passed，同时计算全体学生平均分。</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">scores </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
-<span class="line"><span style="color:#9ECBFF">    "Alice"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">82</span><span style="color:#E1E4E8">,</span></span>
-<span class="line"><span style="color:#9ECBFF">    "Bob"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">59</span><span style="color:#E1E4E8">,</span></span>
-<span class="line"><span style="color:#9ECBFF">    "Carol"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">91</span><span style="color:#E1E4E8">,</span></span>
-<span class="line"><span style="color:#9ECBFF">    "David"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">68</span></span>
-<span class="line"><span style="color:#E1E4E8">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">passed </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> []</span></span>
-<span class="line"><span style="color:#E1E4E8">total </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> name, score </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> ______:</span></span>
-<span class="line"><span style="color:#E1E4E8">    total </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> ______</span></span>
-<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> ______:</span></span>
-<span class="line"><span style="color:#E1E4E8">        ______</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">average </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______ </span><span style="color:#F97583">if</span><span style="color:#E1E4E8"> scores </span><span style="color:#F97583">else</span><span style="color:#79B8FF"> 0</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(passed)</span></span>
-<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(average)</span></span></code></pre>
-</div><div class="questions-view questions-prose" id="questions-c" role="tabpanel" aria-labelledby="questions-tab-c"><h2 id="基础题6-道入门友好覆盖基础认知与核心语法规则">基础题（6 道）：入门友好，覆盖基础认知与核心语法规则</h2>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>招新题组 - 无线电爱好者协会</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/html/styles.css?v=20260903c"><link rel="stylesheet" href="/_astro/recruitment-questions.C3OIwBtp.css"></head><body class="site-page sub-page recruitment-questions-page"><nav class="nav questions-nav"><div class="container questions-nav__inner"><a href="/html/index.html" class="nav-logo"><img src="/image/brand/association-emblem-white.png" alt="会徽"><span>无线电爱好者协会</span></a><span class="nav-links"><a href="/html/membership-application.html" class="questions-nav__back"><span class="questions-nav__back-full">返回入会申请页面</span><span class="questions-nav__back-short">返回</span></a></span></div></nav><header class="subpage-hero subpage-hero--compact"><div class="container subpage-hero__inner"><h1>招新题组</h1><p>各部门招新参考题组，报名前可以先看看对应部门的题目。</p></div></header><main class="page-container subpage-content questions-content"><div class="card card-section questions-panel"><div class="questions-tabs" role="tablist" aria-label="题组切换"><button type="button" class="questions-tab is-active" id="questions-tab-c" role="tab" aria-selected="true" aria-controls="questions-c" data-questions="c">计算机部 · C 语言题组</button><button type="button" class="questions-tab" id="questions-tab-python" role="tab" aria-selected="false" aria-controls="questions-python" data-questions="python" tabindex="-1">计算机部 · Python 题组</button><button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">嵌入式部 · 敬请期待</button><button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">机械部 · 敬请期待</button></div><div class="questions-views"><div class="questions-view is-active questions-prose" id="questions-c" role="tabpanel" aria-labelledby="questions-tab-c"><h2 id="基础题6-道入门友好覆盖基础认知与核心语法规则">基础题（6 道）：入门友好，覆盖基础认知与核心语法规则</h2>
 <ol>
 <li>
 <p>日常使用的 Windows 属于计算机的哪一类软件？
@@ -311,4 +167,148 @@ A. <code>a * b / 2</code> B. <code>1 / 2 * a * b</code> C. <code>a / 2 * b</code
 <span class="line"><span style="color:#B392F0">    printf</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"</span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF">"</span><span style="color:#E1E4E8">, count);</span></span>
 <span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
 <span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+</div><div class="questions-view questions-prose" id="questions-python" role="tabpanel" aria-labelledby="questions-tab-python"><h1 id="计算机部招新-python-题组">计算机部招新 Python 题组</h1>
+<blockquote>
+<p>共 15 题：基础 3 题、提高 8 题、压轴 4 题。重点考察代码理解、Python 基础和解决问题的思路，不要求死记偏门语法。</p>
+</blockquote>
+<h2 id="基础题">基础题</h2>
+<h3 id="1-input-与类型转换">1. input() 与类型转换</h3>
+<p>下面程序本意是输入年龄并判断是否成年。它有什么问题？应如何修改？</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">age </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> input</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> age </span><span style="color:#F97583">&gt;=</span><span style="color:#79B8FF"> 18</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"adult"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"minor"</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="2-循环条件与累加">2. 循环、条件与累加</h3>
+<p>写出最终输出，并说明循环在做什么。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">total </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">6</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">        total </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> i</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(total)</span></span></code></pre>
+<h3 id="3-return-和-print">3. return 和 print</h3>
+<p>写出程序输出，并解释最后一行为什么是这个结果。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> double</span><span style="color:#E1E4E8">(x):</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(x </span><span style="color:#F97583">*</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> double(</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(y)</span></span></code></pre>
+<h2 id="提高题">提高题</h2>
+<h3 id="4-列表引用与别名">4. 列表引用与别名</h3>
+<p>写出两行输出，并解释为什么。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> a</span></span>
+<span class="line"><span style="color:#E1E4E8">b.append(</span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(b)</span></span></code></pre>
+<h3 id="5-列表推导式">5. 列表推导式</h3>
+<p>写出输出，并用普通 for 循环说明等价逻辑。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">6</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [x </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> nums </span><span style="color:#F97583">if</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result)</span></span></code></pre>
+<h3 id="6-用字典统计频次">6. 用字典统计频次</h3>
+<p>写出最终输出，并说明 <code>get</code> 的作用。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">text </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "abacaba"</span></span>
+<span class="line"><span style="color:#E1E4E8">count </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> ch </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> text:</span></span>
+<span class="line"><span style="color:#E1E4E8">    count[ch] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> count.get(ch, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(count)</span></span></code></pre>
+<h3 id="7-set-的用途">7. set 的用途</h3>
+<p>写出结果，并说明 set 适合解决什么问题。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">unique </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> set</span><span style="color:#E1E4E8">(nums)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(unique))</span></span></code></pre>
+<h3 id="8-局部变量与全局变量">8. 局部变量与全局变量</h3>
+<p>写出输出，并解释两个 x 的关系。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">x </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 10</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> f</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">    x </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(x)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">f()</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(x)</span></span></code></pre>
+<h3 id="9-sorted-与-listsort">9. sorted() 与 list.sort()</h3>
+<p>写出输出，并说明 <code>sorted()</code> 与 <code>list.sort()</code> 的区别。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> sorted</span><span style="color:#E1E4E8">(a)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(b)</span></span></code></pre>
+<h3 id="10-遍历时修改列表">10. 遍历时修改列表</h3>
+<p>程序想删除所有的 2。它能正确实现吗？为什么？</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> nums:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">        nums.remove(x)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(nums)</span></span></code></pre>
+<h3 id="11-异常处理">11. 异常处理</h3>
+<p>分别说明输入 <code>abc</code>、<code>0</code>、<code>2</code> 时程序会发生什么。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">try</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">    n </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> int</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">input</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#F97583"> /</span><span style="color:#E1E4E8"> n)</span></span>
+<span class="line"><span style="color:#F97583">except</span><span style="color:#79B8FF"> ValueError</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"invalid number"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">except</span><span style="color:#79B8FF"> ZeroDivisionError</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"cannot divide by zero"</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h2 id="压轴题">压轴题</h2>
+<h3 id="12-可变默认参数">12. 可变默认参数</h3>
+<p>判断两行输出，并解释为什么。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> add_item</span><span style="color:#E1E4E8">(item, bucket</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[]):</span></span>
+<span class="line"><span style="color:#E1E4E8">    bucket.append(item)</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> bucket</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(add_item(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(add_item(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">))</span></span></code></pre>
+<h3 id="13-浅拷贝与嵌套列表">13. 浅拷贝与嵌套列表</h3>
+<p>写出 <code>print(a)</code> 的结果，并解释为什么 a 也发生变化。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">a </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [[</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">], [</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">]]</span></span>
+<span class="line"><span style="color:#E1E4E8">b </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> a.copy()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">b[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">][</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 99</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(a)</span></span></code></pre>
+<h3 id="14-补全代码最大值及其下标">14. 补全代码：最大值及其下标</h3>
+<p>补全代码，使程序输出最大值及其第一次出现的下标。给定列表应输出 <code>-2 1</code>。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">nums </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#F97583">-</span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">max_num </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______</span></span>
+<span class="line"><span style="color:#E1E4E8">max_index </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(nums)):</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> ______:</span></span>
+<span class="line"><span style="color:#E1E4E8">        ______</span></span>
+<span class="line"><span style="color:#E1E4E8">        ______</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(max_num, max_index)</span></span></code></pre>
+<h3 id="15-补全代码统计及格学生与平均分">15. 补全代码：统计及格学生与平均分</h3>
+<p>补全代码：把成绩不低于 60 的学生姓名加入 passed，同时计算全体学生平均分。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">scores </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    "Alice"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">82</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "Bob"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">59</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "Carol"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">91</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "David"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">68</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">passed </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> []</span></span>
+<span class="line"><span style="color:#E1E4E8">total </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> name, score </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> ______:</span></span>
+<span class="line"><span style="color:#E1E4E8">    total </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> ______</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> ______:</span></span>
+<span class="line"><span style="color:#E1E4E8">        ______</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">average </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ______ </span><span style="color:#F97583">if</span><span style="color:#E1E4E8"> scores </span><span style="color:#F97583">else</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(passed)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(average)</span></span></code></pre>
 </div></div></div><script src="/html/recruitment-questions.js?v=20260904"></script></main><div id="footer-placeholder"></div><button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button><div class="image-viewer"><img src="" alt="查看图片"></div><script src="/html/image-assets.js?v=20260819"></script><script src="/html/common.js?v=20260729"></script><script src="/html/reveal.js?v=20260812"></script></body></html>

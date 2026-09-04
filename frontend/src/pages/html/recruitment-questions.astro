@@ -9,21 +9,90 @@ const { Content: PythonContent } = await render(pythonEntry);
 const { Content: CContent } = await render(cEntry);
 ---
 <SubpageLayout
-  title="计算机部招新题组 - 无线电爱好者协会"
+  title="招新题组 - 无线电爱好者协会"
   bodyClass="site-page sub-page recruitment-questions-page"
-  heroTitle="计算机部招新题组"
-  heroDesc="Python 与 C 语言两套题组，供报名计算机部的同学参考准备。"
+  heroTitle="招新题组"
+  heroDesc="各部门招新参考题组，报名前可以先看看对应部门的题目。"
   mainClass="questions-content"
   heroCompact
+  navMode="custom"
 >
+  <nav slot="nav" class="nav questions-nav">
+    <div class="container questions-nav__inner">
+      <a href="/html/index.html" class="nav-logo">
+        <img src="/image/brand/association-emblem-white.png" alt="会徽">
+        <span>无线电爱好者协会</span>
+      </a>
+      <span class="nav-links"><a href="/html/membership-application.html" class="questions-nav__back"><span class="questions-nav__back-full">返回入会申请页面</span><span class="questions-nav__back-short">返回</span></a></span>
+    </div>
+  </nav>
   <style is:global>
 /* 招新题组页：tab 切换复用管理员页 chart-tab 模式 */
 .recruitment-questions-page {
   --page-accent: #2563eb;
 }
 
+/* 页内自定义导航：左返回链接，右 logo */
+.questions-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+}
+
+/* 返回链接复用全局 .nav-links a 样式（同导航栏"录取查询"等链接） */
+.questions-nav .nav-links a {
+  text-decoration: none;
+}
+
+.questions-nav__back-short {
+  display: none;
+}
+
+/* 移动端返回链接：与全局汉堡菜单按钮同款的方按钮 */
+@media (max-width: 900px) {
+  .questions-nav .nav-links {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .questions-nav__back-full {
+    display: none;
+  }
+
+  .questions-nav__back-short {
+    display: inline;
+  }
+
+  .questions-nav .nav-links .questions-nav__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    color: #4b5563;
+    font-size: 0.8125rem;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+  }
+
+  .questions-nav .nav-links .questions-nav__back:hover {
+    background: #ffffff;
+    border-color: rgba(37, 99, 235, 0.35);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+    color: #4b5563;
+  }
+
+  .questions-nav .nav-links .questions-nav__back:active {
+    transform: scale(0.96);
+  }
+}
+
+
 .questions-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
@@ -45,6 +114,14 @@ const { Content: CContent } = await render(cEntry);
 .questions-tab:hover {
   border-color: var(--page-accent);
   color: var(--page-accent);
+}
+
+.questions-tab--placeholder,
+.questions-tab--placeholder:hover {
+  border-style: dashed;
+  border-color: #e2e8f0;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .questions-tab.is-active {
@@ -143,6 +220,12 @@ const { Content: CContent } = await render(cEntry);
 }
 
 @media (max-width: 700px) {
+  .questions-tab {
+    flex: 1 1 40%;
+    min-width: 9rem;
+    font-size: 0.8125rem;
+  }
+
   .questions-prose {
     font-size: 0.875rem;
   }
@@ -171,20 +254,19 @@ const { Content: CContent } = await render(cEntry);
   }
 }
   </style>
-
-  <a href="/html/membership-application.html" class="back-link">← 返回入会申请</a>
-
   <div class="card card-section questions-panel">
     <div class="questions-tabs" role="tablist" aria-label="题组切换">
-      <button type="button" class="questions-tab is-active" id="questions-tab-python" role="tab" aria-selected="true" aria-controls="questions-python" data-questions="python">Python 题组</button>
-      <button type="button" class="questions-tab" id="questions-tab-c" role="tab" aria-selected="false" aria-controls="questions-c" data-questions="c" tabindex="-1">C 语言题组</button>
+      <button type="button" class="questions-tab is-active" id="questions-tab-c" role="tab" aria-selected="true" aria-controls="questions-c" data-questions="c">计算机部 · C 语言题组</button>
+      <button type="button" class="questions-tab" id="questions-tab-python" role="tab" aria-selected="false" aria-controls="questions-python" data-questions="python" tabindex="-1">计算机部 · Python 题组</button>
+      <button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">嵌入式部 · 敬请期待</button>
+      <button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">机械部 · 敬请期待</button>
     </div>
     <div class="questions-views">
-      <div class="questions-view is-active questions-prose" id="questions-python" role="tabpanel" aria-labelledby="questions-tab-python">
-        <PythonContent />
-      </div>
-      <div class="questions-view questions-prose" id="questions-c" role="tabpanel" aria-labelledby="questions-tab-c">
+      <div class="questions-view is-active questions-prose" id="questions-c" role="tabpanel" aria-labelledby="questions-tab-c">
         <CContent />
+      </div>
+      <div class="questions-view questions-prose" id="questions-python" role="tabpanel" aria-labelledby="questions-tab-python">
+        <PythonContent />
       </div>
     </div>
   </div>
