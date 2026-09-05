@@ -6,14 +6,14 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![uv](https://img.shields.io/badge/uv-astral-purple?style=flat)](https://docs.astral.sh/uv/)
+[![Astro](https://img.shields.io/badge/Astro-7-BC52EE?style=flat&logo=astro&logoColor=white)](https://astro.build/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat&logo=sqlite&logoColor=white)](https://sqlite.org/)
 
 ---
 
 ## 项目简介
 
-本项目是燕山大学无线电爱好者协会（成立于 1988 ）的官方信息展示与招新管理系统。系统提供协会风采展示、关于协会、竞赛培训记录、在线入会申请、招新负责人后台等功能，旨在为协会提供一个集宣传与管理于一体的信息化平台。
+燕山大学无线电爱好者协会（成立于 1988）的官方网站，集风采展示与招新管理于一体：对访客提供协会介绍、活动记录、题组参考与在线入会申请；对招新负责人提供申请管理、统计与录取发布后台。
 
 ### 协会简介
 
@@ -21,40 +21,6 @@
 - **成立年份**：1988 年
 - **协会口号**：无协天下，天下无协
 - **协会宗旨**：挖掘潜质，就在无协
-
----
-
-## 技术架构
-
-```
-┌──────────────────────────────────────────────┐
-│                   前端 (Frontend)              │
-│         纯 HTML / CSS / JavaScript            │
-│   页面位于 public/html/ 目录下                │
-└──────────────────┬───────────────────────────┘
-                   │ HTTP / REST API
-┌──────────────────▼───────────────────────────┐
-│               后端 (Backend)                   │
-│          FastAPI + Python 3.11+              │
-│  backend/routes/  backend/models/             │
-└──────────────────┬───────────────────────────┘
-                   │ sqlite3 (Python stdlib)
-┌──────────────────▼───────────────────────────┐
-│             数据库 (Database)                  │
-│               SQLite 3                        │
-│         backend/data/database.sqlite          │
-└──────────────────────────────────────────────┘
-```
-
-| 层级 | 技术选型 |
-|------|----------|
-| 前端 | HTML5 + CSS3 + 原生 JavaScript |
-| 后端 | FastAPI + Python 3.11+ |
-| 依赖管理 | uv |
-| 数据库 | SQLite 3（Python 标准库 `sqlite3`） |
-| 认证 | JWT（PyJWT） |
-| 安全防护 | 登录/提交速率限制（内存固定窗口） |
-| 导出与导入 | CSV 导出、负责人网页 Excel 校验/脱敏预览/录取名单发布 |
 
 ---
 
@@ -69,16 +35,79 @@
 - **文娱活动** — 休闲娱乐活动展示
 - **培训记录** — 线下培训、专业知识授课、焊接实训等
 - **荣誉墙** — 省级/校级荣誉展示
+- **招新题组** — 各部门招新参考题组（计算机部 C 语言/Python、嵌入式部面试题），支持数学公式与代码高亮
 - **在线入会申请** — 新生在线填写入会申请表单提交
 - **录取查询** — 通过学号和手机号匹配查询录取结果
 
 ### 后台管理（招新负责人）
 
-- **登录** — JWT 认证，支持“记住我”
-- **入会申请管理** — 查看所有入会申请，支持分页、搜索、筛选
+- **登录** — JWT 认证，支持"记住我"
+- **入会申请管理** — 查看所有申请，支持分页、搜索、筛选，近七日趋势与学院分布图表
 - **数据导出** — 将入会申请导出为 CSV
 - **招新设置** — 编辑开放时间、通知、隐私告知、联系方式和表单选项
 - **录取结果** — 下载模板、上传 Excel、校验、脱敏预览并确认发布
+
+---
+
+## 技术架构
+
+```
+┌──────────────────────────────────────────────┐
+│              前端 (Frontend)                  │
+│   Astro 构建的静态页 + 原生 HTML/CSS/JS       │
+│        产物位于 public/html/                 │
+└──────────────────┬───────────────────────────┘
+                   │ HTTP / REST API
+┌──────────────────▼───────────────────────────┐
+│              后端 (Backend)                   │
+│          FastAPI + Python 3.11+              │
+│   backend/routes/  backend/models/           │
+└──────────────────┬───────────────────────────┘
+                   │ sqlite3 (Python stdlib)
+┌──────────────────▼───────────────────────────┐
+│             数据库 (Database)                 │
+│               SQLite 3                        │
+│      backend/data/database.sqlite            │
+└──────────────────────────────────────────────┘
+```
+
+| 层级 | 技术选型 |
+|------|----------|
+| 前端 | Astro 7（静态构建） + HTML5 + CSS3 + 原生 JavaScript |
+| 后端 | FastAPI + Python 3.11+ |
+| 依赖管理 | uv（Python） / Bun（脚本与前端） |
+| 数据库 | SQLite 3（Python 标准库 `sqlite3`） |
+| 认证 | JWT（PyJWT） |
+| 安全防护 | 登录/提交速率限制、严格 CSP、参数化查询 |
+| 导出与导入 | CSV 导出、负责人网页 Excel 校验/脱敏预览/录取名单发布 |
+
+---
+
+## 快速开始
+
+### 环境要求
+
+- **Python** >= 3.11
+- **uv**（https://docs.astral.sh/uv/getting-started/installation/）
+- **Bun**（https://bun.sh/）
+
+### 跑起来
+
+```bash
+# 1. 安装依赖
+cd backend && uv sync && cd ..
+bun install
+
+# 2. 配置环境变量（从示例复制，三个必填项见 docs/DEVELOPMENT.md）
+cp .env.example .env
+
+# 3. 启动后端（5000 端口，同时服务静态页面与 API）
+bun run dev
+```
+
+访问 `http://localhost:5000`，自动跳转到首页。
+
+到此即可浏览所有页面与使用 API。**只有修改 `frontend/` 下的 Astro 源码时**才需要另开一个终端跑 `bun run dev:frontend`（4321 端口热更新），详见开发指南。
 
 ---
 
@@ -88,238 +117,50 @@
 radio-association/
 ├── package.json                  # 开发、验证、图片和导出脚本
 ├── .env.example                  # 本地环境变量示例
-├── README.md                     # 项目说明
 ├── docs/                         # 文档与决策记录
-├── frontend/                     # Astro 工程（仅培训教学页源码，产物提交在 public/html/）
-├── backend/                      # FastAPI 后端（当前活跃后端）
-│   ├── app.py                    # FastAPI 应用入口
-│   ├── pyproject.toml            # uv 项目配置与依赖
-│   ├── config/                   # 数据库与招新配置（含 recruitment.example.json）
+├── frontend/                     # Astro 工程（9 个页面源码 + 招新题组内容集合）
+├── backend/                      # FastAPI 后端
+│   ├── app.py                    # 应用入口
+│   ├── config/                   # 数据库与招新配置
 │   ├── models/                   # SQLite 数据访问
 │   ├── routes/                   # FastAPI 路由
 │   ├── tests/                    # API、运维和部署工具测试
 │   └── data/                     # 本地 SQLite 数据（不提交）
-├── public/                       # 前端静态资源
-│   ├── html/                     # 原生 HTML、CSS、JavaScript
-│   ├── image/                    # 会徽与生成的响应式 WebP
-│   └── favicon.ico
-├── source-assets/
-│   └── image-originals/          # 图片原稿，不进入 git archive
-├── deployment/                   # Nginx、systemd 与运维配置
+├── public/                       # 前端静态资源（含 Astro 构建产物，随同提交）
+│   ├── html/                     # 页面、样式、脚本
+│   └── image/                    # 会徽与生成的响应式 WebP
+├── source-assets/                # 图片原稿（不进 git archive）
+├── deployment/                   # Caddy、systemd 与运维配置
 ├── scripts/                      # 图片、导出、检查与运维工具
-└── tests/
-    ├── e2e/                      # Playwright 桌面与移动端测试
-    └── fixtures/                 # 隔离的招新和录取测试配置
+└── tests/                        # Playwright E2E 与测试夹具
 ```
-
-### 文档入口
-
-- 部署与重建按 [Docker + Caddy 部署方案](docs/DOCKER_DEPLOYMENT.md) 执行。
-- 招新负责人日常使用 [招新日常运行说明](docs/RECRUITMENT_OPERATIONS.md)，正式开放前完成 [个人信息保护上线确认表](docs/PRIVACY_IMPACT_CHECKLIST.md)。
-- 服务器维护使用 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)；需要理解部署设计时再阅读 [部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)。
-- 需要复现容量验证时使用 [入会申请接口隔离压测说明](docs/LOAD_TESTING.md)；2026-08-12 实测结果见 [500 并发隔离压测报告](docs/LOAD_TESTING_REPORT_2026-08-12.md)。
-- 数据结构见 [数据库说明](docs/DATABASE.md)；代码命名原因保留在 `docs/adr/`。
 
 ---
 
-## 快速开始
+## 文档入口
 
-### 环境要求
+**日常使用**
+- 招新负责人：[招新日常运行说明](docs/RECRUITMENT_OPERATIONS.md)；录取名单 Excel 操作见[大白话流程说明](docs/录取名单Excel发布流程说明.md)
+- 正式开放招新前：完成[个人信息保护上线确认表](docs/PRIVACY_IMPACT_CHECKLIST.md)
 
-- **Python** >= 3.11
-- **uv**（安装方式见 https://docs.astral.sh/uv/getting-started/installation/）
-- **Bun**（运行项目脚本、前端检查、Astro 前端构建、录取导出和 Playwright 测试）
+**开发与部署**
+- 开发者环境、Astro 工程、题组页编辑、脚本：[开发指南](docs/DEVELOPMENT.md)
+- 部署：[Docker + Caddy 部署方案](docs/DOCKER_DEPLOYMENT.md)；日常维护：[部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)
+- 架构理解：[部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)；数据结构：[数据库说明](docs/DATABASE.md)；命名决策：`docs/adr/`
 
-### 1. 克隆项目
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
-### 2. 安装 Python 依赖
-
-```bash
-cd backend
-uv sync
-```
-
-### 3. 环境变量
-
-| 变量 | 必填 | 说明 |
-|------|------|------|
-| `PORT` | 否 | 服务端口号，默认 `5000` |
-| `DATABASE_PATH` | 否 | SQLite 数据库路径，相对路径基于仓库根目录，默认 `backend/data/database.sqlite` |
-| `JWT_SECRET` | **是** | JWT 签名密钥，生产环境必须设置为随机长字符串。未设置时应用启动失败。 |
-| `OFFICER_USERNAME` | **是** | 招新负责人登录用户名（仅一个账号）。未设置时应用启动失败。 |
-| `OFFICER_PASSWORD` | **是** | 招新负责人登录密码（明文）。未设置时应用启动失败。 |
-| `RECRUITMENT_CONFIG_PATH` | 否 | 私有招新业务配置路径；生产环境使用 `/var/lib/radio-association/private/recruitment.json`。 |
-| `ADMISSIONS_DATA_PATH` | 否 | 私有录取名单路径；生产环境使用 `/var/lib/radio-association/private/admissions.json`。 |
-
-在项目根目录从示例复制 `.env`（此文件不会提交）：
-
-```env
-PORT=5000
-JWT_SECRET="your-secret-key-change-in-production"
-OFFICER_USERNAME=example-officer
-OFFICER_PASSWORD=example-password
-```
-
-> **安全提示**：`JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD` 不提供硬编码默认值。若未设置，应用启动时会直接报错。密码以明文保存，请确保 `.env` 不提交到 Git 且服务器上文件权限受控。
-
-### 4. 初始化本地展示种子数据（可选）
-
-```bash
-bun scripts/init-db.js
-```
-
-该脚本会先清空再重新插入协会、部门、竞赛、荣誉、培训等基础数据，属于破坏性操作，仅用于明确需要这些 API 种子数据的本地环境。生产部署和故障排查不得自行运行。
-
-### 5. 启动服务
-
-```bash
-bun run dev          # 通过 package.json 运行 uvicorn 开发服务器（实际为 Python 后端）
-```
-
-或直接在 `backend/` 目录启动：
-
-```bash
-cd backend
-uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000
-```
-
-服务默认运行在 `http://localhost:5000`，访问根路径会自动跳转到 `http://localhost:5000/html/index.html`。
-
-### 6. 招新业务配置（本地开发）
-
-本地开发的真实招新配置放在 `backend/config/recruitment.local.json`（已被 git 与 Docker 构建排除，不会提交）；该文件不存在时回退到 `backend/config/recruitment.example.json`（入会申请与录取查询默认均为关闭）。配置文件按以下优先级解析：`RECRUITMENT_CONFIG_PATH` 环境变量 > `recruitment.local.json`（存在时）> `recruitment.example.json`。
-
-**修改文件不会立即生效**：配置只在应用启动时加载一次并缓存在内存中，`uvicorn --reload` 只监听 Python 文件，改动 JSON 不会触发重载——改完必须重启后端进程。不想重启时，登录负责人后台在“招新设置与录取结果”里保存，该接口在写盘的同时更新内存缓存，实时生效。
-
-注意：配置中 `admissionQuery.enabled=true` 时，启动会强制加载录取名单文件（`ADMISSIONS_DATA_PATH`，默认为仓库旁的 `YSU-radio-association-private/admission-results.json`），文件缺失会导致应用拒绝启动；本地没有名单时可放一个空数组 `[]` 占位。
-
-生产环境**不使用** `recruitment.local.json`：生产配置是 `/var/lib/radio-association/private/recruitment.json`（经 `RECRUITMENT_CONFIG_PATH` 指定），日常变更由负责人在网页后台保存——实时生效且自动备份旧文件，无需重启；只有后台不可用时才按 [Docker 部署方案](docs/DOCKER_DEPLOYMENT.md) 第 8.5 节手动替换文件并 `docker restart`。
-
-### 7. Astro 前端页面（仅修改这些页面时需要）
-
-培训教学页（`/html/trainings.html`）与荣誉成就页（`/html/honors.html`）由 `frontend/` 下的 Astro 工程在构建时渲染生成，产物已提交进仓库；不修改这些页面时无需执行本步骤。
-
-```bash
-bun install --cwd frontend   # 首次或 frontend/bun.lock 变更后安装前端依赖
-bun run build:frontend       # 构建并覆盖 public/html/trainings.html 与 public/html/honors.html
-bun run dev:frontend         # Astro 开发服务器（需本地后端已在 5000 端口运行）
-```
-
-修改 `frontend/src/` 后必须重新构建并一并提交产物，CI 会校验产物与 Astro 源码保持同步。其余 12 个页面仍是 `public/html/` 下的原生 HTML，直接编辑即可。
-
-### 8. 发布录取名单
-
-招新负责人登录后进入“招新设置与录取结果”，下载标准模板并按以下列顺序填写：
-
-| 列 | 字段 | 说明 |
-|----|------|------|
-| A | 姓名 | 学生姓名 |
-| B | 学号 | 学生12位学号 |
-| C | 手机号 | 学生入会申请时填写的手机号 |
-| D | 录取部门 | 录取部门名称（可选） |
-| E | 录取状态 | 仅限“已录取”或“未录取” |
-
-网页会校验文件大小、表头、字段、重复学号、公式、宏和外部链接；校验通过后只展示少量脱敏预览，负责人再次确认才会原子发布。发布新名单前必须先关闭录取查询，发布完成后再单独开启。
-
-网页故障时可使用备用导出脚本，输出路径必须位于 Git 仓库之外：
-
-```bash
-bun scripts/export-admissions.js 工作簿1.xlsx C:\私有目录\admissions.json
-```
-
-生产录取名单始终位于非公开私有目录，录取查询会同时核验学号和申请手机号。
-
----
-
-## API 接口
-
-### 公开接口
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/departments` | 获取所有部门 |
-| GET | `/api/competitions` | 获取竞赛列表（按年份倒序） |
-| GET | `/api/trainings` | 获取培训记录 |
-| GET | `/api/honors` | 获取荣誉列表 |
-| GET | `/api/association` | 获取协会基本信息 |
-| POST | `/api/membership-applications` | 提交入会申请 |
-| GET | `/api/recruitment/config` | 获取公开招新安排 |
-| POST | `/api/admissions/query` | 按学号和申请手机号查询本人录取结果 |
-
-### 招新负责人接口（需 JWT 认证）
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/recruitment-officers/login` | 招新负责人登录 |
-| POST | `/api/recruitment-officers/logout` | 注销 |
-| GET | `/api/recruitment-officers/verify` | 验证 Token 有效性 |
-| GET | `/api/recruitment-officers/profile` | 获取招新负责人信息 |
-| GET | `/api/membership-applications` | 获取入会申请列表（分页/搜索/排序） |
-| GET | `/api/membership-applications/stats` | 获取入会申请统计 |
-| GET | `/api/membership-applications/{membership_application_id}` | 获取指定入会申请详情 |
-| GET | `/api/membership-applications/export.csv` | 导出当前筛选条件下的入会申请 |
-| DELETE | `/api/membership-applications/{membership_application_id}` | 删除指定入会申请 |
-| GET | `/api/membership-applications/operation-records` | 获取入会申请删除操作记录（分页） |
-| GET/PUT | `/api/recruitment/manage/config` | 读取或更新招新业务设置 |
-| GET | `/api/admissions/manage/status` | 获取录取名单发布状态 |
-| GET | `/api/admissions/manage/template.xlsx` | 下载录取名单模板 |
-| POST | `/api/admissions/manage/preview` | 校验并脱敏预览录取 Excel |
-| POST | `/api/admissions/manage/publish` | 发布已确认的预览名单 |
-
----
-
-## 数据模型
-
-### 入会申请（MembershipApplication）
-
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| name | String | 是 | 姓名 |
-| studentId | String | 是 | 学号 |
-| college | String | 是 | 学院 |
-| grade | String | 是 | 年级 |
-| phone | String | 是 | 手机号 |
-| email | String | 是 | 邮箱 |
-| self_introduction | String | 是 | 自我介绍 |
-| expectation | String | 否 | 加入期望 |
-| createdAt | DateTime | 自动 | 提交时间 |
-| updatedAt | DateTime | 自动 | 更新时间 |
-
----
-
-## 脚本说明
-
-| 脚本 | 命令 | 说明 |
-|------|------|------|
-| start | `cd backend && uv run uvicorn app:app --host 127.0.0.1 --port 5000` | 启动仅本机监听的服务 |
-| dev | `cd backend && uv run uvicorn app:app --reload --host 0.0.0.0 --port 5000` | 开发热重载 |
-| dev:frontend | `bun run dev:frontend` | Astro 开发服务器（`/api`、`/html` 等代理到本地 5000 后端） |
-| build:frontend | `bun run build:frontend` | 构建培训教学页与荣誉成就页并覆盖 `public/html/trainings.html`、`public/html/honors.html` |
-| images:build | `bun run images:build` | 从 `source-assets/image-originals` 生成响应式 WebP 与图片清单 |
-| init | `bun scripts/init-db.js` | 重建本地展示种子数据（破坏性，仅限明确需要的本地环境） |
-| export:admissions | `bun scripts/export-admissions.js` | 将 Excel 录取名单导出为 JSON |
-| release:image | `scripts/release-image.sh [SHA]` | 开发机构建镜像、传输到服务器并双侧核对镜像 ID（发布细节见部署文档） |
-| verify | `bun run verify` | 运行敏感文件、源文件、Python 和 API 检查 |
-| verify:release | `bun run verify:release` | 在 `verify` 基础上运行桌面、320px 与 390px E2E |
-
-生产服务器不直接使用上述开发命令，也不开放公网 5000 端口。精确 SHA 发布、备份、恢复和回滚请按 [部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md) 执行。日常招新不要求理解后端或服务器实现。
+**压测**
+- [入会申请接口隔离压测说明](docs/LOAD_TESTING.md)；2026-08-12 实测：[500 并发隔离压测报告](docs/LOAD_TESTING_REPORT_2026-08-12.md)
 
 ---
 
 ## 安全说明
 
-- 招新负责人密码以明文配置在环境变量 `OFFICER_PASSWORD` 中，仅在服务器受限配置文件中保存。
-- `JWT_SECRET`、`OFFICER_USERNAME` 与 `OFFICER_PASSWORD` 不提供硬编码默认值，未设置时应用启动失败。
-- API 认证使用 JWT 令牌机制。
-- 入会申请管理接口需要 Bearer Token 认证。
-- 登录、入会申请和录取查询均带有简单的内存速率限制；生产环境固定使用一个 Uvicorn 进程，与 SQLite 单进程设计一致。
-- 入会申请需要确认个人信息处理说明；确认值只用于提交校验，不写入业务表。
-- 生产环境必须使用随机 `JWT_SECRET` 和仅保存在服务器受限配置中的负责人明文密码。
+- 招新负责人密码以明文配置在环境变量 `OFFICER_PASSWORD` 中，仅保存在服务器受限配置文件
+- `JWT_SECRET`、`OFFICER_USERNAME`、`OFFICER_PASSWORD` 无硬编码默认值，未设置时应用拒绝启动
+- API 认证使用 JWT；管理接口需 Bearer Token
+- 登录、入会申请和录取查询均有内存速率限制；生产固定单 Uvicorn 进程，与 SQLite 单进程设计一致
+- 入会申请需确认个人信息处理说明；确认值只用于提交校验，不写入业务表
+- 生产必须使用随机 `JWT_SECRET`，全站严格 CSP（无 `unsafe-inline`）
 
 ---
 
