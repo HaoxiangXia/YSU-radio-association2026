@@ -1,6 +1,12 @@
 import { defineConfig } from 'astro/config';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  },
   build: {
     // src/pages/html/trainings.astro → dist/html/trainings.html（保持原 URL）
     format: 'file',
@@ -25,6 +31,7 @@ export default defineConfig({
             if (req.url?.startsWith('/html/honors.html')) return req.url;
             if (req.url?.startsWith('/html/index.html')) return req.url;
             if (req.url?.startsWith('/html/about-association.html')) return req.url;
+            if (req.url?.startsWith('/html/recruitment-questions.html')) return req.url;
           },
         },
         '/image': 'http://127.0.0.1:5000',

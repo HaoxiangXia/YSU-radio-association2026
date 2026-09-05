@@ -4,9 +4,11 @@ import { getEntry, render } from 'astro:content';
 
 const pythonEntry = await getEntry('questions', 'python');
 const cEntry = await getEntry('questions', 'c');
-if (!pythonEntry || !cEntry) throw new Error('题组内容缺失');
+const qrsEntry = await getEntry('questions', 'qrs');
+if (!pythonEntry || !cEntry || !qrsEntry) throw new Error('题组内容缺失');
 const { Content: PythonContent } = await render(pythonEntry);
 const { Content: CContent } = await render(cEntry);
+const { Content: QrsContent } = await render(qrsEntry);
 ---
 <SubpageLayout
   title="招新题组 - 无线电爱好者协会"
@@ -17,6 +19,7 @@ const { Content: CContent } = await render(cEntry);
   heroCompact
   navMode="custom"
 >
+  <link slot="head" rel="stylesheet" href="/html/vendor/katex.min.css">
   <nav slot="nav" class="nav questions-nav">
     <div class="container questions-nav__inner">
       <a href="/html/index.html" class="nav-logo">
@@ -214,16 +217,32 @@ const { Content: CContent } = await render(cEntry);
   font-size: 0.875em;
 }
 
+/* 正文图片：自适应容器宽度，保持比例 */
+.questions-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin: 0.75rem auto;
+}
+
 /* Shiki 行内背景覆盖（pre 已统一深色背景） */
 .questions-prose pre code {
   background: transparent;
 }
 
 @media (max-width: 700px) {
+  .questions-tabs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .questions-tab {
-    flex: 1 1 40%;
-    min-width: 9rem;
-    font-size: 0.8125rem;
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    white-space: nowrap;
+    font-size: 0.875rem;
   }
 
   .questions-prose {
@@ -258,7 +277,7 @@ const { Content: CContent } = await render(cEntry);
     <div class="questions-tabs" role="tablist" aria-label="题组切换">
       <button type="button" class="questions-tab is-active" id="questions-tab-c" role="tab" aria-selected="true" aria-controls="questions-c" data-questions="c">计算机部 · C 语言题组</button>
       <button type="button" class="questions-tab" id="questions-tab-python" role="tab" aria-selected="false" aria-controls="questions-python" data-questions="python" tabindex="-1">计算机部 · Python 题组</button>
-      <button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">嵌入式部 · 敬请期待</button>
+      <button type="button" class="questions-tab" id="questions-tab-qrs" role="tab" aria-selected="false" aria-controls="questions-qrs" data-questions="qrs" tabindex="-1">嵌入式部 · 面试题组</button>
       <button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">机械部 · 敬请期待</button>
     </div>
     <div class="questions-views">
@@ -267,6 +286,9 @@ const { Content: CContent } = await render(cEntry);
       </div>
       <div class="questions-view questions-prose" id="questions-python" role="tabpanel" aria-labelledby="questions-tab-python">
         <PythonContent />
+      </div>
+      <div class="questions-view questions-prose" id="questions-qrs" role="tabpanel" aria-labelledby="questions-tab-qrs">
+        <QrsContent />
       </div>
     </div>
   </div>

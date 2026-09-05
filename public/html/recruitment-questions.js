@@ -1,6 +1,6 @@
 // 招新题组页：tab 切换（与管理员页 chart-tab 同一交互模式：点击 + 左右方向键 + URL hash 深链）
 (function () {
-  var names = ['c', 'python'];
+  var names = ['c', 'python', 'qrs'];
 
   function switchQuestions(name, updateHash) {
     if (names.indexOf(name) === -1) name = 'c';
