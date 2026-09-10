@@ -55,8 +55,15 @@ docker build -f deployment/docker/Dockerfile -t "$IMAGE" .
 LOCAL_ID="$(docker image inspect --format '{{.Id}}' "$IMAGE")"
 echo "==> 本地镜像 ID：$LOCAL_ID"
 
-echo "==> 传输到 $SERVER（镜像 200-400 MB，gzip 压缩，需耐心等待）"
-docker save "$IMAGE" | gzip | ssh -i "$SSH_KEY" "$SERVER" "gunzip | docker load"
+IMAGE_SIZE="$(docker image inspect --format '{{.Size}}' "$IMAGE")"
+echo "==> 传输到 $SERVER（镜像约 $((IMAGE_SIZE / 1024 / 1024)) MB，gzip 压缩，需耐心等待）"
+if command -v pv >/dev/null 2>&1; then
+    # pv 以未压缩大小估算进度/ETA，gzip 压缩后实际流量更小，进度仅供参考
+    docker save "$IMAGE" | pv -s "$IMAGE_SIZE" | gzip | ssh -i "$SSH_KEY" "$SERVER" "gunzip | docker load"
+else
+    echo "提示：安装 pv（sudo apt install pv）可显示传输进度。" >&2
+    docker save "$IMAGE" | gzip | ssh -i "$SSH_KEY" "$SERVER" "gunzip | docker load"
+fi
 
 REMOTE_ID="$(ssh -i "$SSH_KEY" "$SERVER" "docker image inspect --format '{{.Id}}' '$IMAGE'")"
 echo "==> 服务器镜像 ID：$REMOTE_ID"
