@@ -151,6 +151,7 @@
         
         const result = await response.json().catch(() => ({}));
         if (response.ok) {
+          document.getElementById('success-message').textContent = result.message || '入会申请提交成功！';
           document.getElementById('success-modal').classList.add('open');
           form.reset();
           setFormStatus('', false);
@@ -161,10 +162,10 @@
             : Array.isArray(detail)
               ? detail.map((item) => item.msg).join('；')
               : '提交失败，请稍后再试。';
-          setFormStatus(message);
+          showErrorModal(message);
         }
       } catch (error) {
-        setFormStatus('提交失败，请检查网络后重试。');
+        showErrorModal('提交失败，请检查网络后重试。');
       } finally {
         submitBtn.disabled = !applicationIsOpen;
         submitBtn.textContent = applicationIsOpen ? '提交入会申请' : '入会申请当前不可提交';
@@ -175,6 +176,15 @@
       document.getElementById('success-modal').classList.remove('open');
     }
 
+    function showErrorModal(message) {
+      document.getElementById('error-message').textContent = message;
+      document.getElementById('error-modal').classList.add('open');
+    }
+
+    function closeErrorModal() {
+      document.getElementById('error-modal').classList.remove('open');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('membership-application-form');
       if (form) {
@@ -182,6 +192,7 @@
         attachFieldValidation(form);
       }
       document.getElementById('success-close-button').addEventListener('click', closeSuccessModal);
+      document.getElementById('error-close-button').addEventListener('click', closeErrorModal);
       loadRecruitmentConfig();
     });
   

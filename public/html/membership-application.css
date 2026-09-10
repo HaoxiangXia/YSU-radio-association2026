@@ -85,3 +85,6 @@
   line-height: 1.65;
 }
   
+.modal-title--error {
+  color: #dc2626;
+}

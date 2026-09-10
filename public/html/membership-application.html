@@ -6,7 +6,7 @@
   <title>入会申请 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css?v=20260903c">
-  <link rel="stylesheet" href="/html/membership-application.css?v=20260813">
+  <link rel="stylesheet" href="/html/membership-application.css?v=20260910">
 </head>
 <body class="site-page sub-page membership-application-page">
   <div id="nav-placeholder"></div>
@@ -101,8 +101,18 @@
     <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
       <div class="modal">
         <h3 id="success-title">入会申请提交成功！</h3>
-        <p>感谢你的入会申请！请加入协会招新 QQ 群 836660390 获取后续通知（可在页面最下方复制）。</p>
+        <p id="success-message" class="mb-2"></p>
+        <p>请加入协会招新 QQ 群 836660390 获取后续通知（可在页面最下方复制）。</p>
         <button type="button" class="btn-solid" id="success-close-button">确定</button>
+      </div>
+    </div>
+
+    <!-- 失败提示 -->
+    <div id="error-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="error-title">
+      <div class="modal">
+        <h3 id="error-title" class="modal-title--error">提交失败</h3>
+        <p id="error-message"></p>
+        <button type="button" class="btn-solid" id="error-close-button">确定</button>
       </div>
     </div>
   </main>
@@ -117,6 +127,6 @@
 
   <script src="/html/image-assets.js?v=20260819"></script>
   <script src="/html/common.js?v=20260729"></script>
-  <script src="/html/membership-application.js?v=20260813"></script>
+  <script src="/html/membership-application.js?v=20260910"></script>
 </body>
 </html>
