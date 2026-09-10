@@ -23,6 +23,83 @@ def create(db: sqlite3.Connection, data: dict):
     return find_by_id(db, new_id)
 
 
+class PhoneMismatchError(Exception):
+    """Raised when a correction attempt supplies a phone that does not match the existing application."""
+
+
+def create_or_correct(db: sqlite3.Connection, data: dict, client_ip: str):
+    """Insert a new application, or correct the existing one when studentId and phone both match.
+
+    Returns (row, corrected) where corrected is True when an existing application was overwritten.
+    """
+    try:
+        db.execute("BEGIN IMMEDIATE")
+        existing = db.execute(
+            "SELECT * FROM membership_applications WHERE studentId = ?",
+            (data.get("studentId"),),
+        ).fetchone()
+
+        if existing is None:
+            cur = db.execute(
+                """
+                INSERT INTO membership_applications (name, studentId, college, grade, phone, email, self_introduction, expectation)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    data.get("name"),
+                    data.get("studentId"),
+                    data.get("college"),
+                    data.get("grade"),
+                    data.get("phone"),
+                    data.get("email"),
+                    data.get("self_introduction"),
+                    data.get("expectation"),
+                ),
+            )
+            new_id = cur.lastrowid
+            db.commit()
+            return find_by_id(db, new_id), False
+
+        if existing["phone"] != data.get("phone"):
+            db.rollback()
+            raise PhoneMismatchError
+
+        db.execute(
+            """
+            UPDATE membership_applications
+            SET name = ?, college = ?, grade = ?, phone = ?, email = ?,
+                self_introduction = ?, expectation = ?,
+                updatedAt = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+            WHERE id = ?
+            """,
+            (
+                data.get("name"),
+                data.get("college"),
+                data.get("grade"),
+                data.get("phone"),
+                data.get("email"),
+                data.get("self_introduction"),
+                data.get("expectation"),
+                existing["id"],
+            ),
+        )
+        db.execute(
+            """
+            INSERT INTO membership_application_operation_records
+                (operation, membershipApplicationId, applicationName, studentId, clientIp)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            ("correct", existing["id"], existing["name"], existing["studentId"], client_ip),
+        )
+        db.commit()
+        return find_by_id(db, existing["id"]), True
+    except PhoneMismatchError:
+        raise
+    except sqlite3.Error:
+        db.rollback()
+        raise
+
+
 def find_all(
     db: sqlite3.Connection,
     page: int = 1,

@@ -10,6 +10,7 @@ DEFAULT_DB_PATH = REPOSITORY_ROOT / "backend" / "data" / "database.sqlite"
 STUDENT_ID_INDEX = "ux_membership_applications_student_id"
 STUDENT_ID_MIGRATION = "0001_unique_membership_application_student_id"
 OPERATION_RECORDS_MIGRATION = "0002_membership_application_delete_operation_records"
+CORRECTION_RECORDS_MIGRATION = "0003_membership_application_correction_records"
 
 
 class DatabaseMigrationError(RuntimeError):
@@ -303,6 +304,72 @@ def _apply_operation_records_migration(
     except sqlite3.Error as exc:
         connection.rollback()
         raise DatabaseMigrationError("数据库迁移失败，变更已回滚") from exc
+
+
+def _apply_correction_records_migration(
+    connection: sqlite3.Connection,
+    db_path: Path,
+    backup_before_migrations: bool,
+) -> Path | None:
+    if _migration_recorded(connection, CORRECTION_RECORDS_MIGRATION):
+        return None
+
+    backup_path = None
+    if backup_before_migrations:
+        backup_path = _backup_before_migration(
+            connection,
+            db_path,
+            CORRECTION_RECORDS_MIGRATION,
+        )
+
+    applied_at = datetime.now(timezone.utc).isoformat()
+    try:
+        connection.execute("BEGIN IMMEDIATE")
+        # Rebuild the operation records table to allow the 'correct' operation,
+        # nullable recruitmentOfficerId, and a nullable clientIp column.
+        connection.execute(
+            """
+            CREATE TABLE membership_application_operation_records_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                operation TEXT NOT NULL CHECK (operation IN ('delete', 'correct')),
+                membershipApplicationId INTEGER NOT NULL,
+                applicationName TEXT NOT NULL,
+                studentId TEXT NOT NULL,
+                recruitmentOfficerId TEXT,
+                clientIp TEXT,
+                createdAt TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+            )
+            """
+        )
+        connection.execute(
+            """
+            INSERT INTO membership_application_operation_records_new
+                (id, operation, membershipApplicationId, applicationName, studentId, recruitmentOfficerId, createdAt)
+            SELECT id, operation, membershipApplicationId, applicationName, studentId, recruitmentOfficerId, createdAt
+            FROM membership_application_operation_records
+            """
+        )
+        connection.execute("DROP TABLE membership_application_operation_records")
+        connection.execute(
+            "ALTER TABLE membership_application_operation_records_new RENAME TO membership_application_operation_records"
+        )
+        connection.execute(
+            """
+            CREATE INDEX IF NOT EXISTS idx_membership_application_operation_records_created_at
+            ON membership_application_operation_records(createdAt DESC, id DESC)
+            """
+        )
+        connection.execute(
+            """
+            INSERT OR IGNORE INTO schema_migrations (name, appliedAt)
+            VALUES (?, ?)
+            """,
+            (CORRECTION_RECORDS_MIGRATION, applied_at),
+        )
+        connection.commit()
+    except sqlite3.Error as exc:
+        connection.rollback()
+        raise DatabaseMigrationError("数据库迁移失败，变更已回滚") from exc
     return backup_path
 
 
@@ -325,6 +392,13 @@ def initialize_database(
         if backup_path:
             backup_paths.append(backup_path)
         backup_path = _apply_operation_records_migration(
+            connection,
+            resolved_path,
+            backup_before_migrations,
+        )
+        if backup_path:
+            backup_paths.append(backup_path)
+        backup_path = _apply_correction_records_migration(
             connection,
             resolved_path,
             backup_before_migrations,

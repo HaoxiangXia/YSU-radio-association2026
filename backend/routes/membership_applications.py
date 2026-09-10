@@ -109,23 +109,26 @@ def create_membership_application(
             "提交过于频繁，请稍后再试",
         )
     try:
-        membership_application_model.create(
+        _, corrected = membership_application_model.create_or_correct(
             db,
             data.model_dump(
                 by_alias=True,
                 exclude={"privacy_accepted"},
             ),
+            client_key,
         )
-    except sqlite3.IntegrityError:
+    except membership_application_model.PhoneMismatchError:
         raise HTTPException(
             status.HTTP_409_CONFLICT,
-            "该学号已提交过入会申请，如需更正请联系招新负责人",
+            "该学号已提交过申请，手机号与首次提交不一致，请使用相同的手机号或联系招新负责人",
         )
     except sqlite3.Error:
         raise HTTPException(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             "提交入会申请失败，请稍后再试",
         )
+    if corrected:
+        return {"message": "更正申请提交成功，已覆盖原有申请"}
     return {"message": "入会申请提交成功"}
 
 

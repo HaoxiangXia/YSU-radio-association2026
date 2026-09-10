@@ -107,7 +107,9 @@ def test_create_duplicate_and_privacy_not_persisted(default_client):
     duplicate = client.post("/api/membership-applications", json=payload)
 
     assert first.status_code == 201
-    assert duplicate.status_code == 409
+    # 学号与手机号一致 → 视为更正申请，覆盖成功而非 409
+    assert duplicate.status_code == 201
+    assert duplicate.json()["message"] == "更正申请提交成功，已覆盖原有申请"
     with sqlite3.connect(state["database_path"]) as db:
         columns = {
             row[1]
@@ -115,6 +117,69 @@ def test_create_duplicate_and_privacy_not_persisted(default_client):
         }
         assert "privacyAccepted" not in columns
         assert "privacy_accepted" not in columns
+        count = db.execute(
+            "SELECT COUNT(*) FROM membership_applications WHERE studentId = ?",
+            (payload["studentId"],),
+        ).fetchone()[0]
+        assert count == 1
+
+
+def test_correction_with_mismatched_phone_is_rejected(default_client):
+    client, _ = default_client
+    payload = make_application()
+
+    first = client.post("/api/membership-applications", json=payload)
+    mismatched = client.post(
+        "/api/membership-applications",
+        json=make_application(phone="13900000003"),
+    )
+
+    assert first.status_code == 201
+    assert mismatched.status_code == 409
+    assert mismatched.json()["detail"] == (
+        "该学号已提交过申请，手机号与首次提交不一致，请使用相同的手机号或联系招新负责人"
+    )
+
+
+def test_correction_overwrites_fields_keeps_id_updates_timestamp_and_records(default_client):
+    client, state = default_client
+    original = make_application(name="原始姓名", email="original@example.test")
+
+    first = client.post("/api/membership-applications", json=original)
+    assert first.status_code == 201
+
+    corrected_payload = make_application(
+        name="更正姓名",
+        email="corrected@example.test",
+        self_introduction="这是更正后的自我介绍内容。",
+    )
+    second = client.post("/api/membership-applications", json=corrected_payload)
+    assert second.status_code == 201
+    assert second.json()["message"] == "更正申请提交成功，已覆盖原有申请"
+
+    with sqlite3.connect(state["database_path"]) as db:
+        db.row_factory = sqlite3.Row
+        row = db.execute(
+            "SELECT * FROM membership_applications WHERE studentId = ?",
+            (original["studentId"],),
+        ).fetchone()
+        assert row["name"] == "更正姓名"
+        assert row["email"] == "corrected@example.test"
+        assert row["self_introduction"] == "这是更正后的自我介绍内容。"
+        assert row["updatedAt"] >= row["createdAt"]
+        original_id = row["id"]
+
+        record = db.execute(
+            """
+            SELECT * FROM membership_application_operation_records
+            WHERE operation = 'correct' AND membershipApplicationId = ?
+            """,
+            (original_id,),
+        ).fetchone()
+        assert record is not None
+        assert record["studentId"] == original["studentId"]
+        assert record["applicationName"] == "原始姓名"
+        assert record["clientIp"] is not None
 
 
 def test_concurrent_duplicate_submission_has_single_winner(default_client):
@@ -129,7 +194,8 @@ def test_concurrent_duplicate_submission_has_single_winner(default_client):
             )
         )
 
-    assert sorted(response.status_code for response in responses) == [201, 409]
+    # 两者都成功：一个创建、一个更正，最终该学号只有一条记录
+    assert sorted(response.status_code for response in responses) == [201, 201]
     with sqlite3.connect(state["database_path"]) as db:
         count = db.execute(
             "SELECT COUNT(*) FROM membership_applications WHERE studentId = ?",
