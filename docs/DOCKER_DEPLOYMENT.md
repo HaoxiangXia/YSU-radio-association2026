@@ -144,7 +144,7 @@ install -o radio-association -g radio-association -m 600 \
 scripts/release-image.sh
 ```
 
-脚本依次完成：校验 SHA 为 40 位、与 HEAD 一致、工作区干净且已推送远端 → `docker build`（构建上下文为仓库根目录，Dockerfile 依赖 backend/ 与 public/ 的两层布局）→ `docker save | gzip | ssh … docker load` 传输（镜像约 200-400 MB，gzip 压缩后更小；前提：admin 已加入 docker 组，见 2.2）→ 双侧 `docker image inspect` 核对镜像 ID 一致。任一环节失败即中止，不要用残缺的镜像启动。SSH 目标与私钥可用 `RADIO_SERVER`、`RADIO_SSH_KEY` 环境变量覆盖。
+脚本依次完成：校验 SHA 为 40 位、与 HEAD 一致、工作区干净且已推送远端 → `docker build`（构建上下文为仓库根目录，Dockerfile 依赖 backend/ 与 public/ 的两层布局）→ `docker save | pv | gzip | ssh … docker load` 传输（镜像约 200-400 MB，gzip 压缩后更小；安装了 `pv` 时显示传输量/速率/ETA，进度以未压缩大小估算、仅供参考，未安装则静默回退无进度显示；前提：admin 已加入 docker 组，见 2.2）→ 双侧 `docker image inspect` 核对镜像 ID 一致。任一环节失败即中止，不要用残缺的镜像启动。SSH 目标与私钥可用 `RADIO_SERVER`、`RADIO_SSH_KEY` 环境变量覆盖。
 
 （旧版本提交中没有该脚本时，按 8.1 节被替代前的手动命令执行，或先从新版本取出脚本。）
 

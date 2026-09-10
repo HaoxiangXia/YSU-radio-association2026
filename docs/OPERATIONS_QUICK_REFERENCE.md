@@ -78,7 +78,7 @@ sleep 5 && curl --fail http://127.0.0.1:5000/healthz
 - 使用经过确认的完整 40 位 SHA；
 - 申请和录取查询保持关闭，当前数据库备份正常。
 
-镜像**只在开发机构建**，服务器不构建。开发机侧在仓库根目录执行 `scripts/release-image.sh`：校验目标 SHA 与 HEAD 一致、工作区干净且已推送，然后构建镜像、`docker save | ssh … docker load` 传输并双侧核对镜像 ID。接交者在服务器 root shell 执行：
+镜像**只在开发机构建**，服务器不构建。开发机侧在仓库根目录执行 `scripts/release-image.sh`：校验目标 SHA 与 HEAD 一致、工作区干净且已推送，然后构建镜像、`docker save | ssh … docker load` 传输并双侧核对镜像 ID。开发机安装 `pv` 后传输过程会显示进度（以未压缩大小估算，仅供参考），未安装不影响功能。接交者在服务器 root shell 执行：
 
 ```bash
 docker image inspect --format '{{.Id}}' radio-association:<新SHA>   # 与开发机核对一致
