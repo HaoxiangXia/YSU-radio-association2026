@@ -467,10 +467,16 @@
 }
 
 @media (max-width: 700px) {
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
   .search-bar input,
+  .search-bar .btn-sm {
+    grid-column: 1 / -1;
+  }
   .search-bar select {
-    min-height: 2.75rem;
-    font-size: 1rem;
+    grid-column: span 1;
   }
   .search-bar .btn-sm,
   .site-page.recruitment-officer-page.membership-applications-page .action-btn,
