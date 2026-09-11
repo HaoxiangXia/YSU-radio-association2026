@@ -292,6 +292,22 @@ def test_admin_pagination_filters_stats_detail_and_delete(default_client):
     assert not {"phone", "email", "self_introduction", "expectation"} & record.keys()
 
 
+def test_search_matches_phone_and_email(default_client):
+    client, state = default_client
+    seed_applications(state["database_path"], 5)
+    login(client)
+
+    by_phone = client.get("/api/membership-applications?search=13800000103")
+    assert by_phone.status_code == 200
+    assert by_phone.json()["pagination"]["count"] == 1
+    assert by_phone.json()["membership_applications"][0]["phone"] == "13800000103"
+
+    by_email = client.get("/api/membership-applications?search=student3@example.test")
+    assert by_email.status_code == 200
+    assert by_email.json()["pagination"]["count"] == 1
+    assert by_email.json()["membership_applications"][0]["email"] == "student3@example.test"
+
+
 
 def test_operation_records_are_paginated_in_reverse_creation_order(default_client):
     client, state = default_client

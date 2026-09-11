@@ -1,6 +1,25 @@
 import sqlite3
 
 
+def build_filter_where(college=None, grade=None, search=None):
+    conditions = []
+    params = []
+
+    if college:
+        conditions.append("college = ?")
+        params.append(college)
+    if grade:
+        conditions.append("grade = ?")
+        params.append(grade)
+    if search:
+        like = f"%{search}%"
+        conditions.append("(name LIKE ? OR studentId LIKE ? OR phone LIKE ? OR email LIKE ?)")
+        params.extend([like, like, like, like])
+
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    return where, params
+
+
 def create(db: sqlite3.Connection, data: dict):
     cur = db.execute(
         """
@@ -110,21 +129,8 @@ def find_all(
     sort_by: str = "createdAt",
     sort_order: str = "desc",
 ):
-    conditions = []
-    params = []
+    where, params = build_filter_where(college=college, grade=grade, search=search)
 
-    if college:
-        conditions.append("college = ?")
-        params.append(college)
-    if grade:
-        conditions.append("grade = ?")
-        params.append(grade)
-    if search:
-        like = f"%{search}%"
-        conditions.append("(name LIKE ? OR studentId LIKE ? OR college LIKE ? OR email LIKE ?)")
-        params.extend([like, like, like, like])
-
-    where = "WHERE " + " AND ".join(conditions) if conditions else ""
 
     allowed_columns = ["createdAt", "name", "studentId", "college", "grade"]
     safe_sort_by = sort_by if sort_by in allowed_columns else "createdAt"
@@ -156,21 +162,7 @@ def find_all_for_export(
     grade: str | None = None,
     search: str | None = None,
 ):
-    conditions = []
-    params = []
-
-    if college:
-        conditions.append("college = ?")
-        params.append(college)
-    if grade:
-        conditions.append("grade = ?")
-        params.append(grade)
-    if search:
-        like = f"%{search}%"
-        conditions.append("(name LIKE ? OR studentId LIKE ? OR college LIKE ? OR email LIKE ?)")
-        params.extend([like, like, like, like])
-
-    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+    where, params = build_filter_where(college=college, grade=grade, search=search)
     rows = db.execute(
         f"""
         SELECT name, studentId, college, grade, phone, email,
