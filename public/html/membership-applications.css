@@ -542,4 +542,12 @@
   .chart-panel__tabs {
     display: flex;
   }
+  .membership-applications-page #operation-records-table td[data-label="操作类型"] {
+    position: static;
+    display: grid;
+    padding-right: 0;
+  }
+  .membership-applications-page #operation-records-table td[data-label="操作类型"]::before {
+    display: block;
+  }
 }
