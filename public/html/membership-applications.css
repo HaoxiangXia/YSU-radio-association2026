@@ -391,6 +391,9 @@
   .chart-view__canvas {
     height: 220px;
   }
+  .chart-view__canvas#college-chart {
+    height: 320px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
