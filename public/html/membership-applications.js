@@ -213,7 +213,7 @@
       if (!chartState.trend.chart) chartState.trend.chart = echarts.init(canvas);
       chartState.trend.chart.setOption({
         grid: { left: 40, right: 24, top: 32, bottom: 32 },
-        tooltip: { trigger: 'axis' },
+        tooltip: { trigger: 'axis', confine: true },
         xAxis: {
           type: 'category',
           data: days.map((day) => day.key.slice(5)),
@@ -248,7 +248,7 @@
       setChartMeta('chart-college-meta', `共 ${stats.collegeCount} 个学院 · ${total} 份申请`);
       if (!chartState.college.chart) chartState.college.chart = echarts.init(canvas);
       chartState.college.chart.setOption({
-        tooltip: { trigger: 'item', formatter: '{b}<br/>申请 {c} 份（{d}%）' },
+        tooltip: { trigger: 'item', formatter: '{b}<br/>申请 {c} 份（{d}%）', confine: true },
         legend: { bottom: 0, textStyle: { color: '#6b7280' }, type: 'scroll' },
         series: [{
           name: '学院分布',
