@@ -462,7 +462,21 @@
     color: #64748b;
     font-size: 0.75rem;
   }
-  .membership-applications-page .data-table td[data-label="操作"] { display: block; margin-top: 0.45rem; }
+  .membership-applications-page .data-table td[data-label="操作"] {
+    position: absolute;
+    top: 0.85rem;
+    right: 1rem;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
   .membership-applications-page .data-table td[data-label="操作"]::before { display: none; }
+  .membership-applications-page .data-table tr {
+    position: relative;
+  }
+  .membership-applications-page .data-table td:first-child {
+    padding-right: 8rem;
+  }
 }
   

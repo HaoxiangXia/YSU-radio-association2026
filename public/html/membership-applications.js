@@ -8,12 +8,6 @@
     let searchTimer;
     let latestLoadRequest = 0;
 
-    function setFeedback(message = '', isError = false) {
-      const feedback = document.getElementById('admin-feedback');
-      feedback.textContent = message;
-      feedback.classList.toggle('is-error', isError);
-    }
-
     function createCell(value, label, className = '') {
       const cell = document.createElement('td');
       cell.dataset.label = label;
@@ -45,8 +39,6 @@
         row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.college, '学院', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.grade, '年级', 'text-sm text-gray-600'));
-        row.appendChild(createCell(item.phone, '联系电话', 'text-sm text-gray-600'));
-        row.appendChild(createCell(item.email, '电子邮箱', 'text-sm text-gray-600'));
 
         const actionCell = document.createElement('td');
         actionCell.dataset.label = '操作';
@@ -77,7 +69,7 @@
       if (!operationRecordItems.length) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 6;
+        cell.colSpan = 4;
         cell.className = 'p-8 text-center text-gray-400';
         cell.textContent = '暂无操作记录';
         row.appendChild(cell);
@@ -92,7 +84,6 @@
         row.appendChild(createCell(item.membershipApplicationId, '申请 ID', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.applicationName, '姓名', 'font-medium text-sm'));
         row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
-        row.appendChild(createCell(item.recruitmentOfficerId, '负责人', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.createdAt, '操作时间', 'text-sm text-gray-600'));
         body.appendChild(row);
       });
@@ -387,7 +378,6 @@
     async function loadData(page = 1) {
       const requestId = ++latestLoadRequest;
       currentPage = page;
-      setFeedback('正在加载入会申请…');
       const params = new URLSearchParams({ ...readFilters(), page: String(page), limit: String(pageSize) });
       try {
         const response = await handleResponse(await fetch(`/api/membership-applications?${params}`));
@@ -400,14 +390,12 @@
           return loadData(pagination.total);
         }
         renderTable();
-        setFeedback(currentItems.length ? '' : '当前没有符合条件的入会申请。');
         return true;
       } catch (error) {
         if (requestId !== latestLoadRequest) return false;
         currentItems = [];
         pagination = { current: 1, total: 0, count: 0 };
         renderTable();
-        setFeedback(error.message || '加载失败，请稍后重试。', true);
         return false;
       }
     }
@@ -487,14 +475,11 @@
 
     async function deleteItem(item) {
       if (!confirm(`确定删除 ${item.name} 的入会申请？此操作不能撤销。`)) return;
-      setFeedback('正在删除…');
       try {
         const response = await handleResponse(await fetch(`/api/membership-applications/${item.id}`, { method: 'DELETE' }));
         const result = await response.json();
         await Promise.all([loadData(currentPage), loadSupportData(), loadOperationRecords()]);
-        setFeedback(result.message || '已删除。');
       } catch (error) {
-        setFeedback(error.message || '删除失败，请稍后重试。', true);
       }
     }
 
