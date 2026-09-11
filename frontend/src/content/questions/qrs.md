@@ -40,7 +40,7 @@ B站视频【NMOS和PMOS】https://www.bilibili.com/video/BV1fKu96gETC?vd_source
 
 ![3.png](images/xt30-connectors.png)
 
-#### （2） 我们知道对于PMOS Vgs<0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS左边是D漏极，中间是G栅极，右边是S原级，图示位置开关1 2短接G电位是12V S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）
+#### （2）我们知道对于PMOS Vgs<0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS右边是D漏极，中间是G栅极，左边是S原级，图示位置开关1 2短接G电位是12V（电源是3S锂电池所以是12V） S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）
 #### （3） https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html
 做硬件数据手册是必须要看的，不用全看只需要找到我们关注的参数即可以上是图中用到的两款降压芯片的数据手册，其中TPS54302是优秀的BUCK芯片可以实现较大压差的降压比如图中的12V-5V，通过查阅数据手册我们可以看出输出电压Vout和Vref有关，请通过查阅数据手册找出Vref的数值？
 
