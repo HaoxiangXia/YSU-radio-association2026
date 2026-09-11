@@ -498,32 +498,6 @@
       }
     }
 
-    async function exportCsv() {
-      const exportButton = document.getElementById('export-button');
-      setFeedback('正在生成 CSV…');
-      exportButton.disabled = true;
-      try {
-        const params = new URLSearchParams(readFilters());
-        const response = await handleResponse(await fetch(
-          `/api/membership-applications/export.csv?${params}`,
-        ));
-        const blob = await response.blob();
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        const disposition = response.headers.get('Content-Disposition') || '';
-        const filenameMatch = disposition.match(/filename="([^"]+)"/);
-        link.download = filenameMatch?.[1] || 'membership-applications.csv';
-        link.click();
-        URL.revokeObjectURL(link.href);
-        const count = response.headers.get('X-Export-Count');
-        setFeedback(count === null ? 'CSV 已生成。' : `CSV 已生成，共 ${count} 条。`);
-      } catch (error) {
-        setFeedback(error.message || '导出失败，请稍后重试。', true);
-      } finally {
-        exportButton.disabled = false;
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         const session = await fetch('/api/recruitment-officers/verify');
@@ -536,7 +510,6 @@
         return;
       }
       document.getElementById('refresh-button').addEventListener('click', () => Promise.all([loadData(1), loadSupportData(), loadOperationRecords(1)]));
-      document.getElementById('export-button').addEventListener('click', exportCsv);
       document.getElementById('detail-close-button').addEventListener('click', closeDetail);
 
       document.querySelectorAll('.chart-tab').forEach((tab) => {

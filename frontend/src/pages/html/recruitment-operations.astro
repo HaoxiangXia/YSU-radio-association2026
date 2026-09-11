@@ -504,6 +504,17 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
     <p class="operations-feedback" id="config-feedback" role="status"></p>
   </section>
 
+  <section class="card operations-card" aria-labelledby="export-heading">
+    <div class="operations-heading">
+      <h2 id="export-heading">入会申请数据导出</h2>
+    </div>
+    <p class="operations-help">导出当前入会申请数据为 CSV 文件，用于离线查看或分析。不包含录取名单数据；录取名单请使用下方「下载 Excel 模板」。</p>
+    <div class="operations-actions">
+      <button class="btn-solid" type="button" id="export-csv-button">导出 CSV</button>
+    </div>
+    <p class="operations-feedback" id="export-feedback" role="status"></p>
+  </section>
+
   <section class="card operations-card" aria-labelledby="admissions-heading">
     <div class="operations-heading">
       <h2 id="admissions-heading">录取名单</h2>
@@ -531,6 +542,16 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
     </div>
     <p class="operations-feedback" id="admissions-feedback" role="status"></p>
   </section>
+
+
+  <!-- CSV 导出提示弹窗 -->
+  <div id="csv-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="csv-modal-title">
+    <div class="modal">
+      <h3 id="csv-modal-title">导出 CSV</h3>
+      <p id="csv-modal-message">正在生成 CSV…</p>
+      <button type="button" class="btn-solid btn-sm" id="csv-modal-close" style="display:none">确定</button>
+    </div>
+  </div>
 
   <script>
     let currentPreviewId = null;
@@ -817,6 +838,38 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       }
     }
 
+    async function exportCsv() {
+      const button = document.getElementById('export-csv-button');
+      const modal = document.getElementById('csv-modal');
+      const message = document.getElementById('csv-modal-message');
+      const closeBtn = document.getElementById('csv-modal-close');
+
+      button.disabled = true;
+      message.textContent = '正在生成 CSV…';
+      closeBtn.style.display = 'none';
+      modal.classList.add('open');
+
+      try {
+        const response = await checkedResponse(await fetch('/api/membership-applications/export.csv'));
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        const disposition = response.headers.get('Content-Disposition') || '';
+        const filenameMatch = disposition.match(/filename="([^"]+)"/);
+        link.download = filenameMatch?.[1] || 'membership-applications.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        const count = response.headers.get('X-Export-Count');
+        message.textContent = count === null ? 'CSV 已生成。' : `CSV 已生成，共 ${count} 条。`;
+        closeBtn.style.display = '';
+      } catch (error) {
+        message.textContent = error.message || '导出失败，请稍后重试。';
+        closeBtn.style.display = '';
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     (async () => {
       try {
         const session = await fetch('/api/recruitment-officers/verify');
@@ -835,6 +888,10 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       document.getElementById('preview-button').addEventListener('click', previewWorkbook);
       document.getElementById('publish-button').addEventListener('click', publishAdmissions);
       document.getElementById('logout-button').addEventListener('click', logout);
+      document.getElementById('export-csv-button').addEventListener('click', exportCsv);
+      document.getElementById('csv-modal-close').addEventListener('click', () => {
+        document.getElementById('csv-modal').classList.remove('open');
+      });
       await loadConfig();
       await loadAdmissionsStatus();
     })();
