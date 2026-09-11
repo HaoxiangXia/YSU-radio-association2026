@@ -189,7 +189,14 @@ function initImageViewer() {
 
 // 生成导航栏 HTML
 function getNavHTML() {
+  const questionsBanner = document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html'
+    ? `
+    <a class="top-banner" href="/html/recruitment-questions.html">
+      <span>2026招新题组已公布 · 点击查看</span>
+    </a>`
+    : '';
   return `
+    ${questionsBanner}
     <nav class="nav">
       <div class="container">
         <a href="/html/index.html" class="nav-logo">

@@ -2760,6 +2760,52 @@ textarea.form-input {
   background: linear-gradient(90deg, var(--page-accent), #67e8f9);
 }
 
+/* 顶部招新横幅：固定于导航栏之上 */
+.top-banner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.25rem 1rem;
+  background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary) 55%, var(--color-primary-light));
+  color: #ffffff;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-decoration: none;
+}
+
+.top-banner:hover {
+  color: #ffffff;
+  filter: brightness(1.07);
+}
+
+
+/* 横幅与导航同处于 #nav-placeholder 内：用兄弟选择器下移导航与页面内容 */
+#nav-placeholder > .top-banner ~ .nav {
+  top: 2.25rem;
+}
+
+#nav-placeholder > .top-banner ~ .nav .mobile-menu {
+  max-height: calc(100vh - var(--nav-height) - 2.25rem);
+  max-height: calc(100dvh - var(--nav-height) - 2.25rem);
+}
+
+body:has(> #nav-placeholder > .top-banner) {
+  padding-top: 2.25rem;
+}
+
+/* 招新题组页使用自定义导航，不展示横幅 */
+body.recruitment-questions-page .top-banner {
+  display: none;
+}
+
 .site-page.activity-page .activity-record__rail {
   display: flex;
   min-width: 0;
