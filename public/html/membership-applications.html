@@ -63,6 +63,14 @@
       </div>
     </div>
 
+    <!-- 数据表格 + 操作记录 -->
+    <div class="card card-section table-panel mb-6">
+      <div class="table-panel__tabs" role="tablist" aria-label="数据表格切换">
+        <button type="button" class="table-tab is-active" id="table-tab-applications" role="tab" aria-selected="true" aria-controls="table-applications" data-table="applications">入会申请列表</button>
+        <button type="button" class="table-tab" id="table-tab-operations" role="tab" aria-selected="false" aria-controls="table-operations" data-table="operations" tabindex="-1">操作记录</button>
+      </div>
+      <div class="table-panel__views">
+        <div class="table-view is-active" id="table-applications" role="tabpanel" aria-labelledby="table-tab-applications">
     <!-- 数据表格 -->
     <div class="card card-section recruitment-officer-table-card">
       <div class="recruitment-officer-table-header">
@@ -87,8 +95,8 @@
         </table>
       </div>
       <div class="pagination" id="pagination"></div>
-    </div>
-
+        </div>
+        <div class="table-view" id="table-operations" role="tabpanel" aria-labelledby="table-tab-operations">
     <!-- 操作记录 -->
     <div class="card card-section recruitment-officer-table-card mb-6">
       <div class="recruitment-officer-table-header">
@@ -112,6 +120,8 @@
       </div>
       <div class="pagination" id="operation-records-pagination"></div>
       <p id="operation-records-feedback" class="admin-feedback" role="status"></p>
+        </div>
+      </div>
     </div>
 
     <!-- 详情弹窗 -->

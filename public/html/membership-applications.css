@@ -312,8 +312,52 @@
 }
 
 /* ===== 扁平化覆写结束 ===== */
+/* ===== 数据表格面板 ===== */
+.table-panel {
+  padding: 0;
+}
 
-/* ===== 统计图表面板 ===== */
+.table-panel__tabs {
+  display: none;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-tab {
+  flex: 1;
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.table-tab:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.table-tab.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.table-panel__views {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.table-view + .table-view {
+  margin-top: 1.5rem;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 1.5rem;
+}
+
 .chart-panel {
   padding: 0;
 }
@@ -478,5 +522,18 @@
   .membership-applications-page .data-table td:first-child {
     padding-right: 8rem;
   }
+  .table-panel__tabs {
+    display: flex;
+  }
+  .table-panel__views {
+    padding: 1rem;
+  }
+  .table-view + .table-view {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+  .chart-panel__tabs {
+    display: flex;
+  }
 }
-  
