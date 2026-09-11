@@ -69,7 +69,7 @@
       if (!operationRecordItems.length) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 4;
+        cell.colSpan = 5;
         cell.className = 'p-8 text-center text-gray-400';
         cell.textContent = '暂无操作记录';
         row.appendChild(cell);
@@ -80,7 +80,7 @@
 
       operationRecordItems.forEach((item) => {
         const row = document.createElement('tr');
-        row.appendChild(createCell(item.operation === 'delete' ? '删除入会申请' : item.operation, '操作', 'text-sm'));
+        row.appendChild(createCell(item.operation === 'delete' ? '删除入会申请' : item.operation, '操作类型', 'text-sm'));
         row.appendChild(createCell(item.membershipApplicationId, '申请 ID', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.applicationName, '姓名', 'font-medium text-sm'));
         row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
@@ -90,34 +90,11 @@
       renderOperationRecordPagination();
     }
 
-    function renderOperationRecordPagination() {
-      const container = document.getElementById('operation-records-pagination');
+    function renderPaginationInto(container, pageInfo, onPage) {
       container.replaceChildren();
-      if (operationRecordPagination.total <= 1) return;
-      const addButton = (label, page, disabled, active = false) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = label;
-        button.disabled = disabled;
-        button.classList.toggle('active', active);
-        button.addEventListener('click', () => loadOperationRecords(page));
-        container.appendChild(button);
-      };
-      const currentPage = operationRecordPagination.current;
-      addButton('上一页', currentPage - 1, currentPage <= 1);
-      const start = Math.max(1, currentPage - 2);
-      const end = Math.min(operationRecordPagination.total, currentPage + 2);
-      for (let page = start; page <= end; page += 1) {
-        addButton(String(page), page, false, page === currentPage);
-      }
-      addButton('下一页', currentPage + 1, currentPage >= operationRecordPagination.total);
-    }
+      if (pageInfo.total <= 1) return;
 
-    function renderPagination() {
-      const container = document.getElementById('pagination');
-      container.replaceChildren();
-      if (pagination.total <= 1) return;
-
+      const currentPage = pageInfo.current;
       const isMobile = window.matchMedia('(max-width: 700px)').matches;
 
       const addButton = (label, page, disabled, active = false) => {
@@ -126,7 +103,7 @@
         button.textContent = label;
         button.disabled = disabled;
         button.classList.toggle('active', active);
-        button.addEventListener('click', () => loadData(page));
+        button.addEventListener('click', () => onPage(page));
         container.appendChild(button);
       };
 
@@ -138,30 +115,28 @@
       };
 
       if (isMobile) {
-        // 第一排：上一页、页码、下一页
         addButton('上一页', currentPage - 1, currentPage <= 1);
         const start = Math.max(1, currentPage - 1);
-        const end = Math.min(pagination.total, currentPage + 1);
+        const end = Math.min(pageInfo.total, currentPage + 1);
         for (let page = start; page <= end; page += 1) {
           addButton(String(page), page, false, page === currentPage);
         }
-        addButton('下一页', currentPage + 1, currentPage >= pagination.total);
+        addButton('下一页', currentPage + 1, currentPage >= pageInfo.total);
 
         addBreak();
 
-        // 第二排：首页、尾页、跳转
         addButton('首页', 1, currentPage <= 1);
-        addButton('尾页', pagination.total, currentPage >= pagination.total);
+        addButton('尾页', pageInfo.total, currentPage >= pageInfo.total);
       } else {
         addButton('首页', 1, currentPage <= 1);
         addButton('上一页', currentPage - 1, currentPage <= 1);
         const start = Math.max(1, currentPage - 1);
-        const end = Math.min(pagination.total, currentPage + 1);
+        const end = Math.min(pageInfo.total, currentPage + 1);
         for (let page = start; page <= end; page += 1) {
           addButton(String(page), page, false, page === currentPage);
         }
-        addButton('下一页', currentPage + 1, currentPage >= pagination.total);
-        addButton('尾页', pagination.total, currentPage >= pagination.total);
+        addButton('下一页', currentPage + 1, currentPage >= pageInfo.total);
+        addButton('尾页', pageInfo.total, currentPage >= pageInfo.total);
       }
 
       const jumper = document.createElement('span');
@@ -169,7 +144,7 @@
       const input = document.createElement('input');
       input.type = 'number';
       input.min = 1;
-      input.max = pagination.total;
+      input.max = pageInfo.total;
       input.placeholder = '页码';
       input.setAttribute('aria-label', '跳转到页码');
       const goButton = document.createElement('button');
@@ -177,8 +152,8 @@
       goButton.textContent = '跳转';
       const jump = () => {
         const page = parseInt(input.value, 10);
-        if (page >= 1 && page <= pagination.total && page !== currentPage) {
-          loadData(page);
+        if (page >= 1 && page <= pageInfo.total && page !== currentPage) {
+          onPage(page);
         }
         input.value = '';
       };
@@ -190,6 +165,15 @@
       jumper.appendChild(goButton);
       container.appendChild(jumper);
     }
+
+    function renderPagination() {
+      renderPaginationInto(document.getElementById('pagination'), pagination, loadData);
+    }
+
+    function renderOperationRecordPagination() {
+      renderPaginationInto(document.getElementById('operation-records-pagination'), operationRecordPagination, loadOperationRecords);
+    }
+
 
     function readFilters() {
       return {
@@ -372,7 +356,23 @@
       if (name === 'trend' && chartState.trend.chart) chartState.trend.chart.resize();
       if (name === 'college' && chartState.college.chart) chartState.college.chart.resize();
     }
-
+    function switchTable(name) {
+      document.querySelectorAll('.table-tab').forEach((tab) => {
+        const isActive = tab.dataset.table === name;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.tabIndex = isActive ? 0 : -1;
+      });
+      document.querySelectorAll('.table-view').forEach((view) => {
+        const isActive = view.id === `table-${name}`;
+        view.classList.toggle('is-active', isActive);
+        if (window.matchMedia('(max-width: 700px)').matches) {
+          view.hidden = !isActive;
+        } else {
+          view.hidden = false;
+        }
+      });
+    }
 
 
     async function loadData(page = 1) {
@@ -510,14 +510,26 @@
           }
         });
       });
+      document.querySelectorAll('.table-tab').forEach((tab) => {
+        tab.addEventListener('click', () => switchTable(tab.dataset.table));
+        tab.addEventListener('keydown', (event) => {
+          const tables = ['applications', 'operations'];
+          const index = tables.indexOf(tab.dataset.table);
+          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            const next = tables[(index + (event.key === 'ArrowRight' ? 1 : tables.length - 1)) % tables.length];
+            switchTable(next);
+            document.getElementById(`table-tab-${next}`).focus();
+          }
+        });
+      });
+
       const viewportMode = window.matchMedia('(max-width: 700px)');
-      const applyViewportMode = () => switchChart(activeChart);
+      const applyViewportMode = () => { switchChart(activeChart); switchTable('applications'); };
       if (viewportMode.addEventListener) {
         viewportMode.addEventListener('change', applyViewportMode);
       }
       applyViewportMode();
-
-
       document.getElementById('detail-modal').addEventListener('click', (event) => {
         if (event.target === event.currentTarget) closeDetail();
       });
