@@ -40,7 +40,7 @@
 
       currentItems.forEach((item, index) => {
         const row = document.createElement('tr');
-        row.appendChild(createCell((currentPage - 1) * pageSize + index + 1, '编号', 'text-sm text-gray-400'));
+        row.appendChild(createCell(pagination.count - (currentPage - 1) * pageSize - index, '编号', 'text-sm text-gray-400'));
         row.appendChild(createCell(item.name, '姓名', 'font-medium text-sm'));
         row.appendChild(createCell(item.studentId, '学号', 'text-sm text-gray-600'));
         row.appendChild(createCell(item.college, '学院', 'text-sm text-gray-600'));
