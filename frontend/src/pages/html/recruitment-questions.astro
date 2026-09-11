@@ -5,10 +5,12 @@ import { getEntry, render } from 'astro:content';
 const pythonEntry = await getEntry('questions', 'python');
 const cEntry = await getEntry('questions', 'c');
 const qrsEntry = await getEntry('questions', 'qrs');
-if (!pythonEntry || !cEntry || !qrsEntry) throw new Error('题组内容缺失');
+const machineryEntry = await getEntry('questions', 'machinery');
+if (!pythonEntry || !cEntry || !qrsEntry || !machineryEntry) throw new Error('题组内容缺失');
 const { Content: PythonContent } = await render(pythonEntry);
 const { Content: CContent } = await render(cEntry);
 const { Content: QrsContent } = await render(qrsEntry);
+const { Content: MachineryContent } = await render(machineryEntry);
 ---
 <SubpageLayout
   title="招新题组 - 无线电爱好者协会"
@@ -278,7 +280,7 @@ const { Content: QrsContent } = await render(qrsEntry);
       <button type="button" class="questions-tab is-active" id="questions-tab-c" role="tab" aria-selected="true" aria-controls="questions-c" data-questions="c">计算机部 · C 语言题组</button>
       <button type="button" class="questions-tab" id="questions-tab-python" role="tab" aria-selected="false" aria-controls="questions-python" data-questions="python" tabindex="-1">计算机部 · Python 题组</button>
       <button type="button" class="questions-tab" id="questions-tab-qrs" role="tab" aria-selected="false" aria-controls="questions-qrs" data-questions="qrs" tabindex="-1">嵌入式部 · 面试题组</button>
-      <button type="button" class="questions-tab questions-tab--placeholder" disabled title="题组整理中，敬请期待">机械部 · 敬请期待</button>
+      <button type="button" class="questions-tab" id="questions-tab-machinery" role="tab" aria-selected="false" aria-controls="questions-machinery" data-questions="machinery" tabindex="-1">机械部 · 建模题组</button>
     </div>
     <div class="questions-views">
       <div class="questions-view is-active questions-prose" id="questions-c" role="tabpanel" aria-labelledby="questions-tab-c">
@@ -289,6 +291,9 @@ const { Content: QrsContent } = await render(qrsEntry);
       </div>
       <div class="questions-view questions-prose" id="questions-qrs" role="tabpanel" aria-labelledby="questions-tab-qrs">
         <QrsContent />
+      </div>
+      <div class="questions-view questions-prose" id="questions-machinery" role="tabpanel" aria-labelledby="questions-tab-machinery">
+        <MachineryContent />
       </div>
     </div>
   </div>
