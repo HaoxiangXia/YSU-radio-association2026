@@ -126,6 +126,9 @@
       const container = document.getElementById('pagination');
       container.replaceChildren();
       if (pagination.total <= 1) return;
+
+      const isMobile = window.matchMedia('(max-width: 700px)').matches;
+
       const addButton = (label, page, disabled, active = false) => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -135,11 +138,66 @@
         button.addEventListener('click', () => loadData(page));
         container.appendChild(button);
       };
-      addButton('上一页', currentPage - 1, currentPage <= 1);
-      const start = Math.max(1, currentPage - 2);
-      const end = Math.min(pagination.total, currentPage + 2);
-      for (let page = start; page <= end; page += 1) addButton(String(page), page, false, page === currentPage);
-      addButton('下一页', currentPage + 1, currentPage >= pagination.total);
+
+      const addBreak = () => {
+        if (!isMobile) return;
+        const br = document.createElement('span');
+        br.className = 'pagination-break';
+        container.appendChild(br);
+      };
+
+      if (isMobile) {
+        // 第一排：上一页、页码、下一页
+        addButton('上一页', currentPage - 1, currentPage <= 1);
+        const start = Math.max(1, currentPage - 1);
+        const end = Math.min(pagination.total, currentPage + 1);
+        for (let page = start; page <= end; page += 1) {
+          addButton(String(page), page, false, page === currentPage);
+        }
+        addButton('下一页', currentPage + 1, currentPage >= pagination.total);
+
+        addBreak();
+
+        // 第二排：首页、尾页、跳转
+        addButton('首页', 1, currentPage <= 1);
+        addButton('尾页', pagination.total, currentPage >= pagination.total);
+      } else {
+        addButton('首页', 1, currentPage <= 1);
+        addButton('上一页', currentPage - 1, currentPage <= 1);
+        const start = Math.max(1, currentPage - 1);
+        const end = Math.min(pagination.total, currentPage + 1);
+        for (let page = start; page <= end; page += 1) {
+          addButton(String(page), page, false, page === currentPage);
+        }
+        addButton('下一页', currentPage + 1, currentPage >= pagination.total);
+        addButton('尾页', pagination.total, currentPage >= pagination.total);
+      }
+
+      const jumper = document.createElement('span');
+      jumper.className = 'pagination-jumper';
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = 1;
+      input.max = pagination.total;
+      input.placeholder = '页码';
+      input.setAttribute('aria-label', '跳转到页码');
+      const goButton = document.createElement('button');
+      goButton.type = 'button';
+      goButton.textContent = '跳转';
+      const jump = () => {
+        const page = parseInt(input.value, 10);
+        if (page >= 1 && page <= pagination.total && page !== currentPage) {
+          loadData(page);
+        }
+        input.value = '';
+      };
+      goButton.addEventListener('click', jump);
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') jump();
+      });
+      jumper.appendChild(input);
+      jumper.appendChild(goButton);
+      container.appendChild(jumper);
     }
 
     function readFilters() {
