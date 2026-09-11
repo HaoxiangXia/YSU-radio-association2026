@@ -159,14 +159,20 @@ def list_membership_applications(
 
 
 @router.get("/stats")
-def get_stats(db=Depends(get_db), officer=Depends(get_current_recruitment_officer)):
-    total = membership_application_model.count(db)
+def get_stats(
+    college: Optional[str] = None,
+    grade: Optional[str] = None,
+    search: Optional[str] = None,
+    db=Depends(get_db),
+    officer=Depends(get_current_recruitment_officer),
+):
+    total = membership_application_model.count(db, query={"college": college, "grade": grade})
 
     today = datetime.now().strftime("%Y-%m-%dT00:00:00.000Z")
-    today_count = membership_application_model.count(db, query={"createdAt": {"$gte": today}})
+    today_count = membership_application_model.count(db, query={"college": college, "grade": grade, "createdAt": {"$gte": today}})
 
-    college_stats = membership_application_model.group_by_college(db)
-    grade_stats = membership_application_model.group_by_grade(db)
+    college_stats = membership_application_model.group_by_college(db, college=college, grade=grade, search=search)
+    grade_stats = membership_application_model.group_by_grade(db, college=college, grade=grade, search=search)
 
     return {
         "total": total,

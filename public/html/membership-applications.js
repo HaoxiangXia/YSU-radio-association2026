@@ -247,20 +247,53 @@
       const total = rows.reduce((sum, row) => sum + row.count, 0);
       setChartMeta('chart-college-meta', `共 ${stats.collegeCount} 个学院 · ${total} 份申请`);
       if (!chartState.college.chart) chartState.college.chart = echarts.init(canvas);
-      chartState.college.chart.setOption({
-        tooltip: { trigger: 'item', formatter: '{b}<br/>申请 {c} 份（{d}%）', confine: true },
-        legend: { bottom: 0, textStyle: { color: '#6b7280' }, type: 'scroll' },
-        series: [{
-          name: '学院分布',
-          type: 'pie',
-          radius: ['44%', '70%'],
-          center: ['50%', '46%'],
-          avoidLabelOverlap: true,
-          itemStyle: { borderRadius: 4, borderColor: '#ffffff', borderWidth: 2 },
-          label: { color: '#374151' },
-          data: rows.map((row) => ({ name: row._id, value: row.count })),
-        }],
-      });
+
+      const isMobile = window.matchMedia('(max-width: 700px)').matches;
+      const tooltip = { trigger: 'item', formatter: '{b}<br/>申请 {c} 份（{d}%）', confine: true };
+      const data = rows.map((row) => ({ name: row._id, value: row.count }));
+
+      const option = isMobile
+        ? {
+            tooltip,
+            series: [{
+              name: '学院分布',
+              type: 'pie',
+              radius: ['28%', '44%'],
+              center: ['50%', '50%'],
+              minAngle: 12,
+              avoidLabelOverlap: true,
+              itemStyle: { borderRadius: 4, borderColor: '#ffffff', borderWidth: 2 },
+              label: {
+                show: true,
+                formatter: '{b}',
+                color: '#374151',
+                fontSize: 10,
+                overflow: 'breakAll',
+                width: 100,
+                alignTo: 'edge',
+                edgeDistance: 4,
+                bleedMargin: 0,
+              },
+              labelLine: { show: true, length: 8, length2: 4, minTurnAngle: 90 },
+              data,
+            }],
+          }
+        : {
+            tooltip,
+            legend: { orient: 'vertical', right: 0, top: 'middle', textStyle: { color: '#6b7280' } },
+            series: [{
+              name: '学院分布',
+              type: 'pie',
+              radius: ['44%', '70%'],
+              center: ['38%', '50%'],
+              avoidLabelOverlap: true,
+              itemStyle: { borderRadius: 4, borderColor: '#ffffff', borderWidth: 2 },
+              label: { show: false },
+              data,
+            }],
+          };
+
+      chartState.college.chart.setOption(option, true);
       chartState.college.loaded = true;
     }
 
@@ -324,9 +357,19 @@
 
     async function loadSupportData() {
       try {
-        const response = await handleResponse(await fetch('/api/membership-applications/stats'));
-        const stats = await response.json();
-        const days = buildTrendSeries(await loadAllApplicationsForTrend());
+        const filters = readFilters();
+        const params = new URLSearchParams({
+          college: filters.college,
+          grade: filters.grade,
+          search: filters.search,
+        });
+        const [statsResponse, trendResponse] = await Promise.all([
+          handleResponse(await fetch(`/api/membership-applications/stats?${params}`)),
+          handleResponse(await fetch(`/api/membership-applications?limit=1000&${params}`)),
+        ]);
+        const stats = await statsResponse.json();
+        const trendData = await trendResponse.json();
+        const days = buildTrendSeries(trendData.membership_applications || []);
         renderTrendChart(days);
         renderCollegeChart(stats);
         const trendTotal = days.reduce((sum, day) => sum + day.count, 0);
@@ -338,16 +381,6 @@
         setChartMeta('chart-college-meta', '统计加载失败');
         document.getElementById('college-filter').title = '筛选项暂时无法更新';
         document.getElementById('grade-filter').title = '筛选项暂时无法更新';
-      }
-    }
-
-    async function loadAllApplicationsForTrend() {
-      try {
-        const response = await handleResponse(await fetch('/api/membership-applications?limit=1000'));
-        const data = await response.json();
-        return data.membership_applications || [];
-      } catch (error) {
-        return [];
       }
     }
 
@@ -481,9 +514,9 @@
       });
       document.getElementById('search-input').addEventListener('input', () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => loadData(1), 250);
+        searchTimer = setTimeout(() => Promise.all([loadData(1), loadSupportData()]), 250);
       });
-      ['college-filter', 'grade-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => loadData(1)));
+      ['college-filter', 'grade-filter'].forEach((id) => document.getElementById(id).addEventListener('change', () => Promise.all([loadData(1), loadSupportData()])));
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDetail(); });
       await Promise.all([loadData(), loadSupportData(), loadOperationRecords()]);
     });

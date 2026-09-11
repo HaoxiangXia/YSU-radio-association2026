@@ -308,6 +308,35 @@ def test_search_matches_phone_and_email(default_client):
     assert by_email.json()["membership_applications"][0]["email"] == "student3@example.test"
 
 
+def test_stats_respect_college_grade_search_filters(default_client):
+    client, state = default_client
+    seed_applications(state["database_path"], 25)
+    login(client)
+
+    by_college = client.get(
+        "/api/membership-applications/stats",
+        params={"college": "机械工程学院"},
+    )
+    assert by_college.status_code == 200
+    assert by_college.json()["collegeStats"] == [{"_id": "机械工程学院", "count": 12}]
+    assert by_college.json()["collegeCount"] == 1
+
+    by_grade = client.get(
+        "/api/membership-applications/stats",
+        params={"grade": "2026级"},
+    )
+    assert by_grade.status_code == 200
+    assert by_grade.json()["gradeStats"] == [{"_id": "2026级", "count": 16}]
+    assert by_grade.json()["gradeCount"] == 1
+
+    by_search = client.get(
+        "/api/membership-applications/stats",
+        params={"search": "13800000107"},
+    )
+    assert by_search.status_code == 200
+    assert by_search.json()["collegeStats"] == [{"_id": "机械工程学院", "count": 1}]
+
+
 
 def test_operation_records_are_paginated_in_reverse_creation_order(default_client):
     client, state = default_client

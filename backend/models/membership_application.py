@@ -250,25 +250,31 @@ def count(db: sqlite3.Connection, query: dict | None = None):
     return row["count"] if row else 0
 
 
-def group_by_college(db: sqlite3.Connection):
+def group_by_college(db: sqlite3.Connection, college=None, grade=None, search=None):
+    where, params = build_filter_where(college=college, grade=grade, search=search)
     rows = db.execute(
-        """
+        f"""
         SELECT college AS _id, COUNT(*) AS count
         FROM membership_applications
+        {where}
         GROUP BY college
         ORDER BY count DESC
-        """
+        """,
+        tuple(params),
     ).fetchall()
     return [dict(row) for row in rows]
 
 
-def group_by_grade(db: sqlite3.Connection):
+def group_by_grade(db: sqlite3.Connection, college=None, grade=None, search=None):
+    where, params = build_filter_where(college=college, grade=grade, search=search)
     rows = db.execute(
-        """
+        f"""
         SELECT grade AS _id, COUNT(*) AS count
         FROM membership_applications
+        {where}
         GROUP BY grade
         ORDER BY count DESC
-        """
+        """,
+        tuple(params),
     ).fetchall()
     return [dict(row) for row in rows]
