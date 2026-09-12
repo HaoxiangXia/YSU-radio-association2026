@@ -305,24 +305,28 @@ B站视频【NMOS和PMOS】<a href="https://www.bilibili.com/video/BV1fKu96gETC?
 【C语言-静态变量static剖析，3分钟吃透static用法】<a href="https://www.bilibili.com/video/BV15r4y1D7ZD?vd_source=9d31a29fa90089a41634ad7c39533fa6">https://www.bilibili.com/video/BV15r4y1D7ZD?vd_source=9d31a29fa90089a41634ad7c39533fa6</a>
 ）</p>
 <h2 id="提高题">提高题：</h2>
-<h3 id="1-嵌入式会用到很多种通讯协议比如最常用的串口通信usart-仅仅需要rx和tx不需要时钟线又像iici2c一般给陀螺仪传或者温度传感器这种简单较少的数据并且一根iic能挂载很多外设不像spi但是spi能传输非常庞大的数据彩色tft屏幕通常使用spi另外在汽车工业领域使用更多的can总线因为是差分信号所以抗干扰性能更强请选择以上一种通信协议除can去淘宝找应用的模块">1. 嵌入式会用到很多种通讯协议，比如最常用的串口通信USART 仅仅需要RX和TX不需要时钟线，又像IIC（I2C）一般给陀螺仪传或者温度传感器这种简单较少的数据，并且一根IIC能挂载很多外设，不像SPI，但是SPI能传输非常庞大的数据，彩色TFT屏幕通常使用SPI，另外在汽车工业领域使用更多的CAN总线因为是差分信号所以抗干扰性能更强，请选择以上一种通信协议（除CAN），去淘宝找应用的模块</h3>
-<p>（比如USART是USB转TTL，IIC用mpu6050,SPI是TFT屏幕），说明使用时接线如何接？比如串口如下图。简要说明工作原理？</p>
-<p><img alt="1.png" loading="lazy" decoding="async" width="1536" height="632" src="/_astro/uart-usb-ttl.DkqoKdPq_Z1bEIFF.webp"></p>
-<h3 id="2-pwm是非常重要的用控制舵机旋转驱动电机转动输出电压等众多作用pwm有两个基本参数频率和占空比请解释pwm的含义并解释这两个参数都是控制什么的并说明它是如何实现调节-led-亮度或控制电机转速的">2. PWM是非常重要的，用控制舵机旋转，驱动电机转动，输出电压等众多作用，PWM有两个基本参数”频率”和”占空比”，请解释PWM的含义并解释这两个参数都是控制什么的？并说明它是如何实现”调节 LED 亮度”或”控制电机转速”的</h3>
+<h3 id="1-pwm是非常重要的用控制舵机旋转驱动电机转动输出电压等众多作用pwm有两个基本参数频率和占空比请解释pwm的含义并解释这两个参数都是控制什么的并说明它是如何实现调节-led-亮度或控制电机转速的">1. PWM是非常重要的，用控制舵机旋转，驱动电机转动，输出电压等众多作用，PWM有两个基本参数”频率”和”占空比”，请解释PWM的含义并解释这两个参数都是控制什么的？并说明它是如何实现”调节 LED 亮度”或”控制电机转速”的</h3>
 <p>(
 【搞懂什么是PWM控制】<a href="https://www.bilibili.com/video/BV1HD4y1k74L?vd_source=9d31a29fa90089a41634ad7c39533fa6">https://www.bilibili.com/video/BV1HD4y1k74L?vd_source=9d31a29fa90089a41634ad7c39533fa6</a>
 )</p>
+<h3 id="2-嵌入式会用到很多种通讯协议比如最常用的串口通信usart-仅仅需要rx和tx不需要时钟线又像iici2c一般给陀螺仪传或者温度传感器这种简单较少的数据并且一根iic能挂载很多外设不像spi但是spi能传输非常庞大的数据彩色tft屏幕通常使用spi另外在汽车工业领域使用更多的can总线因为是差分信号所以抗干扰性能更强请选择以上一种通信协议除can去淘宝找应用的模块">2. 嵌入式会用到很多种通讯协议，比如最常用的串口通信USART 仅仅需要RX和TX不需要时钟线，又像IIC（I2C）一般给陀螺仪传或者温度传感器这种简单较少的数据，并且一根IIC能挂载很多外设，不像SPI，但是SPI能传输非常庞大的数据，彩色TFT屏幕通常使用SPI，另外在汽车工业领域使用更多的CAN总线因为是差分信号所以抗干扰性能更强，请选择以上一种通信协议（除CAN），去淘宝找应用的模块</h3>
+<p>（比如USART是USB转TTL，IIC用mpu6050,SPI是TFT屏幕），说明使用时接线如何接？比如串口如下图。简要说明工作原理？</p>
+<p><img alt="1.png" loading="lazy" decoding="async" width="384" height="158" src="/_astro/uart-usb-ttl.C3ewZkHZ_Z2cnll1.webp"></p>
 <h2 id="综合题">综合题：</h2>
 <h3 id="1-嵌入式往往涉及许多模块比如74v-310电机5v陀螺仪模块3v3-oled屏幕但是我们的电池一般都是3s锂离子电池也就是12v所以需要我们进行直流电压之间的转化也就是从12v电压的电池转换成5v-3v3等给不同外设使用的电压下图给出从12v电压转成5v在从5v转向3v3的降压原理图请回答下列几个问题">1. 嵌入式往往涉及许多模块比如7.4V 310电机，5V陀螺仪模块，3V3 OLED屏幕，但是我们的电池一般都是3S锂离子电池也就是12V，所以需要我们进行直流电压之间的转化，也就是从12V电压的电池转换成5V 3V3等给不同外设使用的电压，下图给出从12V电压转成5V，在从5V转向3V3的降压原理图，请回答下列几个问题：</h3>
-<p><img alt="2.png" loading="lazy" decoding="async" width="830" height="425" src="/_astro/power-supply-schematic.YbIbRlAN_Z1tvPuN.webp"></p>
+<p><img alt="2.png" loading="lazy" decoding="async" width="1345" height="688" src="/_astro/power-supply-schematic.PcBYpkdF_ZY2doG.webp"></p>
 <h4 id="1-xt30upb-m是一种xt30头用于和我们的电池供电xt30头也分公母但是大家在淘宝上搜索的时候会遇到两种不同的xt30头如下图左边是实心的右边是有缺口的我们在买到xt30头后往往需要买16awg航模软硅胶线接线请问如果需要接线我们要买那边的再问如果我们画板的时候选取的是左边的xt30头我们可以用右边的头直接焊接吗两者孔距一样吗">（1） XT30UPB-M是一种XT30头用于和我们的电池供电，XT30头也分公母，但是大家在淘宝上搜索的时候会遇到两种不同的XT30头，如下图，左边是实心的，右边是有缺口的，我们在买到XT30头后往往需要买16AWG航模软硅胶线接线，请问如果需要接线我们要买那边的？再问如果我们画板的时候选取的是左边的XT30头，我们可以用右边的头直接焊接吗？两者孔距一样吗？</h4>
 <p>（淘宝是好东西我们可以找到所需的图纸）</p>
-<p><img alt="3.png" loading="lazy" decoding="async" width="1536" height="885" src="/_astro/xt30-connectors.Yh-uqDIx_Z24QwrJ.webp"></p>
-<h4 id="2我们知道对于pmos-vgs0的时候mos管导通上图中我们知道电池插入xt30upb-m经过mos和滑动开关引入12v的电源因为我们选取的滑动开关过电流能力弱所以选择使用pmos做开关大电流只会过pmos开关只提供压差所以不会过大电流其中pmos右边是d漏极中间是g栅极左边是s原级图示位置开关1-2短接g电位是12v电源是3s锂电池所以是12v-s是12vvgs12-120pmos不导通现在请试着分析2-3短接时g-s电位以及g和s之间压差vgs电压来说明为什么pmos导通和第一题一样的只不过是加了一点电路分析">（2）我们知道对于PMOS Vgs&#x3C;0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS右边是D漏极，中间是G栅极，左边是S原级，图示位置开关1 2短接G电位是12V（电源是3S锂电池所以是12V） S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）</h4>
-<h4 id="3-httpswwwsemieecom08cbfebc-4429-402b-a4d3-d7efde331e35html-httpswwwsemieecomddf87e70-fdad-4a7f-b54e-e6692ee8dd68html">（3） <a href="https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html">https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html</a> <a href="https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html">https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html</a></h4>
-<p>做硬件数据手册是必须要看的，不用全看只需要找到我们关注的参数即可以上是图中用到的两款降压芯片的数据手册，其中TPS54302是优秀的BUCK芯片可以实现较大压差的降压比如图中的12V-5V，通过查阅数据手册我们可以看出输出电压Vout和Vref有关，请通过查阅数据手册找出Vref的数值？</p>
-<p>（B站up对于数据手册如何查看教学<a href="https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6">https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6</a>
-另外数据手册可以在立创商城查看，也可以在<a href="https://www.semiee.com/">https://www.semiee.com/</a> 查看）</p>
+<p><img alt="3.png" loading="lazy" decoding="async" width="510" height="294" src="/_astro/xt30-connectors.BVtykPY7_1lObIE.webp"></p>
+<h4 id="2-我们知道对于pmos-vgs0的时候mos管导通上图中我们知道电池插入xt30upb-m经过mos和滑动开关引入12v的电源因为我们选取的滑动开关过电流能力弱所以选择使用pmos做开关大电流只会过pmos开关只提供压差所以不会过大电流其中pmos右边是d漏极中间是g栅极左边是s原级图示位置开关1-2短接g电位是12v电源是3s锂电池所以是12v-s是12vvgs12-120pmos不导通现在请试着分析2-3短接时g-s电位以及g和s之间压差vgs电压来说明为什么pmos导通和第一题一样的只不过是加了一点电路分析">（2） 我们知道对于PMOS Vgs&#x3C;0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS右边是D漏极，中间是G栅极，左边是S原级，图示位置开关1 2短接G电位是12V（电源是3S锂电池所以是12V） S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）</h4>
+<h4 id="3">（3）</h4>
+<p><a href="https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html">https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html</a></p>
+<p><a href="https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html">https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html</a></p>
+<p>做硬件数据手册是必须要看的，不用全看只需要找到我们关注的参数即可</p>
+<p>以上是图中用到的两款降压芯片的数据手册，其中TPS54302是优秀的BUCK芯片可以实现较大压差的降压比如图中的12V-5V，通过查阅数据手册我们可以看出输出电压Vout和Vref有关，请通过查阅数据手册找出Vref的数值？</p>
+<p>（B站up对于数据手册如何查看教学</p>
+<p><a href="https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6">https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6</a></p>
+<p>另外数据手册可以在立创商城查看也可以在<a href="https://www.semiee.com/">https://www.semiee.com/</a> 查看）</p>
 <h4 id="另外输出电压vout是5v-r2是100k的时候通过公式可以算出r3是135336但是出于成本和电阻制造难度我们往往会选用133k那么请问当vout是6v-r2是100k同样的芯片我们的r3应该如何选取阻值">另外输出电压VOUT是5V R2是100K的时候通过公式可以算出R3是13.5336，但是出于成本和电阻制造难度我们往往会选用13.3K，那么请问当VOUT是6V R2是100K同样的芯片，我们的R3应该如何选取阻值？</h4>
 <p>（龙的CSDN中电阻的讲解<a href="https://blog.csdn.net/qq_62633876/article/details/152405506?spm=1001.2014.3001.5502">https://blog.csdn.net/qq_62633876/article/details/152405506?spm=1001.2014.3001.5502</a>
 ）</p>
@@ -333,16 +337,14 @@ B站视频【NMOS和PMOS】<a href="https://www.bilibili.com/video/BV1fKu96gETC?
 <p>（查看VIN引脚输入电压的范围，对于数据手册的查找能力）</p>
 <h4 id="5相信你可以通过图中的tps54302的12v-5v电路画出12v-6v电路了">（5）相信你可以通过图中的TPS54302的12V-5V电路画出12V-6V电路了</h4>
 <p>（龙的TPS54302 12V-5VBUCK讲解<a href="https://blog.csdn.net/qq_62633876/article/details/153785762?spm=1001.2014.3001.5502">https://blog.csdn.net/qq_62633876/article/details/153785762?spm=1001.2014.3001.5502</a> 其实就是第三问，你可能已经发现了输出只和电阻之比有关）</p></div><div class="questions-view questions-prose" id="questions-machinery" role="tabpanel" aria-labelledby="questions-tab-machinery"><h1 id="机械部招新面试题">机械部招新面试题</h1>
-<blockquote>
-<p>用 soildworks 完成下面工程图的三维建模，并且打包成一个文件夹发至邮箱 <strong><a href="mailto:shenchenglong555@qq.com">shenchenglong555@qq.com</a></strong></p>
-<p>文件夹命名：专业+姓名</p>
-</blockquote>
+<p>用soildworks完成下面工程图的三维建模，并且打包成一个文件夹发至邮箱<a href="mailto:shenchenglong555@qq.com">shenchenglong555@qq.com</a></p>
+<h2 id="文件夹命名专业姓名">文件夹命名：专业+姓名</h2>
 <h2 id="题目解释题1与题2必须完成题3与题4不要求全部完成将根据完成程度打分">题目解释：题1与题2，必须完成。题3与题4不要求全部完成，将根据完成程度打分。</h2>
 <h2 id="题目1-弹簧提示需要学习扫描和插入螺旋线-15分">题目1 弹簧（提示：需要学习扫描和插入螺旋线） 15分</h2>
 <p><img alt="第一题.png" loading="lazy" decoding="async" width="932" height="996" src="/_astro/%E7%AC%AC%E4%B8%80%E9%A2%98.Dfh8Jmuw_1P2cwO.webp"></p>
 <h2 id="题目2-相机支架--15分">题目2 相机支架  15分</h2>
-<p><img alt="第二题.png" loading="lazy" decoding="async" width="1993" height="1128" src="/_astro/%E7%AC%AC%E4%BA%8C%E9%A2%98.BVQzfsya_1qz6Ox.webp"></p>
+<p><img alt="第二题.png" loading="lazy" decoding="async" width="2197" height="1191" src="/_astro/%E7%AC%AC%E4%BA%8C%E9%A2%98.DTHMibu6_VxJxW.webp"></p>
 <h2 id="题目3--30分">题目3  30分</h2>
-<p><img alt="第三题.png" loading="lazy" decoding="async" width="1138" height="770" src="/_astro/%E7%AC%AC%E4%B8%89%E9%A2%98.BSzAGujF_2iteLm.webp"></p>
+<p><img alt="第三题.png" loading="lazy" decoding="async" width="1484" height="1201" src="/_astro/%E7%AC%AC%E4%B8%89%E9%A2%98.G9BChWOM_ZLUUkx.webp"></p>
 <h2 id="题目4--40分">题目4  40分</h2>
 <p><img alt="第四题.jpeg" loading="lazy" decoding="async" width="1574" height="1081" src="/_astro/%E7%AC%AC%E5%9B%9B%E9%A2%98.Cy1iqro__Z8hHJD.webp"></p></div></div></div><script src="/html/recruitment-questions.js?v=20260904"></script></main><div id="footer-placeholder"></div><button class="scrollTopBtn" title="回到顶部" aria-label="回到顶部">↑</button><div class="image-viewer"><img src="" alt="查看图片"></div><script src="/html/image-assets.js?v=20260819"></script><script src="/html/common.js?v=20260911"></script><script src="/html/reveal.js?v=20260812"></script></body></html>

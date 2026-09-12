@@ -19,15 +19,15 @@ B站视频【NMOS和PMOS】https://www.bilibili.com/video/BV1fKu96gETC?vd_source
 
 ## 提高题：
 
-### 1. 嵌入式会用到很多种通讯协议，比如最常用的串口通信USART 仅仅需要RX和TX不需要时钟线，又像IIC（I2C）一般给陀螺仪传或者温度传感器这种简单较少的数据，并且一根IIC能挂载很多外设，不像SPI，但是SPI能传输非常庞大的数据，彩色TFT屏幕通常使用SPI，另外在汽车工业领域使用更多的CAN总线因为是差分信号所以抗干扰性能更强，请选择以上一种通信协议（除CAN），去淘宝找应用的模块
-（比如USART是USB转TTL，IIC用mpu6050,SPI是TFT屏幕），说明使用时接线如何接？比如串口如下图。简要说明工作原理？
-
-![1.png](images/uart-usb-ttl.png)
-
-### 2. PWM是非常重要的，用控制舵机旋转，驱动电机转动，输出电压等众多作用，PWM有两个基本参数"频率"和"占空比"，请解释PWM的含义并解释这两个参数都是控制什么的？并说明它是如何实现"调节 LED 亮度"或"控制电机转速"的
+### 1. PWM是非常重要的，用控制舵机旋转，驱动电机转动，输出电压等众多作用，PWM有两个基本参数"频率"和"占空比"，请解释PWM的含义并解释这两个参数都是控制什么的？并说明它是如何实现"调节 LED 亮度"或"控制电机转速"的
 (
 【搞懂什么是PWM控制】https://www.bilibili.com/video/BV1HD4y1k74L?vd_source=9d31a29fa90089a41634ad7c39533fa6
 )
+
+### 2. 嵌入式会用到很多种通讯协议，比如最常用的串口通信USART 仅仅需要RX和TX不需要时钟线，又像IIC（I2C）一般给陀螺仪传或者温度传感器这种简单较少的数据，并且一根IIC能挂载很多外设，不像SPI，但是SPI能传输非常庞大的数据，彩色TFT屏幕通常使用SPI，另外在汽车工业领域使用更多的CAN总线因为是差分信号所以抗干扰性能更强，请选择以上一种通信协议（除CAN），去淘宝找应用的模块
+（比如USART是USB转TTL，IIC用mpu6050,SPI是TFT屏幕），说明使用时接线如何接？比如串口如下图。简要说明工作原理？
+
+![1.png](images/uart-usb-ttl.png)
 
 ## 综合题：
 
@@ -40,12 +40,24 @@ B站视频【NMOS和PMOS】https://www.bilibili.com/video/BV1fKu96gETC?vd_source
 
 ![3.png](images/xt30-connectors.png)
 
-#### （2）我们知道对于PMOS Vgs<0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS右边是D漏极，中间是G栅极，左边是S原级，图示位置开关1 2短接G电位是12V（电源是3S锂电池所以是12V） S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）
-#### （3） https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html
-做硬件数据手册是必须要看的，不用全看只需要找到我们关注的参数即可以上是图中用到的两款降压芯片的数据手册，其中TPS54302是优秀的BUCK芯片可以实现较大压差的降压比如图中的12V-5V，通过查阅数据手册我们可以看出输出电压Vout和Vref有关，请通过查阅数据手册找出Vref的数值？
+#### （2） 我们知道对于PMOS Vgs<0的时候MOS管导通，上图中我们知道电池插入XT30UPB-M经过MOS和滑动开关，引入12V的电源，因为我们选取的滑动开关过电流能力弱，所以选择使用PMOS做开关，大电流只会过PMOS，开关只提供压差所以不会过大电流，其中PMOS右边是D漏极，中间是G栅极，左边是S原级，图示位置开关1 2短接G电位是12V（电源是3S锂电池所以是12V） S是12V，Vgs=12-12=0，PMOS不导通，现在请试着分析2 3短接时G S电位以及G和S之间压差Vgs电压来说明为什么PMOS导通（和第一题一样的只不过是加了一点电路分析）
 
-（B站up对于数据手册如何查看教学https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6 
-另外数据手册可以在立创商城查看，也可以在https://www.semiee.com/ 查看）
+#### （3）
+
+https://www.semiee.com/08cbfebc-4429-402b-a4d3-d7efde331e35.html
+
+https://www.semiee.com/ddf87e70-fdad-4a7f-b54e-e6692ee8dd68.html
+
+做硬件数据手册是必须要看的，不用全看只需要找到我们关注的参数即可
+
+以上是图中用到的两款降压芯片的数据手册，其中TPS54302是优秀的BUCK芯片可以实现较大压差的降压比如图中的12V-5V，通过查阅数据手册我们可以看出输出电压Vout和Vref有关，请通过查阅数据手册找出Vref的数值？
+
+（B站up对于数据手册如何查看教学
+
+https://www.bilibili.com/video/BV1QuTxzoEHp?vd_source=9d31a29fa90089a41634ad7c39533fa6
+
+另外数据手册可以在立创商城查看也可以在https://www.semiee.com/ 查看）
+
 #### 另外输出电压VOUT是5V R2是100K的时候通过公式可以算出R3是13.5336，但是出于成本和电阻制造难度我们往往会选用13.3K，那么请问当VOUT是6V R2是100K同样的芯片，我们的R3应该如何选取阻值？
 （龙的CSDN中电阻的讲解https://blog.csdn.net/qq_62633876/article/details/152405506?spm=1001.2014.3001.5502
 ）
