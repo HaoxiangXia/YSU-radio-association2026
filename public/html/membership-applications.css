@@ -501,7 +501,7 @@
   }
   .membership-applications-page .data-table td {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
+    grid-template-columns: 2rem minmax(0, 1fr);
     gap: 0.5rem;
     padding: 0.3rem 0;
     border: 0;
@@ -541,6 +541,9 @@
   }
   .chart-panel__tabs {
     display: flex;
+  }
+  .membership-applications-page #operation-records-table td {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
   }
   .membership-applications-page #operation-records-table td[data-label="操作类型"] {
     position: static;
