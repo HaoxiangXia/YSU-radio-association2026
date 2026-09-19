@@ -453,19 +453,110 @@
       }
     }
 
+    function createSpecRow(label, value, isMono = false, linkHref = null) {
+      const row = document.createElement('div');
+      row.className = 'drawer-spec-row';
+      const labelEl = document.createElement('span');
+      labelEl.className = 'drawer-spec-label';
+      labelEl.textContent = label;
+      row.appendChild(labelEl);
+
+      if (linkHref && value) {
+        const link = document.createElement('a');
+        link.className = 'drawer-link';
+        link.href = linkHref;
+        link.textContent = value;
+        row.appendChild(link);
+      } else {
+        const valEl = document.createElement('span');
+        valEl.className = `drawer-spec-val${isMono ? ' drawer-spec-val--mono' : ''}`;
+        valEl.textContent = value || '-';
+        row.appendChild(valEl);
+      }
+      return row;
+    }
+
     function viewDetail(item) {
-      const labels = { name: '姓名', studentId: '学号', college: '学院', grade: '年级', phone: '联系电话', email: '电子邮箱', self_introduction: '自我介绍', expectation: '加入期望', createdAt: '提交时间' };
       const content = document.getElementById('detail-content');
       content.replaceChildren();
-      Object.entries(labels).forEach(([key, label]) => {
-        const labelElement = document.createElement('div');
-        labelElement.className = 'detail-label';
-        labelElement.textContent = label;
-        const valueElement = document.createElement('div');
-        valueElement.className = 'detail-value';
-        valueElement.textContent = item[key] || '-';
-        content.append(labelElement, valueElement);
-      });
+
+      const dossier = document.createElement('div');
+      dossier.className = 'drawer-dossier';
+
+      // 1. 姓名与年级身份
+      const identityRow = document.createElement('div');
+      identityRow.className = 'drawer-identity';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'drawer-applicant-name';
+      nameEl.textContent = item.name || '-';
+      identityRow.appendChild(nameEl);
+
+      if (item.grade) {
+        const gradeBadge = document.createElement('span');
+        gradeBadge.className = 'drawer-badge-grade';
+        gradeBadge.textContent = item.grade;
+        identityRow.appendChild(gradeBadge);
+      }
+      dossier.appendChild(identityRow);
+
+      // 分割线
+      const divider1 = document.createElement('div');
+      divider1.className = 'drawer-divider';
+      dossier.appendChild(divider1);
+
+      // 2. 档案规格信息列表
+      const specList = document.createElement('div');
+      specList.className = 'drawer-spec-list';
+      specList.appendChild(createSpecRow('学号', item.studentId, true));
+      specList.appendChild(createSpecRow('录取学院', item.college));
+
+      // 手机号 3-4-4 格式化展示
+      let formattedPhone = item.phone || '';
+      if (/^\d{11}$/.test(formattedPhone)) {
+        formattedPhone = `${formattedPhone.slice(0, 3)} ${formattedPhone.slice(3, 7)} ${formattedPhone.slice(7)}`;
+      }
+      specList.appendChild(createSpecRow('手机号码', formattedPhone, false, item.phone ? `tel:${item.phone}` : null));
+      specList.appendChild(createSpecRow('电子邮箱', item.email, false, item.email ? `mailto:${item.email}` : null));
+      dossier.appendChild(specList);
+
+      // 分割线
+      const divider2 = document.createElement('div');
+      divider2.className = 'drawer-divider';
+      dossier.appendChild(divider2);
+
+      // 3. 自我介绍
+      const introSection = document.createElement('div');
+      introSection.className = 'drawer-section';
+      const introLabel = document.createElement('div');
+      introLabel.className = 'drawer-section-label';
+      introLabel.textContent = '自我介绍';
+      const introBody = document.createElement('p');
+      introBody.className = 'drawer-prose-body';
+      introBody.textContent = item.self_introduction || '暂无自我介绍。';
+      introSection.append(introLabel, introBody);
+      dossier.appendChild(introSection);
+
+      // 4. 加入期望
+      const expectSection = document.createElement('div');
+      expectSection.className = 'drawer-section';
+      const expectLabel = document.createElement('div');
+      expectLabel.className = 'drawer-section-label';
+      expectLabel.textContent = '加入期望';
+      const expectBody = document.createElement('p');
+      expectBody.className = 'drawer-prose-body';
+      expectBody.textContent = item.expectation || '暂无加入期望。';
+      expectSection.append(expectLabel, expectBody);
+      dossier.appendChild(expectSection);
+
+      // 5. 提交时间
+      if (item.createdAt) {
+        const metaBar = document.createElement('div');
+        metaBar.className = 'drawer-meta-bar';
+        metaBar.textContent = `申请提交于 ${item.createdAt}`;
+        dossier.appendChild(metaBar);
+      }
+
+      content.appendChild(dossier);
       document.getElementById('detail-modal').classList.add('open');
     }
 
@@ -530,9 +621,7 @@
         viewportMode.addEventListener('change', applyViewportMode);
       }
       applyViewportMode();
-      document.getElementById('detail-modal').addEventListener('click', (event) => {
-        if (event.target === event.currentTarget) closeDetail();
-      });
+      // 全端抽屉模式下不通过点击背景空白收起，仅允许显式点击关闭按钮或按 Esc 键收起
       document.getElementById('logout-button').addEventListener('click', async () => {
         // 服务端吊销会话后跳转；请求失败也照常跳回登录页
         try {

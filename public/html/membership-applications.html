@@ -6,7 +6,7 @@
   <title>入会申请管理 - 无线电爱好者协会</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/html/styles.css?v=20260911">
-  <link rel="stylesheet" href="/html/membership-applications.css?v=20260912q">
+  <link rel="stylesheet" href="/html/membership-applications.css?v=20260912u">
 </head>
 <body class="site-page sub-page recruitment-officer-page membership-applications-page">
   <div id="nav-placeholder"></div>
@@ -124,19 +124,25 @@
       </div>
     </div>
 
-    <!-- 详情弹窗 -->
-    <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
-      <div class="modal modal--detail">
-        <div class="modal-header">
-          <h3 id="detail-modal-title" class="font-semibold text-blue-600">入会申请详情</h3>
-          <button class="icon-button" id="detail-close-button" type="button" aria-label="关闭详情">&times;</button>
-        </div>
-        <div class="modal-body" id="detail-content">
-          <!-- 详情内容由 JavaScript 动态生成 -->
+  </main>
+
+  <!-- 详情抽屉面板 -->
+  <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+    <div class="modal modal--detail">
+      <div class="modal-header">
+        <div class="drawer-header-inner">
+          <div class="drawer-header-left">
+            <span class="drawer-kicker">燕大无线电协 · 入会申请</span>
+            <h3 id="detail-modal-title" class="font-semibold text-blue-600">申请人详细档案</h3>
+          </div>
+          <button class="icon-button" id="detail-close-button" type="button" aria-label="关闭详情">✕</button>
         </div>
       </div>
+      <div class="modal-body" id="detail-content">
+        <!-- 详情内容由 JavaScript 动态生成 -->
+      </div>
     </div>
-  </main>
+  </div>
 
   <div id="footer-placeholder"></div>
 
@@ -149,5 +155,5 @@
   <script src="/html/image-assets.js?v=20260819"></script>
   <script src="/html/common.js?v=20260911"></script>
   <script src="/html/vendor/echarts.min.js?v=20260831"></script>
-  <script src="/html/membership-applications.js?v=20260912e"></script>
+  <script src="/html/membership-applications.js?v=20260912h"></script>
 </html>
