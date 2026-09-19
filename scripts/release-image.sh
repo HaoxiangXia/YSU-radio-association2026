@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 发布镜像：开发机构建 → docker save | ssh → 服务器 docker load → 双侧核对镜像 ID。
-# 流程依据 docs/DOCKER_DEPLOYMENT.md 第 4.1 / 8.1 节。
+# 发布镜像（离线应急备用方案）：开发机构建 → docker save | ssh → 服务器 docker load → 双侧核对镜像 ID。
+# 主干首选方案见 .github/workflows/docker-publish.yml 与 docs/DOCKER_DEPLOYMENT.md。
 #
 # 用法：
 #   scripts/release-image.sh [SHA]
@@ -82,6 +82,8 @@ cat <<EOF
   sudo git fetch origin && sudo git checkout $SHA
   cd deployment/docker
   sudo sed -i 's/^RADIO_SHA=.*/RADIO_SHA=$SHA/' .env
+  # 若使用直传的本地镜像名（未走 ghcr.io），打上对应 tag 或在 .env 配置 RADIO_IMAGE_REPO=radio-association：
+  sudo docker tag radio-association:$SHA ghcr.io/haoxiangxia/radio-association:$SHA 2>/dev/null || true
   sudo docker compose up -d --no-build
   sleep 5 && curl --fail http://127.0.0.1:5000/healthz
 EOF

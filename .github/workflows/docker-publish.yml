@@ -1,0 +1,88 @@
+name: Build and Publish Docker Image
+
+"on":
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Target 40-character commit SHA (defaults to trigger commit)"
+        required: false
+        default: ""
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Resolve target ref
+        id: target
+        run: |
+          INPUT_SHA="${{ github.event.inputs.sha }}"
+          if [ -n "$INPUT_SHA" ]; then
+            if [[ ! "$INPUT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::Invalid commit SHA: $INPUT_SHA (must be 40 hex characters)"
+              exit 1
+            fi
+            echo "ref=$INPUT_SHA" >> $GITHUB_OUTPUT
+          else
+            echo "ref=${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.ref }}
+
+      - name: Determine commit SHA and metadata
+        id: meta
+        run: |
+          ACTUAL_SHA="$(git rev-parse HEAD)"
+          echo "sha=$ACTUAL_SHA" >> $GITHUB_OUTPUT
+          echo "short_sha=${ACTUAL_SHA:0:7}" >> $GITHUB_OUTPUT
+
+          OWNER_LOWER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          IMAGE_BASE="ghcr.io/${OWNER_LOWER}/radio-association"
+          echo "image_base=$IMAGE_BASE" >> $GITHUB_OUTPUT
+
+          TAGS="${IMAGE_BASE}:${ACTUAL_SHA},${IMAGE_BASE}:${ACTUAL_SHA:0:7}"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAGS="${TAGS},${IMAGE_BASE}:${{ github.ref_name }}"
+          fi
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deployment/docker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Print image digest and deployment instructions
+        run: |
+          echo "::notice title=Docker Image Published::Image tag: ${{ steps.meta.outputs.image_base }}:${{ steps.meta.outputs.sha }}"
+          echo "Deploy on server with:"
+          echo "  docker pull ${{ steps.meta.outputs.image_base }}:${{ steps.meta.outputs.sha }}"

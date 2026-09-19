@@ -76,6 +76,7 @@ def test_bash_scripts_parse():
         pytest.skip("bash 不可用")
     scripts = [
         "deployment/radioctl",
+        "deployment/deploy.sh",
         "scripts/deploy.sh",
     ]
     for script in scripts:
