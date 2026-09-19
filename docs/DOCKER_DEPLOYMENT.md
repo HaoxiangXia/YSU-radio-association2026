@@ -18,7 +18,7 @@ graph LR
 |---|---|---|
 | 应用形态 | 单容器：FastAPI + `public/` 静态文件 | 本仓库无独立前端进程，`backend/app.py` 直接挂载 `../public`；Dockerfile 保持仓库两层布局使该相对路径生效 |
 | 编排 | Docker Compose v2，镜像 tag = commit SHA | 单容器无需更重编排；回滚 = 换回旧 tag |
-| 镜像构建 | **开发机本地 `docker build`，`docker save \| ssh … docker load` 传输** | 服务器 2 GB 内存不承受构建负载；服务器无需访问 Docker Hub；部署完整性由镜像 ID 双侧核对保证（开发机与服务器同为 linux/amd64，无需 buildx 跨平台构建） |
+| 镜像构建 | **GitHub Actions 自动构建推送到 GHCR，服务器 `docker pull`**（本地构建脚本作为离线备用） | 服务器 2 GB 内存不承受构建负载；开发机无需承担上传数百 MB 镜像的带宽与耗时；香港服务器访问 GHCR 速度极快且享受镜像分层缓存增量更新 |
 | 数据 | **整目录** bind mount `/var/lib/radio-association` | WAL 模式下 `-wal`/`-shm` 旁挂文件与库文件同生共死，**禁止单文件挂载**；同路径挂载使宿主机备份脚本原样可见数据 |
 | 容器身份 | `user: APP_UID:APP_GID`（宿主机 `radio-association` 用户） | 保证容器写出的文件属主不变，宿主机备份/恢复不受影响 |
 | 反代与证书 | Caddy（宿主机 systemd），自动 ACME 签发/续期 | 取代 Nginx + certbot + 续期钩子整套机制 |
@@ -134,35 +134,37 @@ install -o radio-association -g radio-association -m 600 \
 
 录取名单 `admissions.json` 在 `admissionQuery.enabled=false` 时**不需要**存在，首次上线可跳过；启用录取查询时按第 8.5 节发布。
 
-## 4. 构建镜像（开发机）并启动（服务器）
+## 4. 构建镜像（GitHub Actions）并启动（服务器）
 
-### 4.1 开发机：构建并传输镜像
+### 4.1 镜像构建与推送（GitHub Actions）
 
-在仓库根目录（先 `git checkout __SHA__` 并核对 HEAD）执行封装脚本：
+镜像构建交由 GitHub Actions 完成，开发机无需消耗算力与上传带宽：
+
+1. **自动构建与推送**：推送版本 tag（形如 `v*`，例如 `git tag v1.0.0 && git push origin v1.0.0`）时，`.github/workflows/docker-publish.yml` 自动触发构建，并将镜像推送到 GitHub Container Registry (GHCR)：
+   `ghcr.io/haoxiangxia/radio-association:<40位SHA>`（同时附带短 SHA 及版本 tag）。日常常规 push 到 `dev`/`main` 不会触发，避免消耗 Actions 配额与产生冗余镜像。
+2. **手动按 SHA 构建（无需打 tag）**：若不想创建 tag，直接在 GitHub 仓库页面进入 **Actions → Build and Publish Docker Image → Run workflow**，填入目标 40 位 commit SHA（默认留空即当前 HEAD）立即按需触发构建。
+3. **GHCR 权限设置（首次需注意）**：
+   - **推荐（Package 设为 Public）**：首次推送成功后，在 GitHub 个人/组织主页的 Packages 列表找到 `radio-association`，进入 **Package settings** 将可见性设为 **Public**。因为镜像仅包含无密钥的后端代码和公开静态资源，生产敏感凭证（JWT_SECRET、密码等）均由宿主机 `/etc/radio-association/app.env` 挂载注入，公开镜像完全安全。公开后，服务器端 `docker pull` **完全免密免登录**。
+   - **若保持私有（Private）**：在 GitHub 申请一个仅勾选 `read:packages` 权限的 Personal Access Token (classic)，在服务器上登录一次即可：
+     ```bash
+     echo <TOKEN> | docker login ghcr.io -u <GitHub用户名> --password-stdin
+     ```
+4. **离线应急备用**：若遇到 GitHub Actions 或外部网络故障，仓库仍保留了 `scripts/release-image.sh`，可继续使用本地 `docker build` 并经 SSH 传输镜像到服务器（在 `deployment/docker/.env` 中设置 `RADIO_IMAGE_REPO=radio-association` 即可兼容本地未加前缀的镜像名）。
+
+### 4.2 服务器：拉取并启动
 
 ```bash
-scripts/release-image.sh
-```
+# 1. 在服务器拉取由 GitHub Actions 构建好的镜像（增量分层传输，极快）
+docker pull ghcr.io/haoxiangxia/radio-association:__SHA__
 
-脚本依次完成：校验 SHA 为 40 位、与 HEAD 一致、工作区干净且已推送远端 → `docker build`（构建上下文为仓库根目录，Dockerfile 依赖 backend/ 与 public/ 的两层布局）→ `docker save | pv | gzip | ssh … docker load` 传输（镜像约 200-400 MB，gzip 压缩后更小；安装了 `pv` 时显示传输量/速率/ETA，进度以未压缩大小估算、仅供参考，未安装则静默回退无进度显示；前提：admin 已加入 docker 组，见 2.2）→ 双侧 `docker image inspect` 核对镜像 ID 一致。任一环节失败即中止，不要用残缺的镜像启动。SSH 目标与私钥可用 `RADIO_SERVER`、`RADIO_SSH_KEY` 环境变量覆盖。
-
-（旧版本提交中没有该脚本时，按 8.1 节被替代前的手动命令执行，或先从新版本取出脚本。）
-
-不使用镜像仓库：服务器不依赖 Docker Hub 或任何 registry 的可达性，完整性由镜像 ID 核对保证。
-
-### 4.2 服务器：核对并启动
-
-```bash
-docker image inspect --format '{{.Id}}' radio-association:__SHA__
-# 必须与 4.1 记录的本地镜像 ID 完全一致，不一致则重新传输，不要用残缺的镜像启动
-
+# 2. 准备 compose 运行环境
 cd /opt/radio-association/docker/src/deployment/docker
 {
   printf 'RADIO_SHA=%s\n' '__SHA__'
   printf 'APP_UID=%s\n' "$(id -u radio-association)"
   printf 'APP_GID=%s\n' "$(id -g radio-association)"
 } > .env
-cat .env   # 三个值均非空
+cat .env   # 三个值均非空（RADIO_IMAGE_REPO 可选，默认即为 ghcr.io/haoxiangxia/radio-association）
 
 docker compose up -d --no-build   # 镜像缺失时报错退出；compose.yaml 带 build 段，不加此旗标会在服务器静默构建
 sleep 5
@@ -178,7 +180,7 @@ ls -l /var/lib/radio-association/data/      # database.sqlite 属主应为 radio
 | | `deployment/docker/.env` | `/etc/radio-association/app.env` |
 |---|---|---|
 | 谁读取 | 宿主机上的 compose CLI，解析 compose.yaml 时（在 compose.yaml 所在目录自动查找，无需参数指定） | 容器内的应用进程，启动时经 yaml 的 `env_file` 指令注入 |
-| 装什么 | `RADIO_SHA`/`APP_UID`/`APP_GID`，仅用于替换 yaml 里的 `${…}` | JWT 密钥、负责人账号哈希、私有文件路径等应用配置 |
+| 装什么 | `RADIO_SHA`/`APP_UID`/`APP_GID`（可选 `RADIO_IMAGE_REPO`），仅用于替换 yaml 里的 `${…}` | JWT 密钥、负责人账号哈希、私有文件路径等应用配置 |
 | 怎么来 | 手动创建，git 未跟踪，`git checkout` 切版本不影响它；发布时按 8.1 用 `sed` 更新 `RADIO_SHA` | 首次部署 `install` 自 `app.env.example`，之后基本不变 |
 
 ## 5. 种子数据（仅首次）
@@ -243,25 +245,23 @@ journalctl -u caddy -n 50 --no-pager               # 确认无 obtain 错误
 ### 8.1 发布新版本
 
 ```bash
-# 开发机：构建 + 传输 + 双侧镜像 ID 核对（细节同 4.1）
-git checkout <新SHA> && git rev-parse HEAD   # 核对
-scripts/release-image.sh
-```
+# 1. 开发机 / 触发构建：
+# 方式 A（打版本 Tag）：git tag v1.0.1 && git push origin v1.0.1
+# 方式 B（手动触发）：在 GitHub Actions 页面执行 docker-publish workflow（可填入或留空默认 HEAD）
+# 确认 GitHub Actions 构建完成（生成 ghcr.io/haoxiangxia/radio-association:<新SHA>）
 
 ```bash
-# 服务器：
-radioctl backup                                        # 发布前备份
-docker image inspect --format '{{.Id}}' radio-association:<新SHA>   # 与开发机核对
+# 2. 服务器（推荐：单步自动执行，含自动备份、对齐与健康检查失败自动回滚）：
 cd /opt/radio-association/docker/src
-git fetch origin
-git checkout <新SHA>
-[[ "$(git rev-parse HEAD)" == "<新SHA>" ]] || { echo "SHA 不符，终止"; exit 1; }
-cd deployment/docker
-sed -i 's/^RADIO_SHA=.*/RADIO_SHA=<新SHA>/' .env
-docker compose up -d --no-build
-sleep 5 && curl --fail http://127.0.0.1:5000/healthz   # 失败则按 8.2 回滚
-```
+sudo bash deployment/deploy.sh <新SHA或Tag>
 
+# （备用：手动分步执行底层命令）：
+#   radioctl backup                                                         # 发布前备份
+#   docker pull ghcr.io/haoxiangxia/radio-association:<新SHA>                # 从 GHCR 拉取新镜像
+#   cd /opt/radio-association/docker/src && git fetch origin && git checkout <新SHA>
+#   cd deployment/docker && sed -i 's/^RADIO_SHA=.*/RADIO_SHA=<新SHA>/' .env
+#   docker compose up -d --no-build
+#   sleep 5 && curl --fail http://127.0.0.1:5000/healthz                    # 验证健康检查
 ### 8.2 回滚
 
 旧镜像仍在本地，无需重新构建：

@@ -78,19 +78,15 @@ sleep 5 && curl --fail http://127.0.0.1:5000/healthz
 - 使用经过确认的完整 40 位 SHA；
 - 申请和录取查询保持关闭，当前数据库备份正常。
 
-镜像**只在开发机构建**，服务器不构建。开发机侧在仓库根目录执行 `scripts/release-image.sh`：校验目标 SHA 与 HEAD 一致、工作区干净且已推送，然后构建镜像、`docker save | ssh … docker load` 传输并双侧核对镜像 ID。开发机安装 `pv` 后传输过程会显示进度（以未压缩大小估算，仅供参考），未安装不影响功能。接交者在服务器 root shell 执行：
-
+镜像由 **GitHub Actions 自动构建并推送到 GHCR**（服务器不构建，开发机亦无需上传几百 MB 镜像）。当推送版本 tag（如 `v1.0.0`）或在 GitHub Actions 页面手动触发构建后，接交者在服务器 root shell 执行：
 ```bash
-docker image inspect --format '{{.Id}}' radio-association:<新SHA>   # 与开发机核对一致
-radioctl backup
 cd /opt/radio-association/docker/src
-git fetch origin && git checkout <新SHA>
-[[ "$(git rev-parse HEAD)" == "<新SHA>" ]] || exit 1
-cd deployment/docker
-sed -i 's/^RADIO_SHA=.*/RADIO_SHA=<新SHA>/' .env
-docker compose up -d --no-build
-sleep 5 && curl --fail http://127.0.0.1:5000/healthz    # 失败按第 3 节回滚
+sudo bash deployment/deploy.sh <新SHA或版本Tag>
 ```
+
+*(该脚本自动执行“发布前数据库备份 → 拉取 GHCR 镜像 → 对齐 git 提交 → 重启容器 → 20秒健康检查轮询”，失败自动回滚到上一版本。)*
+
+*(注：若遇无网络或 Actions 故障，仍可用 `scripts/release-image.sh` 应急本地直传，在 `.env` 中加 `RADIO_IMAGE_REPO=radio-association` 即可。)*
 
 不要修改 `/opt/radio-association/docker/src` 中的文件来"修 bug"——它只提供运维文件，代码变更必须走开发机构建新镜像。
 
