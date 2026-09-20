@@ -80,7 +80,7 @@
 | 认证 | JWT（PyJWT） |
 | 安全防护 | 登录/提交速率限制、严格 CSP、参数化查询 |
 | 导出与导入 | CSV 导出、负责人网页 Excel 校验/脱敏预览/录取名单发布 |
-
+| 部署与 CI/CD | Docker + Caddy、GitHub Actions 自动化流水线（GHCR 镜像、单步部署脚本与自动回滚） |
 ---
 
 ## 快速开始
@@ -146,7 +146,7 @@ radio-association/
 **开发与部署**
 - 开发者环境、Astro 工程、题组页编辑、脚本：[开发指南](docs/DEVELOPMENT.md)
 - 部署：[Docker + Caddy 部署方案](docs/DOCKER_DEPLOYMENT.md)；日常维护：[部署与运维速查](docs/OPERATIONS_QUICK_REFERENCE.md)
-- 架构理解：[部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)；数据结构：[数据库说明](docs/DATABASE.md)；命名决策：`docs/adr/`
+- 流水线与架构：[CI/CD 自动化流水线](.github/workflows/pipeline.yml)；[架构决策记录 (ADR 0005)](docs/adr/0005-ci-verification-scope.md)；[部署与运维架构](docs/DEPLOYMENT_AND_OPERATIONS.md)
 
 **压测**
 - [入会申请接口隔离压测说明](docs/LOAD_TESTING.md)；2026-08-12 实测：[500 并发隔离压测报告](docs/LOAD_TESTING_REPORT_2026-08-12.md)
