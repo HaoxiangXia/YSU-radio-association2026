@@ -345,9 +345,9 @@ def test_operation_records_are_paginated_in_reverse_creation_order(default_clien
     applications = client.get("/api/membership-applications?limit=100").json()[
         "membership_applications"
     ]
-
-    for application in applications:
-        assert client.delete(f"/api/membership-applications/{application['id']}").status_code == 200
+    # 显式按升序依次删除，确保操作记录的生成顺序为 1 -> 2 -> 3
+    for app_id in sorted(app["id"] for app in applications):
+        assert client.delete(f"/api/membership-applications/{app_id}").status_code == 200
 
     first_page = client.get("/api/membership-applications/operation-records?page=1&limit=2")
     second_page = client.get("/api/membership-applications/operation-records?page=2&limit=2")
