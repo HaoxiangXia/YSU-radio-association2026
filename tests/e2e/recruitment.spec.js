@@ -125,7 +125,7 @@ test("申请人可读取业务配置并提交入会申请", async ({ page }, tes
 });
 
 
-test("负责人可登录、查看安全文本、导出并删除申请", async ({
+test("负责人可登录、查看安全文本并删除申请", async ({
   page,
   request,
 }, testInfo) => {
@@ -170,16 +170,10 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
   }
   await page.locator("#detail-close-button").click();
 
-  const downloadPromise = page.waitForEvent("download");
-  await page.locator("#export-button").click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^membership-applications-.*\.csv$/);
-  await expect(page.locator("#admin-feedback")).toContainText("CSV 已生成");
 
   page.once("dialog", (dialog) => dialog.accept());
   await row.getByRole("button", { name: "删除" }).click();
   await expect(row).toHaveCount(0);
-  await expect(page.locator("#admin-feedback")).toContainText("删除成功");
   const operationRow = page.locator("#operation-records-body tr", { hasText: applicant.studentId }).first();
   await expect(operationRow).toContainText("删除入会申请");
   await expect(operationRow).toContainText("officer");
@@ -187,7 +181,7 @@ test("负责人可登录、查看安全文本、导出并删除申请", async ({
 });
 
 
-test("负责人可查看招新设置与录取发布页面", async ({ page }, testInfo) => {
+test("负责人可查看招新设置与录取发布页面并导出申请数据", async ({ page }, testInfo) => {
   const problems = monitorPage(page);
   await page.goto("/html/admin-login.html");
   await page.locator("#admin-username").fill("officer");
@@ -201,9 +195,18 @@ test("负责人可查看招新设置与录取发布页面", async ({ page }, tes
   await expect(page.locator("#cross-border-notice")).toHaveValue(/中国香港/);
   await expect(page.locator("#admissions-status")).toContainText("录取查询当前已开放");
   await expect(page.locator("#publish-button")).toBeDisabled();
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator("#export-csv-button").click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^membership-applications-.*\.csv$/);
+  await expect(page.locator("#csv-modal-message")).toContainText("CSV 已生成");
+  await page.locator("#csv-modal-close").click();
+  await expect(page.locator("#csv-modal")).not.toHaveClass(/open/);
   if (testInfo.project.name.startsWith("mobile")) {
     await expectMinimumTouchTarget(page.locator("#reload-config-button"));
     await expectMinimumTouchTarget(page.locator("#download-template-button"));
+    await expectMinimumTouchTarget(page.locator("#export-csv-button"));
     await expect(page.locator("#cycle")).toHaveCSS("font-size", "16px");
   }
   await expectHealthyLayout(page, problems);

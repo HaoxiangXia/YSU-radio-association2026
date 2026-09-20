@@ -251,7 +251,7 @@ test("mobile menu stays above video and scrolls inside a short viewport", async 
   expect(overlap.hasOverlap).toBe(true);
   expect(overlap.videoOwnsOverlap).toBe(false);
 
-  await page.setViewportSize({ width: 320, height: 400 });
+  await page.setViewportSize({ width: 320, height: 300 });
   const compactMenu = await menu.evaluate((menuElement) => {
     const rect = menuElement.getBoundingClientRect();
     return {
