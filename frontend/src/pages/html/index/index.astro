@@ -258,44 +258,144 @@
 .object-cover { object-fit: cover; }
 .aspect-video { aspect-ratio: 16 / 9; }
 
-/* Hero 内的协会简介卡片（原 about-association 落地页卡片，样式迁移自 about-association-landing.css 并压缩以放入首屏） */
-.home-page .card.about-assoc-intro { width: 100%; margin: 0 auto 2rem; text-align: left; display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1rem, 2vw, 1.5rem); align-items: center; padding: clamp(1rem, 2vw, 1.5rem); border-color: rgba(111, 142, 196, 0.16); background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.92)); box-shadow: rgba(33, 55, 92, 0.07) 0px 20px 50px, rgba(255, 255, 255, 0.82) 0px 1px 0px inset; }
-.home-page .about-assoc-intro__media, .home-page .about-assoc-intro__body { min-width: 0; }
-.home-page .about-assoc-intro__body { display: flex; flex-direction: column; justify-content: center; }
-.home-page .about-assoc-intro__body p { font-size: clamp(0.95rem, 1.25vw, 1.05rem); line-height: 1.75; color: rgb(71, 85, 105); }
-.home-page .about-assoc-intro__body p.mb-4 { margin-bottom: 0.6rem; }
+/* Hero 内的协会简介卡片 */
+.home-page .card.about-assoc-intro {
+  width: 100%;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 1.18fr 1fr;
+  grid-template-areas:
+    "media body"
+    "media stats";
+  gap: 0.85rem 1.6rem;
+  align-items: center;
+  padding: clamp(1rem, 1.6vw, 1.35rem);
+  border-color: rgba(111, 142, 196, 0.16);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.92));
+  box-shadow: rgba(33, 55, 92, 0.07) 0px 20px 50px, rgba(255, 255, 255, 0.82) 0px 1px 0px inset;
+}
+.home-page .about-assoc-intro__media { grid-area: media; min-width: 0; }
+.home-page .about-assoc-intro__body { grid-area: body; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+.home-page .about-assoc-intro__stats { grid-area: stats; min-width: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+.home-page .about-assoc-intro__body p { font-size: clamp(0.96rem, 1.25vw, 1.08rem); line-height: 1.75; color: rgb(71, 85, 105); margin: 0; }
 .home-page .about-assoc-intro__body p .font-semibold, .home-page .about-assoc-intro__body p .font-medium { color: rgb(30, 41, 59); }
-.home-page .about-assoc-intro__body p:last-child { margin-bottom: 0; }
 .home-page .about-assoc-intro__media .aspect-video { aspect-ratio: 16 / 9; border-radius: var(--radius); background: rgb(241, 245, 249); overflow: hidden; }
-.home-page .about-assoc-intro__stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
 
 /* 与 .site-page 变体对齐的统计卡样式（styles.css），首页不是 .site-page，需补 */
 .home-page .about-assoc-intro__stats .stat-card { border-color: rgba(96, 165, 250, 0.18); background: #ffffff; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.055); }
 .home-page .about-assoc-intro__stats .stat-value { color: #1d4ed8; font-weight: 750; }
 .home-page .about-assoc-intro__stats .stat-label { color: #5c6b83; }
 
+/* 低高度电脑端视口：压缩卡片与边距 */
+@media (min-width: 801px) and (max-height: 800px) {
+  .home-page .card.about-assoc-intro { gap: 0.65rem 1.2rem; margin-bottom: 0.85rem; padding: 0.9rem 1.15rem; }
+  .home-page .hero-content { justify-content: center; }
+}
+/* 移动端 方案 A：极致工程无框流，彻底解构嵌套卡片 */
 @media (max-width: 800px) {
-  .home-page .hero-content { justify-content: flex-start; padding-top: calc(var(--nav-height) + 2.9rem); padding-bottom: 0.75rem; overflow-y: auto; }
-  .home-page .hero-content h1 { margin-bottom: 0.6rem; }
-  .home-page .hero-content p { margin-bottom: 0.85rem; }
-  .home-page .card.about-assoc-intro { grid-template-columns: minmax(0px, 1fr); gap: 0.75rem; margin-bottom: 0.85rem; padding: 0.85rem; }
-  .home-page .about-assoc-intro__body p { font-size: 0.88rem; line-height: 1.5; overflow-wrap: anywhere; }
-  .home-page .about-assoc-intro__body p.mb-4 { margin-bottom: 0.45rem; }
-  .home-page .about-assoc-intro__stats { grid-template-columns: repeat(4, 1fr); gap: 0.45rem; margin-top: 0.45rem; }
-  .home-page .about-assoc-intro__stats .stat-card { padding: 0.4rem 0.25rem; }
-  .home-page .about-assoc-intro__media .aspect-video { aspect-ratio: auto; height: clamp(7rem, 15vh, 8.5rem); }
+  .home-page .hero-content { justify-content: flex-start; padding-top: calc(var(--nav-height) + 1.25rem); padding-bottom: 0.85rem; overflow-y: auto; }
+  .home-page .hero-title__school,
+  .home-page .hero-title__dept {
+    display: block;
+  }
+  .home-page .hero-title__dept {
+    white-space: nowrap;
+  }
+  .home-page .hero-content h1 {
+    margin-bottom: 0.35rem;
+    font-size: clamp(1.8rem, 7.2vw, 2.5rem);
+    line-height: 1.15;
+  }
+  .home-page .hero-content p { margin-bottom: 0.65rem; font-size: 0.95rem; }
+  .home-page .card.about-assoc-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+    padding: 0 0 0.85rem 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.15) 100%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    border-radius: 16px;
+    box-shadow: 0 10px 32px rgba(26, 68, 114, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.82);
+  }
+  .home-page .about-assoc-intro__media {
+    width: 100%;
+    margin: 0;
+  }
+  .home-page .about-assoc-intro__media .aspect-video {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow: none;
+    background: transparent;
+  }
+  /* 扁平仪器数据带（Telemetry Strip），消除 4 个独立卡片容器与阴影 */
+  .home-page .about-assoc-intro__stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 0.15rem 0.85rem 0;
+    padding: 0.45rem 0;
+    background: transparent;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  }
+  .home-page .about-assoc-intro__stats .stat-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0.2rem 0.15rem;
+    text-align: center;
+    position: relative;
+  }
+  .home-page .about-assoc-intro__stats .stat-card:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 18%;
+    height: 64%;
+    width: 1px;
+    background: rgba(148, 163, 184, 0.22);
+  }
+  .home-page .about-assoc-intro__stats .stat-value {
+    color: #1d4ed8;
+    font-size: clamp(1.02rem, 4.4vw, 1.15rem);
+    font-weight: 750;
+    line-height: 1.15;
+  }
+  .home-page .about-assoc-intro__stats .stat-label {
+    color: #64748b;
+    font-size: clamp(0.64rem, 2.6vw, 0.72rem);
+    margin-top: 0.2rem;
+    line-height: 1.15;
+  }
+  /* 只留“走过春秋”一句，去框平铺 */
+  .home-page .about-assoc-intro__body {
+    padding: 0 0.85rem;
+    text-align: center;
+  }
+  .home-page .about-assoc-intro__body p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #475569;
+    overflow-wrap: anywhere;
+    margin: 0;
+  }
+  .home-page .hero-buttons {
+    margin-top: 0.25rem;
+  }
 }
 
 @media (max-width: 440px) {
+  .home-page .hero-content h1 { font-size: clamp(1.6rem, 7.5vw, 2.1rem); }
   .home-page .about-assoc-intro__stats .stat-value { font-size: 1.05rem; }
-  .home-page .about-assoc-intro__stats .stat-label { font-size: 0.68rem; }
-}
-
-/* 低高度视口：压缩卡片；高度不足时允许 Hero 内容内部滚动（页面本身保持全屏锁滚动） */
-@media (max-height: 800px) {
-  .home-page .card.about-assoc-intro { gap: 0.75rem; margin-bottom: 1rem; padding: 1rem; }
-  .home-page .about-assoc-intro__stats { margin-top: 0.5rem; }
-  .home-page .hero-content { justify-content: flex-start; overflow-y: auto; padding-bottom: 1rem; }
+  .home-page .about-assoc-intro__stats .stat-label { font-size: 0.65rem; }
 }
   </style>
 </head>
@@ -343,7 +443,10 @@
     </div>
     <div class="hero-content container">
       <div class="hero-copy home-hero-copy">
-        <h1>燕山大学无线电爱好者协会</h1>
+        <h1>
+          <span class="hero-title__school">燕山大学</span>
+          <span class="hero-title__dept">无线电爱好者协会</span>
+        </h1>
         <p>挖掘潜质，就在无协</p>
         <div class="card about-assoc-intro">
           <div class="about-assoc-intro__media">
@@ -353,41 +456,28 @@
                 <p class="text-gray-400 text-sm p-8 text-center">视频加载失败，请检查文件是否存在</p>
               </video>
             </div>
-            <div class="about-assoc-intro__stats">
-              <div class="stat-card">
-                <div class="stat-value">1988</div>
-                <div class="stat-label">成立年份</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">5</div>
-                <div class="stat-label">部门数量</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">200+</div>
-                <div class="stat-label">会员人数</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">250+</div>
-                <div class="stat-label">累计竞赛获奖</div>
-              </div>
+          </div>
+          <div class="about-assoc-intro__stats">
+            <div class="stat-card">
+              <div class="stat-value">1988</div>
+              <div class="stat-label">成立年份</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">5</div>
+              <div class="stat-label">部门数量</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">200+</div>
+              <div class="stat-label">会员人数</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">250+</div>
+              <div class="stat-label">累计竞赛获奖</div>
             </div>
           </div>
           <div class="about-assoc-intro__body">
-            <p class="text-gray-600 leading-relaxed mb-4">
+            <p class="text-gray-600 leading-relaxed">
               燕山大学无线电爱好者协会，简称"无协"，是技术实践类社团，非常注重教学与实践，已经陪燕大走过<span class="font-semibold text-gray-800">38个春秋</span>。
-            </p>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              协会秉承<span class="font-semibold text-gray-800">"厚德、博学、求是"</span>的燕大校训，发扬<span class="font-semibold text-gray-800">"艰苦奋斗、严谨治学、求实创新"</span>的燕大精神，致力于培养和传播科学技术的热情。
-            </p>
-            <p class="text-gray-600 leading-relaxed">
-              亲爱的同学们和爱好者们，欢迎加入无线电爱好者协会！我们是一个致力于探索和研究
-              <span class="font-semibold text-gray-800">嵌入式开发与FPGA</span>、
-              <span class="font-semibold text-gray-800">人工智能应用与软件开发</span>、
-              <span class="font-semibold text-gray-800">机械建模</span> 和
-              <span class="font-semibold text-gray-800">智能控制</span> 的团队。
-            </p>
-            <p class="text-gray-600 leading-relaxed">
-              我们致力于传播知识、启发灵感，并为每一位热爱科技的朋友提供一个共同成长的平台。
             </p>
           </div>
         </div>
