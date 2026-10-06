@@ -88,6 +88,17 @@ bun run build:frontend  # 构建并覆盖 public/html/ 与 public/_astro/
 - 公共布局 `frontend/src/layouts/SubpageLayout.astro`：默认渲染全局导航（`common.js` 注入）；页面传 `navMode="custom"` 并提供 `slot="nav"` 可自定义页内导航（题组页即此模式）
 - 严格 CSP（`style-src 'self'`，无 `unsafe-inline`）：astro 里的 `<style is:global>` 构建为外链 css，脚本必须外链文件（`public/html/*.js`），禁止内联
 
+### 顶部招新横幅与公告（Top Banner）
+
+全站顶部横幅（位于导航栏之上）用于公布招新题组发布通知与面试前作品提交通道：
+
+- **渲染与控制**：由 `public/html/common.js` 的 `getNavHTML()` 统一注入（除题组页自定义导航外全站展示），由 `initTopBannerTicker()` 驱动。
+- **轮播机制**：
+  - **垂直翻动（Vertical Ticker）**：采用垂直向上翻动切换下一条（CSS transform 阶梯翻转），**并非**横向连续跑马灯。
+  - **切换节奏**：默认每 **4.5 秒**（`setInterval(tick, 4500)`）翻动一条；在两次翻动之间的 4.5 秒内保持静止展示。
+  - **防干扰与悬停暂停**：鼠标悬停在横幅上（`mouseenter`）或键盘聚焦（`focusin`）时，定时器会立即冻结暂停，鼠标移开后恢复。
+  - **无障碍减弱动效**：若操作系统或浏览器开启了“减弱动态效果（`prefers-reduced-motion`）”，脚本会自动禁用翻动动画，静止展示首条内容。
+- **内容修改**：文案、题组链接及飞书作品提交通道链接（`feishuSubmissionUrl`）直接在 `public/html/common.js` 的 `getNavHTML()` 函数内调整。
 ## 常用脚本
 
 | 脚本 | 说明 |

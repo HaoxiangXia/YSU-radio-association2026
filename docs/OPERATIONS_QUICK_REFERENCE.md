@@ -78,16 +78,22 @@ sleep 5 && curl --fail http://127.0.0.1:5000/healthz
 - 使用经过确认的完整 40 位 SHA；
 - 申请和录取查询保持关闭，当前数据库备份正常。
 
-镜像由 **GitHub Actions 自动构建并推送到 GHCR**（服务器不构建，开发机亦无需上传几百 MB 镜像）。当推送版本 tag（如 `v1.0.0`）或在 GitHub Actions 页面手动触发构建后，接交者在服务器 root shell 执行：
+镜像由 **GitHub Actions 自动构建并推送到 GHCR**（服务器不构建，开发机亦无需上传几百 MB 镜像）。当推送版本 tag（如 `v1.0.0`）或在 GitHub Actions 页面手动触发构建后，接交者在服务器交互式 shell 中执行：
+
 ```bash
+# 1. 以 admin 用户登录服务器后，切换至 root 或使用 sudo 执行（目录属主为 root，普通用户会报 Permission denied）
+sudo -i
+
+# 2. 进入正式部署源码目录（注意路径为 radio-association/docker/src，非历史遗留空目录 /opt/radio）
 cd /opt/radio-association/docker/src
-sudo bash deployment/deploy.sh <新SHA或版本Tag>
+
+# 3. 执行单步部署脚本（传入 40 位 SHA 或版本 Tag）
+bash deployment/deploy.sh <新SHA或版本Tag>
 ```
 
 *(该脚本自动执行“发布前数据库备份 → 拉取 GHCR 镜像 → 对齐 git 提交 → 重启容器 → 20秒健康检查轮询”，失败自动回滚到上一版本。)*
 
 *(注：若遇无网络或 Actions 故障，仍可用 `scripts/release-image.sh` 应急本地直传，在 `.env` 中加 `RADIO_IMAGE_REPO=radio-association` 即可。)*
-
 不要修改 `/opt/radio-association/docker/src` 中的文件来"修 bug"——它只提供运维文件，代码变更必须走开发机构建新镜像。
 
 ## 5. 网页故障时更新业务文件

@@ -13,14 +13,8 @@ def read(relative_path: str) -> str:
     return (REPOSITORY_ROOT / relative_path).read_text(encoding="utf-8")
 
 
-def test_legacy_deployment_is_disabled():
-    script = read("scripts/deploy.sh")
-    assert "exit 64" in script
-    assert "git pull" not in script
-    assert "git reset" not in script
-    assert "ufw allow 5000" not in script
-    assert "--host 0.0.0.0" not in script
-
+def test_legacy_deployment_script_is_removed():
+    assert not (REPOSITORY_ROOT / "scripts/deploy.sh").exists()
 
 def test_deployment_assets_keep_loopback_and_limits():
     radioctl = read("deployment/radioctl")
@@ -77,7 +71,6 @@ def test_bash_scripts_parse():
     scripts = [
         "deployment/radioctl",
         "deployment/deploy.sh",
-        "scripts/deploy.sh",
     ]
     for script in scripts:
         subprocess.run(

@@ -360,7 +360,7 @@ ss -ltnp
 
 以下旧模型资产已随方案切换处置：
 
-- `scripts/bootstrap-server.sh`、`scripts/configure-public-site.sh`、`scripts/radio-remote.ps1`、`scripts/ops/reload-radio-nginx.sh`、`deployment/nginx/`：已删除（整体围绕 Nginx sites-available + certbot，由第 2 节初始化与第 6 节 Caddyfile 取代）。
+- `scripts/deploy.sh`、`scripts/bootstrap-server.sh`、`scripts/configure-public-site.sh`、`scripts/radio-remote.ps1`、`scripts/ops/reload-radio-nginx.sh`、`deployment/nginx/`：已删除（整体围绕 Nginx sites-available + certbot，由第 2 节初始化、第 6 节 Caddyfile 及 `deployment/deploy.sh` 取代）。
 - `deployment/systemd/radio-association.service`：应用不再由 systemd 直接运行，文件仅作历史保留；备份 timer/service 仍在使用。
 - `radioctl` 的 `deploy/rollback/restore/configure/admissions/status` 子命令：已移除，脚本缩减为 `backup` 单入口。
 - `docs/DOCKER_MIGRATION_PLAN.md`、`docs/HANDOVER_GUIDE.md`、`docs/HANDOVER_CHECKLIST.md`：已删除（迁移计划面向从未实施的旧架构；交接文档随维护模式变化废止）。
