@@ -189,14 +189,27 @@ function initImageViewer() {
 
 // 生成导航栏 HTML
 function getNavHTML() {
-  const questionsBanner = document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html'
+  const feishuSubmissionUrl = 'https://teamyuna.feishu.cn/share/base/shrcnKeN9nByWlCO0GRnSj7n2Nb';
+  const topBanner = document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html'
     ? `
-    <a class="top-banner" href="/html/recruitment-questions.html">
-      <span>2026招新题组已公布 · 点击查看</span>
-    </a>`
+    <aside class="top-banner" role="region" aria-label="协会公告">
+      <div class="top-banner__track is-step-0" id="top-banner-track">
+        <a class="top-banner__item" href="${feishuSubmissionUrl}" target="_blank" rel="noopener noreferrer">
+          <span class="top-banner__text">面试前个人作品提交通道 · 点击跳转</span>
+          <span class="top-banner__icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="top-banner__item" href="/html/recruitment-questions.html">
+          <span class="top-banner__text">2026招新题组已公布 · 点击查看</span>
+        </a>
+        <a class="top-banner__item" href="${feishuSubmissionUrl}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+          <span class="top-banner__text">面试前个人作品提交通道 · 点击跳转</span>
+          <span class="top-banner__icon" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </aside>`
     : '';
   return `
-    ${questionsBanner}
+    ${topBanner}
     <nav class="nav">
       <div class="container">
         <a href="/html/index.html" class="nav-logo">
@@ -345,6 +358,85 @@ async function loadFooterRecruitmentConfig() {
   }
 }
 
+// 初始化顶部横幅公告垂直滚动轮播
+function initTopBannerTicker() {
+  const banner = document.querySelector('.top-banner');
+  const track = document.getElementById('top-banner-track');
+  if (!banner || !track) return;
+
+  const items = track.querySelectorAll('.top-banner__item');
+  if (items.length < 3) return;
+
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  let currentIndex = 0;
+  let isPaused = false;
+  let isTabHidden = false;
+  let resetTimeoutId = null;
+
+  function goToStep(index, animate = true) {
+    if (!animate) {
+      track.classList.add('no-transition');
+    } else {
+      track.classList.remove('no-transition');
+    }
+    track.classList.remove('is-step-0', 'is-step-1', 'is-step-2');
+    track.classList.add(`is-step-${index}`);
+  }
+
+  function tick() {
+    if (isPaused || isTabHidden) return;
+
+    currentIndex++;
+    goToStep(currentIndex, true);
+
+    if (currentIndex === 2) {
+      clearTimeout(resetTimeoutId);
+      resetTimeoutId = setTimeout(() => {
+        currentIndex = 0;
+        goToStep(0, false);
+        void track.offsetHeight;
+        track.classList.remove('no-transition');
+      }, 460);
+    }
+  }
+
+  setInterval(tick, 4500);
+
+  banner.addEventListener('mouseenter', () => {
+    isPaused = true;
+  });
+
+  banner.addEventListener('mouseleave', () => {
+    isPaused = false;
+  });
+
+  banner.addEventListener('focusin', (event) => {
+    isPaused = true;
+    const targetItem = event.target.closest('.top-banner__item');
+    if (!targetItem) return;
+    if (targetItem === items[0]) {
+      currentIndex = 0;
+      goToStep(0, false);
+    } else if (targetItem === items[1]) {
+      currentIndex = 1;
+      goToStep(1, false);
+    }
+  });
+
+  banner.addEventListener('focusout', (event) => {
+    if (!banner.contains(event.relatedTarget)) {
+      isPaused = false;
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    isTabHidden = document.hidden;
+  });
+}
+
 // 初始化页面
 function initPage() {
   // 插入导航栏
@@ -371,6 +463,7 @@ function initPage() {
   
   // 初始化功能
   initNav();
+  initTopBannerTicker();
   initScrollTop();
   initImageViewer();
   loadFooterRecruitmentConfig();
