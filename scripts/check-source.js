@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { extname } from "node:path";
+import { updateAssetVersions } from "./update-asset-versions.js";
 
 
 function gitFiles() {
@@ -183,6 +184,17 @@ for (const path of generatedWebpFiles) {
   }
 }
 
+const versionResult = updateAssetVersions({ check: true });
+for (const mismatch of versionResult.mismatches) {
+  if (mismatch.error) {
+    failures.push(`${mismatch.file}: ${mismatch.error}`);
+  } else {
+    failures.push(
+      `${mismatch.file}: 静态资源版本未同步 ${mismatch.current} -> 应为 ${mismatch.expected}（请运行 bun run update:assets）`,
+    );
+  }
+}
+
 if (failures.length) {
   console.error("前端源文件检查失败：");
   for (const failure of failures) console.error(`- ${failure}`);
@@ -197,4 +209,7 @@ console.log(
   `图片引用检查通过（${sourceKeys.size} 张响应式原图，`
   + `${manifestVariants.size} 个 WebP，`
   + `${standaloneImages.size} 个独立图片）`,
+);
+console.log(
+  `静态资源版本检查通过（${versionResult.hashes.size} 个资源在 ${versionResult.totalFiles} 个文件中全部对齐）`,
 );
