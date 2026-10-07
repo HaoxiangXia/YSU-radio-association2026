@@ -813,14 +813,6 @@ button:focus-visible {
   background-color: #ffffff;
 }
 
-.bg-blue-50 {
-  background-color: #eff6ff;
-}
-
-.bg-blue-50\/50 {
-  background-color: rgba(239, 246, 255, 0.5);
-}
-
 .bg-black\/40 {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -1010,9 +1002,6 @@ button:focus-visible {
   color: #2563eb;
 }
 
-.hover\:bg-blue-50:hover {
-  background-color: #eff6ff;
-}
 
 .hover\:underline:hover {
   text-decoration: underline;
