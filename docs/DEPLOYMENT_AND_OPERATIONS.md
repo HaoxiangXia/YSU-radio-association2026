@@ -57,7 +57,7 @@
 - 443 反向代理到 `127.0.0.1:5000`，开启 zstd/gzip 压缩；
 - 阻止公网访问 `/ops/` 和隐藏文件；
 - 3MB 请求体上限与安全响应头（含 HSTS `max-age=31536000`，未加 `includeSubDomains`；严格 CSP `default-src 'self'`，无 unsafe-inline），并移除上游 `Server`/`Via` 指纹头；
-- 图片/CSS/JS 静态资源携带 `Cache-Control: max-age=86400`，HTML 不缓存；
+- 图片/CSS/JS 静态资源携带 Cache-Control: max-age=86400（Astro 构建产物 1 年 immutable），HTML 采用 Cache-Control: no-cache, must-revalidate 协商缓存（改动即时生效，未改 304 零负载）；
 - 访问日志写入 `/var/log/caddy/radio-association.access.log`（console 格式，自动滚动），不记录查询字符串之外的敏感头。
 
 应用日志经 `docker logs radio-association` 查看（json-file，10 MB × 3 滚动）。Caddy 运行日志经 `journalctl -u caddy` 查看。

@@ -25,10 +25,13 @@ __DOMAIN__ {
 	}
 	respond @hiddenDotfiles 404
 
-	# 静态资源浏览器缓存（图片/样式/脚本内容稳定；HTML 不加，保持更新即时生效）
+	# HTML 协商缓存：每次必须与服务端验证 ETag / Last-Modified，内容未改 304 极速响应，改动即时生效
+	@htmlFiles path / /html/*.html
+	header @htmlFiles Cache-Control "no-cache, must-revalidate"
+
+	# 静态资源浏览器缓存（图片/样式/脚本内容稳定，配合版本哈希参数生效）
 	@staticAssets path /image/* /html/*.css /html/*.js
 	header @staticAssets Cache-Control "public, max-age=86400"
-
 	# Astro 构建产物文件名带内容哈希，内容变化即新文件名，可 immutable 长缓存
 	@hashedAssets path /_astro/*
 	header @hashedAssets Cache-Control "public, max-age=31536000, immutable"

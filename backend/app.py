@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import JSONResponse, RedirectResponse
+from starlette.responses import JSONResponse, RedirectResponse, Response
 
 
 # Debian slim images do not always register WebP in the system MIME database.
@@ -93,8 +93,33 @@ app.include_router(membership_applications.router, prefix="/api/membership-appli
 app.include_router(recruitment_officers.router, prefix="/api/recruitment-officers", tags=["recruitment-officers"])
 app.include_router(ops.router, tags=["operations"])
 
+# 静态文件缓存策略：
+# - HTML 页面：no-cache, must-revalidate（每次与服务端协商 ETag/Last-Modified，改动即时生效，未改 304 零传输）
+# - Astro 产物（/_astro/*）：文件名含内容哈希，public, max-age=31536000, immutable
+# - 其他常规静态资源（CSS/JS/图片/字体）：public, max-age=86400（配合版本哈希参数生效）
+class CacheControlledStaticFiles(StaticFiles):
+    def file_response(
+        self,
+        full_path,
+        stat_result,
+        scope,
+        status_code: int = 200,
+    ) -> Response:
+        response = super().file_response(full_path, stat_result, scope, status_code)
+        path_str = str(full_path).replace("\\", "/")
+        if path_str.endswith(".html"):
+            response.headers["Cache-Control"] = "no-cache, must-revalidate"
+        elif "/_astro/" in path_str:
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        elif path_str.endswith(
+            (".css", ".js", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".woff", ".woff2", ".ttf")
+        ):
+            response.headers["Cache-Control"] = "public, max-age=86400"
+        return response
+
+
 # Static files (must be mounted after API routes so /api/* takes precedence)
-app.mount("/", StaticFiles(directory="../public", html=True), name="static")
+app.mount("/", CacheControlledStaticFiles(directory="../public", html=True), name="static")
 
 
 if __name__ == "__main__":

@@ -48,6 +48,8 @@ def test_deployment_assets_keep_loopback_and_limits():
     assert "@ops path /ops/*" in caddyfile
     assert "X-Content-Type-Options nosniff" in caddyfile
     assert "encode zstd gzip" in caddyfile
+    assert "@htmlFiles path / /html/*.html" in caddyfile
+    assert 'header @htmlFiles Cache-Control "no-cache, must-revalidate"' in caddyfile
 
     assert "RECRUITMENT_CONFIG_PATH=/var/lib/radio-association/private/recruitment.json" in app_env
     assert "radioctl backup" in backup_service
@@ -63,6 +65,30 @@ def test_static_webp_uses_browser_compatible_content_type(default_client):
     assert response.headers["content-type"] == "image/webp"
     assert response.content.startswith(b"RIFF")
 
+
+def test_static_cache_control_headers(default_client):
+    client, _ = default_client
+
+    # 1. HTML 页面：协商缓存，必须携带 no-cache，支持 304 条件请求
+    resp_html = client.get("/html/index.html")
+    assert resp_html.status_code == 200
+    assert resp_html.headers.get("cache-control") == "no-cache, must-revalidate"
+    etag = resp_html.headers.get("etag")
+    assert etag is not None
+
+    resp_304 = client.get("/html/index.html", headers={"if-none-match": etag})
+    assert resp_304.status_code == 304
+    assert resp_304.headers.get("cache-control") == "no-cache, must-revalidate"
+
+    # 2. 普通静态资源：样式/脚本带 1 天缓存
+    resp_css = client.get("/html/styles.css")
+    assert resp_css.status_code == 200
+    assert resp_css.headers.get("cache-control") == "public, max-age=86400"
+
+    # 3. Astro 产物（/_astro/*）：带内容哈希，长缓存 1 年 immutable
+    resp_astro = client.get("/_astro/trainings.Bw9Z62AP.css")
+    assert resp_astro.status_code == 200
+    assert resp_astro.headers.get("cache-control") == "public, max-age=31536000, immutable"
 
 @pytest.mark.skipif(os.name == "nt", reason="CI 在 Linux 上执行 Bash 语法检查")
 def test_bash_scripts_parse():
