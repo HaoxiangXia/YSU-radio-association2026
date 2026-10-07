@@ -33,6 +33,7 @@ AGENTS.md
 PLAN.md
 artifacts/
 playwright-report/
+docs/screenshots/
 scripts/baseline-allowlist.json
 scripts/check.js
 scripts/smoke.js

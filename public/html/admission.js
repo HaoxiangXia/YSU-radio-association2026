@@ -5,44 +5,43 @@
       const resultDiv = document.getElementById('query-result');
       resultDiv.replaceChildren();
       resultDiv.style.display = 'none';
+      resultDiv.classList.add('hidden');
     }
 
     function showResult({ title, message = '', status = '', department = '', kind = 'neutral' }) {
       const resultDiv = document.getElementById('query-result');
-      const card = document.createElement('div');
-      card.className = 'bg-gray-50 border-gray-200 border rounded-lg p-4';
+      const panel = document.createElement('div');
+      panel.className = 'query-result-panel';
 
-      const center = document.createElement('div');
-      center.className = 'text-center';
       const heading = document.createElement('h3');
-      heading.className = 'font-bold text-gray-800 mb-2';
+      heading.className = 'query-result-title';
       heading.textContent = title;
-      center.appendChild(heading);
+      panel.appendChild(heading);
 
       if (status) {
-        const statusElement = document.createElement('p');
-        statusElement.className = `${kind === 'accepted' ? 'text-green-600' : 'text-yellow-600'} font-medium mb-2`;
+        const statusElement = document.createElement('div');
+        statusElement.className = `query-result-badge ${kind === 'accepted' ? 'is-accepted' : 'is-pending'}`;
         statusElement.textContent = status;
-        center.appendChild(statusElement);
+        panel.appendChild(statusElement);
       }
       if (department) {
         const departmentElement = document.createElement('p');
-        departmentElement.className = 'text-gray-600 text-sm';
+        departmentElement.className = 'query-result-dept';
         departmentElement.textContent = `录取部门：${department}`;
-        center.appendChild(departmentElement);
+        panel.appendChild(departmentElement);
       }
       if (message) {
         const messageElement = document.createElement('p');
         messageElement.className = kind === 'error'
-          ? 'text-red-600 font-medium'
-          : 'text-gray-600 text-sm';
+          ? 'query-result-msg is-error'
+          : 'query-result-msg';
         messageElement.textContent = message;
-        center.appendChild(messageElement);
+        panel.appendChild(messageElement);
       }
 
-      card.appendChild(center);
-      resultDiv.replaceChildren(card);
+      resultDiv.replaceChildren(panel);
       resultDiv.style.display = 'block';
+      resultDiv.classList.remove('hidden');
     }
 
     async function loadRecruitmentConfig() {
