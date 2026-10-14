@@ -70,8 +70,7 @@ def make_admissions() -> list[dict]:
         {
             "studentId": "202600000001",
             "name": "测试同学",
-            "phone": "13800000001",
-            "department": "嵌入式部门",
+            "department": "",
             "status": "已录取",
         }
     ]

@@ -13,7 +13,7 @@ MAX_WORKBOOK_EXPANDED_BYTES = 20 * 1024 * 1024
 MAX_WORKBOOK_ENTRIES = 300
 MAX_ADMISSION_ROWS = 2000
 WORKSHEET_NAME = "录取名单"
-WORKBOOK_COLUMNS = ("姓名", "学号", "申请手机号", "录取部门")
+WORKBOOK_COLUMNS = ("姓名", "学号")
 
 
 def _excel_text(value) -> str:
@@ -29,8 +29,6 @@ def masked_preview(record: AdmissionRecord) -> dict:
     return {
         "name": name,
         "studentId": "********" + record.student_id[-4:],
-        "phone": "*******" + record.phone[-4:],
-        "department": record.department,
         "status": record.status,
     }
 
@@ -89,20 +87,21 @@ def parse_admission_workbook(content: bytes) -> dict:
         seen_student_ids: set[str] = set()
         for row_number, cells in enumerate(rows, start=2):
             selected_cells = cells[: len(WORKBOOK_COLUMNS)]
-            if all(cell.value is None or _excel_text(cell.value) == "" for cell in selected_cells):
+            if all(cell.value is None or _excel_text(cell.value) == "" for cell in cells):
                 continue
             if len(records) + len(errors) >= MAX_ADMISSION_ROWS:
                 raise AdmissionDataError(f"录取名单最多允许 {MAX_ADMISSION_ROWS} 行")
-            if any(cell.data_type == "f" for cell in selected_cells):
+            if any(cell.data_type == "f" for cell in cells):
                 errors.append({"row": row_number, "message": "不得使用公式"})
+                continue
+            if any(_excel_text(cell.value) for cell in cells[len(WORKBOOK_COLUMNS) :]):
+                errors.append({"row": row_number, "message": "只能填写姓名、学号两列"})
                 continue
 
             values = [_excel_text(cell.value) for cell in selected_cells]
             raw_record = {
                 "name": values[0],
                 "studentId": values[1],
-                "phone": values[2],
-                "department": values[3],
             }
             try:
                 record = AdmissionRecord.model_validate(raw_record)
@@ -127,14 +126,14 @@ def create_admission_template() -> bytes:
     worksheet = workbook.active
     worksheet.title = WORKSHEET_NAME
     worksheet.append(WORKBOOK_COLUMNS)
-    worksheet.append(("张三", "202600000001", "13800000000", "嵌入式"))
+    worksheet.append(("张三", "202600000001"))
     worksheet.freeze_panes = "A2"
-    worksheet.auto_filter.ref = "A1:D2"
+    worksheet.auto_filter.ref = "A1:B2"
     header_fill = PatternFill("solid", fgColor="DCEEFF")
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
         cell.fill = header_fill
-    for column, width in zip("ABCD", (16, 18, 18, 24), strict=True):
+    for column, width in zip("AB", (16, 18), strict=True):
         worksheet.column_dimensions[column].width = width
     output = io.BytesIO()
     workbook.save(output)

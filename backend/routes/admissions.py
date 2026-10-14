@@ -40,7 +40,6 @@ class AdmissionQuery(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True, str_strip_whitespace=True)
 
     student_id: str = Field(alias="studentId", pattern=r"^\d{12}$")
-    phone: str = Field(pattern=r"^1[3-9]\d{9}$")
 
 
 class AdmissionQueryResponse(BaseModel):
@@ -117,7 +116,7 @@ def query_admission(
         )
 
     admission = get_admissions(config).get(query.student_id)
-    if not admission or admission.phone != query.phone:
+    if not admission:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,
             "未找到匹配的录取结果，请检查输入或联系协会负责人",

@@ -29,7 +29,6 @@ class AdmissionRecord(BaseModel):
 
     student_id: str = Field(alias="studentId", pattern=r"^\d{12}$")
     name: str = Field(min_length=1, max_length=30)
-    phone: str = Field(pattern=r"^1[3-9]\d{9}$")
     department: str = Field(default="", max_length=100)
     status: Literal["已录取", "未录取"] = "已录取"
 

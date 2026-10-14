@@ -526,13 +526,13 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       <input class="form-input" id="admissions-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
       <button class="btn-solid" type="button" id="preview-button">校验并预览</button>
     </div>
-    <p class="operations-help">只接受 2 MiB 以内的 `.xlsx`。预览不会替换正式名单；文件不得包含公式、宏或外部链接。</p>
+    <p class="operations-help">只接受 2 MiB 以内的 .xlsx，工作表名为“录取名单”，仅包含“姓名、学号”两列；最多 2000 条，学号为 12 位数字且不能重复。名单中所有同学均视为已录取。预览不会替换正式名单；文件不得包含公式、宏或外部链接。</p>
     <div id="preview-result" hidden>
       <div class="preview-summary" id="preview-summary"></div>
       <ul class="preview-errors" id="preview-errors"></ul>
       <div class="preview-table-wrap">
         <table class="preview-table">
-          <thead><tr><th>姓名</th><th>学号</th><th>申请手机号</th><th>录取部门</th></tr></thead>
+          <thead><tr><th>姓名</th><th>学号</th></tr></thead>
           <tbody id="preview-body"></tbody>
         </table>
       </div>
@@ -762,7 +762,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       previewBody.replaceChildren();
       body.preview.forEach((record) => {
         const row = document.createElement('tr');
-        ['name', 'studentId', 'phone', 'department'].forEach((field) => {
+        ['name', 'studentId'].forEach((field) => {
           const cell = document.createElement('td');
           cell.textContent = record[field] || '-';
           row.appendChild(cell);

@@ -8,7 +8,9 @@ const DEFAULT_PRIVATE_DIRECTORY = path.resolve(
   '..',
   'YSU-radio-association-private',
 );
-const ALLOWED_STATUSES = new Set(['已录取', '未录取']);
+const WORKBOOK_COLUMNS = ['姓名', '学号'];
+const MAX_ADMISSION_ROWS = 2000;
+const MAX_WORKBOOK_BYTES = 2 * 1024 * 1024;
 
 function normalize(value) {
   return value === undefined || value === null ? '' : String(value).trim();
@@ -27,9 +29,8 @@ function validateRecord(row, excelRowNumber) {
   const record = {
     name: normalize(row[0]),
     studentId: normalize(row[1]),
-    phone: normalize(row[2]),
-    department: normalize(row[3]),
-    status: normalize(row[4]),
+    department: '',
+    status: '已录取',
   };
   const errors = [];
 
@@ -39,28 +40,35 @@ function validateRecord(row, excelRowNumber) {
   if (!/^\d{12}$/.test(record.studentId)) {
     errors.push('学号必须为 12 位数字');
   }
-  if (!/^1[3-9]\d{9}$/.test(record.phone)) {
-    errors.push('手机号格式无效');
-  }
-  if (record.department.length > 100) {
-    errors.push('录取部门不能超过 100 个字符');
-  }
-  if (!ALLOWED_STATUSES.has(record.status)) {
-    errors.push('录取结果只能为“已录取”或“未录取”');
+  if (row.slice(2).some((value) => normalize(value) !== '')) {
+    errors.push('只能填写姓名、学号两列');
   }
 
   return { record, errors: errors.map((message) => `第 ${excelRowNumber} 行：${message}`) };
 }
 
 function readAdmissions(sheet) {
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false });
+  if (Object.entries(sheet).some(([key, cell]) => !key.startsWith('!') && cell.f)) {
+    throw new Error('录取名单不得使用公式。');
+  }
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: true });
+  const headers = (rows[0] || []).map(normalize);
+  if (WORKBOOK_COLUMNS.some((header, index) => headers[index] !== header)
+      || headers.slice(2).some(Boolean)) {
+    throw new Error('Excel 只能包含这些表头并依次排列：姓名、学号');
+  }
   const records = [];
   const errors = [];
   const seen = new Map();
+  let rowCount = 0;
 
   for (let index = 1; index < rows.length; index += 1) {
     const row = rows[index];
     if (isBlankRow(row)) continue;
+    rowCount += 1;
+    if (rowCount > MAX_ADMISSION_ROWS) {
+      throw new Error(`录取名单最多允许 ${MAX_ADMISSION_ROWS} 行。`);
+    }
 
     const excelRowNumber = index + 1;
     const validation = validateRecord(row, excelRowNumber);
@@ -123,13 +131,19 @@ function main() {
     throw new Error(`Excel 源文件不存在：${inputPath}`);
   }
 
-  const workbook = XLSX.readFile(inputPath);
-  const firstSheetName = workbook.SheetNames[0];
-  if (!firstSheetName) {
-    throw new Error('Excel 文件中没有工作表。');
+  if (path.extname(inputPath).toLowerCase() !== '.xlsx'
+      || fs.statSync(inputPath).size > MAX_WORKBOOK_BYTES) {
+    throw new Error('请选择 2 MiB 以内的 .xlsx 文件。');
+  }
+  const workbook = XLSX.readFile(inputPath, { bookVBA: true, bookFiles: true });
+  if (workbook.vbaraw || Object.keys(workbook.files || {}).some((key) => key.startsWith('xl/externalLinks/'))) {
+    throw new Error('Excel 文件不得包含宏或外部链接。');
+  }
+  if (!workbook.Sheets['录取名单']) {
+    throw new Error('Excel 必须包含“录取名单”工作表。');
   }
 
-  const records = readAdmissions(workbook.Sheets[firstSheetName]);
+  const records = readAdmissions(workbook.Sheets['录取名单']);
   records.sort((a, b) => a.studentId.localeCompare(b.studentId));
   writeJsonAtomically(outputPath, records);
   console.log(`已安全导出 ${records.length} 条录取结果到私有路径：${outputPath}`);

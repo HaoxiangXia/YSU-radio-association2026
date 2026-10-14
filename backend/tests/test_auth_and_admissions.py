@@ -10,7 +10,7 @@ from openpyxl import Workbook
 from conftest import TEST_PASSWORD
 from models.admission_list import AdmissionDataError
 from routes import recruitment_officers
-from utils.admission_workbook import parse_admission_workbook
+from utils.admission_workbook import create_admission_template, parse_admission_workbook
 from utils.security import admission_query_limiter, login_limiter
 
 
@@ -27,15 +27,13 @@ def workbook_bytes(*, formula: bool = False, extra_header: bool = False) -> byte
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = "录取名单"
-    headers = ["姓名", "学号", "申请手机号", "录取部门"]
+    headers = ["姓名", "学号"]
     if extra_header:
         headers.append("备注")
     worksheet.append(headers)
     worksheet.append((
-        "新同学",
+        "=\"新同学\"" if formula else "新同学",
         "202600000008",
-        "13800000008",
-        "=\"机械\"" if formula else "机械",
     ))
     output = io.BytesIO()
     workbook.save(output)
@@ -126,32 +124,38 @@ def test_admission_query_success_and_privacy(default_client):
     client, _ = default_client
     response = client.post(
         "/api/admissions/query",
-        json={"studentId": "202600000001", "phone": "13800000001"},
+        json={"studentId": "202600000001"},
     )
 
     assert response.status_code == 200
     assert response.json() == {
         "name": "测试同学",
-        "department": "嵌入式部门",
+        "department": "",
         "status": "已录取",
     }
     assert "studentId" not in response.json()
     assert "phone" not in response.json()
 
 
-def test_wrong_phone_and_unknown_student_are_indistinguishable(default_client):
+def test_unknown_student_has_no_result(default_client):
     client, _ = default_client
-    wrong_phone = client.post(
-        "/api/admissions/query",
-        json={"studentId": "202600000001", "phone": "13800000009"},
-    )
-    unknown = client.post(
-        "/api/admissions/query",
-        json={"studentId": "202600000009", "phone": "13800000009"},
-    )
+    response = client.post("/api/admissions/query", json={"studentId": "202600000009"})
+    assert response.status_code == 404
+    assert "未找到匹配的录取结果" in response.json()["detail"]
 
-    assert wrong_phone.status_code == unknown.status_code == 404
-    assert wrong_phone.json() == unknown.json()
+
+@pytest.mark.parametrize("payload", [
+    {}, {"studentId": "123"}, {"studentId": "abcdefghijkl"},
+    {"studentId": "202600000001", "phone": "13800000001"},
+])
+def test_query_rejects_invalid_student_id_and_legacy_phone(default_client, payload):
+    client, _ = default_client
+    assert client.post("/api/admissions/query", json=payload).status_code == 422
+
+
+def test_query_trims_student_id(default_client):
+    client, _ = default_client
+    assert client.post("/api/admissions/query", json={"studentId": " 202600000001 "}).status_code == 200
 
 
 def test_admission_query_closed(client_factory, config_copy):
@@ -159,7 +163,7 @@ def test_admission_query_closed(client_factory, config_copy):
     with client_factory(config=config) as (client, _):
         response = client.post(
             "/api/admissions/query",
-            json={"studentId": "202600000001", "phone": "13800000001"},
+            json={"studentId": "202600000001"},
         )
 
     assert response.status_code == 403
@@ -168,7 +172,7 @@ def test_admission_query_closed(client_factory, config_copy):
 
 def test_admission_rate_limit(default_client):
     client, _ = default_client
-    payload = {"studentId": "202600000009", "phone": "13800000009"}
+    payload = {"studentId": "202600000009"}
 
     for _ in range(20):
         assert client.post("/api/admissions/query", json=payload).status_code == 404
@@ -195,7 +199,7 @@ def test_invalid_admissions_file_stops_startup_without_echoing_private_value(
             "studentId": "202600000001",
             "name": "测试同学",
             "phone": private_value,
-            "department": "嵌入式部门",
+            "department": "",
             "status": "待定",
         }
     ]
@@ -245,7 +249,7 @@ def test_officer_can_preview_publish_and_then_open_query(client_factory, config_
         )
         query = client.post(
             "/api/admissions/query",
-            json={"studentId": "202600000008", "phone": "13800000008"},
+            json={"studentId": "202600000008"},
         )
         persisted = json.loads(state["admissions_path"].read_text(encoding="utf-8"))
 
@@ -253,12 +257,16 @@ def test_officer_can_preview_publish_and_then_open_query(client_factory, config_
     assert template.content.startswith(b"PK")
     assert preview.status_code == 200
     assert preview.json()["valid"] is True
-    assert preview.json()["preview"][0]["phone"] == "*******0008"
+    assert preview.json()["preview"][0] == {"name": "新**", "studentId": "********0008", "status": "已录取"}
     assert publish.status_code == 200
     assert opened.status_code == 200
     assert query.status_code == 200
     assert query.json()["name"] == "新同学"
-    assert persisted[0]["studentId"] == "202600000008"
+    assert persisted[0] == {
+        "name": "新同学", "studentId": "202600000008", "department": "", "status": "已录取",
+    }
+    assert query.json() == {"name": "新同学", "department": "", "status": "已录取"}
+    assert parse_admission_workbook(template.content)["records"][0].student_id == "202600000001"
 
 
 def test_formula_is_rejected_and_publish_requires_closed_query(default_client):
@@ -325,7 +333,7 @@ def test_api_docs_are_disabled_in_production(default_client):
 
 def test_cross_site_state_changing_requests_are_rejected(default_client):
     client, _ = default_client
-    payload = {"studentId": "202600000001", "phone": "13800000001"}
+    payload = {"studentId": "202600000001"}
 
     cross_site_origin = client.post(
         "/api/admissions/query",
@@ -346,3 +354,87 @@ def test_cross_site_state_changing_requests_are_rejected(default_client):
     assert cross_site_origin.status_code == 403
     assert cross_site_fetch.status_code == 403
     assert same_site.status_code == 200
+
+
+@pytest.mark.parametrize("headers,rows,error", [
+    (["姓名", "学号", "申请手机号", "录取部门"], [["测试", "202600000001", "13800000001", "机械"]], "表头"),
+    (["学号", "姓名"], [["202600000001", "测试"]], "表头"),
+    (["姓名", "学号"], [], "没有数据行"),
+])
+def test_workbook_rejects_legacy_headers_wrong_order_and_empty_list(headers, rows, error):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "录取名单"
+    worksheet.append(headers)
+    for row in rows:
+        worksheet.append(row)
+    output = io.BytesIO()
+    workbook.save(output)
+    workbook.close()
+    with pytest.raises(AdmissionDataError, match=error):
+        parse_admission_workbook(output.getvalue())
+
+
+@pytest.mark.parametrize("rows,message", [
+    ([["同名", "202600000001"], ["同名", "202600000001"]], "学号重复"),
+    ([["", "202600000001"]], "字段缺失或格式不正确"),
+    ([["测试", "123"]], "字段缺失或格式不正确"),
+    ([["长" * 31, "202600000001"]], "字段缺失或格式不正确"),
+    ([["测试", "202600000001", "额外内容"]], "只能填写姓名、学号两列"),
+])
+def test_workbook_reports_invalid_rows(rows, message):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "录取名单"
+    worksheet.append(["姓名", "学号"])
+    for row in rows:
+        worksheet.append(row)
+    output = io.BytesIO()
+    workbook.save(output)
+    workbook.close()
+    result = parse_admission_workbook(output.getvalue())
+    assert result["errors"][0]["message"] == message
+
+
+def test_workbook_allows_same_names_blank_rows_and_numeric_student_ids():
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "录取名单"
+    worksheet.append(["姓名", "学号"])
+    worksheet.append([" 同名 ", 202600000001])
+    worksheet.append([None, None])
+    worksheet.append(["同名", "202600000002"])
+    output = io.BytesIO()
+    workbook.save(output)
+    workbook.close()
+    result = parse_admission_workbook(output.getvalue())
+    assert not result["errors"]
+    assert [r.student_id for r in result["records"]] == ["202600000001", "202600000002"]
+    assert all(r.name == "同名" and r.status == "已录取" and r.department == "" for r in result["records"])
+
+
+def test_workbook_rejects_excessive_rows_and_bytes():
+    from utils.admission_workbook import MAX_WORKBOOK_BYTES
+    with pytest.raises(AdmissionDataError, match="2 MiB"):
+        parse_admission_workbook(b"0" * (MAX_WORKBOOK_BYTES + 1))
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "录取名单"
+    worksheet.append(["姓名", "学号"])
+    for index in range(2001):
+        worksheet.append(["测试", str(202600000000 + index)])
+    output = io.BytesIO()
+    workbook.save(output)
+    workbook.close()
+    with pytest.raises(AdmissionDataError, match="最多允许 2000 行"):
+        parse_admission_workbook(output.getvalue())
+
+
+def test_template_contains_only_name_and_student_id():
+    from openpyxl import load_workbook
+    workbook = load_workbook(io.BytesIO(create_admission_template()))
+    worksheet = workbook["录取名单"]
+    assert worksheet.max_column == 2
+    assert tuple(cell.value for cell in worksheet[1]) == ("姓名", "学号")
+    assert worksheet.auto_filter.ref == "A1:B2"
+    workbook.close()

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import XLSX from "xlsx";
 
 
 function monitorPage(page) {
@@ -203,6 +204,20 @@ test("负责人可查看招新设置与录取发布页面并导出申请数据",
   await expect(page.locator("#csv-modal-message")).toContainText("CSV 已生成");
   await page.locator("#csv-modal-close").click();
   await expect(page.locator("#csv-modal")).not.toHaveClass(/open/);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([
+    ["姓名", "学号"], ["测试录取", "202600000008"],
+  ]), "录取名单");
+  await page.locator("#admissions-file").setInputFiles({
+    name: "test-admissions.xlsx",
+    mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer: XLSX.write(workbook, { type: "buffer", bookType: "xlsx" }),
+  });
+  await page.locator("#preview-button").click();
+  await expect(page.locator("#admissions-feedback")).toContainText("校验通过");
+  await expect(page.locator(".preview-table th")).toHaveText(["姓名", "学号"]);
+  await expect(page.locator("#preview-body")).toContainText("********0008");
+  await expect(page.locator("#publish-button")).toBeDisabled();
   if (testInfo.project.name.startsWith("mobile")) {
     await expectMinimumTouchTarget(page.locator("#reload-config-button"));
     await expectMinimumTouchTarget(page.locator("#download-template-button"));
@@ -213,25 +228,33 @@ test("负责人可查看招新设置与录取发布页面并导出申请数据",
 });
 
 
-test("申请人只能用匹配的学号和手机查询本人录取结果", async ({ page }) => {
+test("申请人仅用学号查询录取结果", async ({ page }, testInfo) => {
   const problems = monitorPage(page);
 
   await page.goto("/html/admission.html");
   await expect(page.locator("#query-button")).toBeEnabled();
   await expectFormControlsUsePageFont(page, ".query-form .form-input");
   await page.locator("#student-id-input").fill("202600000001");
-  await page.locator("#phone-input").fill("13800000001");
+  await expect(page.locator("#phone-input")).toHaveCount(0);
   await page.locator("#query-button").click();
 
   await expect(page.locator("#query-result")).toContainText("测试同学");
   await expect(page.locator("#query-result")).toContainText("已录取");
-  await expect(page.locator("#query-result")).toContainText("嵌入式部门");
+  await expect(page.locator("#query-result")).not.toContainText("录取部门");
   await expect(page.locator("#query-result")).not.toContainText("13800000001");
   await expect(page.locator("#query-result")).not.toContainText("202600000001");
   await expectHealthyLayout(page, problems);
+  await page.screenshot({ path: testInfo.outputPath("admission-result.png"), fullPage: true, animations: "disabled" });
 
-  await page.locator("#phone-input").fill("13800000009");
-  await page.locator("#query-button").click();
+  for (const style of ["html { font-size: 200% !important; }", "body { zoom: 2; }"]) {
+    const sheet = await page.addStyleTag({ content: style });
+    await expect(page.locator("#query-result")).toContainText("已录取");
+    await expectHealthyLayout(page, problems);
+    await sheet.evaluate((element) => element.remove());
+  }
+
+  await page.locator("#student-id-input").fill("202600000009");
+  await page.locator("#student-id-input").press("Enter");
   await expect(page.locator("#query-result")).toContainText("未找到录取结果");
   await expect
     .poll(() =>

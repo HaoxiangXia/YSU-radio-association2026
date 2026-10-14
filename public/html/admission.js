@@ -8,7 +8,7 @@
       resultDiv.classList.add('hidden');
     }
 
-    function showResult({ title, message = '', status = '', department = '', kind = 'neutral' }) {
+    function showResult({ title, message = '', status = '', kind = 'neutral' }) {
       const resultDiv = document.getElementById('query-result');
       const panel = document.createElement('div');
       panel.className = 'query-result-panel';
@@ -23,12 +23,6 @@
         statusElement.className = `query-result-badge ${kind === 'accepted' ? 'is-accepted' : 'is-pending'}`;
         statusElement.textContent = status;
         panel.appendChild(statusElement);
-      }
-      if (department) {
-        const departmentElement = document.createElement('p');
-        departmentElement.className = 'query-result-dept';
-        departmentElement.textContent = `录取部门：${department}`;
-        panel.appendChild(departmentElement);
       }
       if (message) {
         const messageElement = document.createElement('p');
@@ -80,10 +74,8 @@
 
     async function checkAdmission() {
       const studentIdInput = document.getElementById('student-id-input');
-      const phoneInput = document.getElementById('phone-input');
       const queryButton = document.getElementById('query-button');
       const studentId = studentIdInput.value.trim();
-      const phone = phoneInput.value.trim();
 
       if (!admissionQueryEnabled) {
         showResult({
@@ -99,19 +91,13 @@
         return;
       }
 
-      if (!/^1[3-9]\d{9}$/.test(phone)) {
-        showResult({ title: '输入有误', message: '请输入正确的11位手机号', kind: 'error' });
-        phoneInput.focus();
-        return;
-      }
-
       queryButton.disabled = true;
       queryButton.textContent = '查询中…';
       try {
         const response = await fetch('/api/admissions/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ studentId, phone }),
+          body: JSON.stringify({ studentId }),
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) {
@@ -130,7 +116,6 @@
         showResult({
           title: `${result.name}同学`,
           status: result.status,
-          department: result.department,
           kind: accepted ? 'accepted' : 'rejected',
         });
       } catch (error) {
@@ -147,7 +132,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const studentIdInput = document.getElementById('student-id-input');
-      const phoneInput = document.getElementById('phone-input');
       document.getElementById('query-button').addEventListener('click', checkAdmission);
       const triggerQuery = (e) => {
         if (e.key === 'Enter') {
@@ -156,7 +140,6 @@
         }
       };
       studentIdInput.addEventListener('keydown', triggerQuery);
-      phoneInput.addEventListener('keydown', triggerQuery);
       loadRecruitmentConfig();
     });
   
