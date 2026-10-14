@@ -127,6 +127,24 @@
   font-weight: 500;
 }
 
+.query-result-group {
+  margin: 0.85rem 0 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.query-result-group span,
+.query-result-group strong {
+  display: block;
+}
+
+.query-result-group strong {
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 /* ========================================================
    移动端专属：彻底无卡片流（Zero Cards Flow）
    ======================================================== */

@@ -24,6 +24,16 @@
         statusElement.textContent = status;
         panel.appendChild(statusElement);
       }
+      if (status === '已录取') {
+        const groupNotice = document.createElement('p');
+        groupNotice.className = 'query-result-group';
+        const label = document.createElement('span');
+        label.textContent = '请加入无协QQ群';
+        const number = document.createElement('strong');
+        number.textContent = '737330969';
+        groupNotice.append(label, number);
+        panel.appendChild(groupNotice);
+      }
       if (message) {
         const messageElement = document.createElement('p');
         messageElement.className = kind === 'error'
@@ -142,4 +152,3 @@
       studentIdInput.addEventListener('keydown', triggerQuery);
       loadRecruitmentConfig();
     });
-  

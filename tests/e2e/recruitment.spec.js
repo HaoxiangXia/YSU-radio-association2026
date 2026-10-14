@@ -240,6 +240,9 @@ test("申请人仅用学号查询录取结果", async ({ page }, testInfo) => {
 
   await expect(page.locator("#query-result")).toContainText("测试同学");
   await expect(page.locator("#query-result")).toContainText("已录取");
+  await expect(page.locator(".query-result-group span")).toHaveText("请加入无协QQ群");
+  await expect(page.locator(".query-result-group strong")).toHaveText("737330969");
+  await expect(page.locator(".query-result-group")).toHaveCount(1);
   await expect(page.locator("#query-result")).not.toContainText("录取部门");
   await expect(page.locator("#query-result")).not.toContainText("13800000001");
   await expect(page.locator("#query-result")).not.toContainText("202600000001");
@@ -249,6 +252,10 @@ test("申请人仅用学号查询录取结果", async ({ page }, testInfo) => {
   for (const style of ["html { font-size: 200% !important; }", "body { zoom: 2; }"]) {
     const sheet = await page.addStyleTag({ content: style });
     await expect(page.locator("#query-result")).toContainText("已录取");
+    await expect(page.locator(".query-result-group")).toBeVisible();
+    const badge = await page.locator(".query-result-badge").boundingBox();
+    const group = await page.locator(".query-result-group").boundingBox();
+    expect(group.y).toBeGreaterThanOrEqual(badge.y + badge.height);
     await expectHealthyLayout(page, problems);
     await sheet.evaluate((element) => element.remove());
   }
@@ -256,6 +263,7 @@ test("申请人仅用学号查询录取结果", async ({ page }, testInfo) => {
   await page.locator("#student-id-input").fill("202600000009");
   await page.locator("#student-id-input").press("Enter");
   await expect(page.locator("#query-result")).toContainText("未找到录取结果");
+  await expect(page.locator(".query-result-group")).toHaveCount(0);
   await expect
     .poll(() =>
       page.evaluate(
@@ -263,4 +271,35 @@ test("申请人仅用学号查询录取结果", async ({ page }, testInfo) => {
       ),
     )
     .toBe(true);
+});
+
+test("入群提示仅在已录取结果出现，后续失败或未录取会清除", async ({ page }) => {
+  await page.goto("/html/admission.html");
+  await expect(page.locator("#query-button")).toBeEnabled();
+  await expect(page.locator(".query-result-group")).toHaveCount(0);
+  await page.locator("#student-id-input").fill("202600000001");
+  for (const result of [
+    { status: 200, body: { name: "测试同学", status: "已录取", department: "" } },
+    { status: 200, body: { name: "测试同学", status: "未录取", department: "" } },
+    { status: 200, body: { name: "测试同学", status: "已录取", department: "" } },
+    { status: 404, body: { detail: "未找到录取结果" } },
+    { status: 200, body: { name: "测试同学", status: "已录取", department: "" } },
+    { status: 503, body: { detail: "查询暂不可用" } },
+    { status: 200, body: { name: "测试同学", status: "已录取", department: "" } },
+    { status: 403, body: { detail: "录取查询尚未开放" } },
+    { status: 200, body: { name: "测试同学", status: "已录取", department: "" } },
+    { networkError: true },
+  ]) {
+    await page.route("**/api/admissions/query", route => result.networkError
+      ? route.abort()
+      : route.fulfill({ status: result.status, json: result.body }));
+    await page.locator("#query-button").click();
+    await expect(page.locator("#query-button")).toBeEnabled();
+    const accepted = result.body?.status === "已录取";
+    await expect(page.locator(".query-result-group")).toHaveCount(accepted ? 1 : 0);
+    if (accepted) {
+      await expect(page.locator(".query-result-group strong")).toHaveText("737330969");
+    }
+    await page.unroute("**/api/admissions/query");
+  }
 });
