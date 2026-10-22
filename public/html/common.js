@@ -190,7 +190,13 @@ function initImageViewer() {
 // 生成导航栏 HTML
 function getNavHTML() {
   const feishuSubmissionUrl = 'https://teamyuna.feishu.cn/share/base/shrcnKeN9nByWlCO0GRnSj7n2Nb';
-  const topBanner = document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html'
+  let bannerEnabled = true;
+  try {
+    if (sessionStorage.getItem('recruitment_banner_enabled') === 'false') {
+      bannerEnabled = false;
+    }
+  } catch (error) {}
+  const topBanner = bannerEnabled && (document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html')
     ? `
     <aside class="top-banner" role="region" aria-label="协会公告">
       <div class="top-banner__track is-step-0" id="top-banner-track">
@@ -339,22 +345,73 @@ function renderRecruitmentContact(element, contact = {}) {
 }
 
 async function loadFooterRecruitmentConfig() {
-  const contactElement = document.getElementById('footer-recruitment-contact');
-  if (!contactElement) return;
   try {
     const response = await fetch('/api/recruitment/config', {
       headers: { Accept: 'application/json' },
     });
     if (!response.ok) return;
     const config = await response.json();
-    const contact = config.contact || {};
-    renderRecruitmentContact(contactElement, contact);
+    if (config.banner && typeof config.banner.enabled === 'boolean') {
+      updateTopBannerVisibility(config.banner.enabled);
+    }
+    const contactElement = document.getElementById('footer-recruitment-contact');
+    if (contactElement) {
+      renderRecruitmentContact(contactElement, config.contact || {});
+    }
     const icpElement = document.getElementById('footer-icp-number');
     if (icpElement && config.site?.icpNumber) {
       icpElement.textContent = ` | ${config.site.icpNumber}`;
     }
   } catch (error) {
-    // Public pages remain usable if the optional footer configuration is unavailable.
+    // Public pages remain usable if the optional configuration is unavailable.
+  }
+}
+
+let topBannerTickerInterval = null;
+
+function stopTopBannerTicker() {
+  if (topBannerTickerInterval) {
+    clearInterval(topBannerTickerInterval);
+    topBannerTickerInterval = null;
+  }
+}
+
+function updateTopBannerVisibility(enabled) {
+  try {
+    sessionStorage.setItem('recruitment_banner_enabled', String(enabled));
+  } catch (error) {}
+
+  const banner = document.querySelector('.top-banner');
+  if (enabled === false) {
+    if (banner) banner.remove();
+    stopTopBannerTicker();
+  } else if (enabled === true) {
+    if (!banner && (document.body.classList.contains('home-page') || window.location.pathname !== '/html/recruitment-questions.html')) {
+      const navPlaceholder = document.getElementById('nav-placeholder');
+      const nav = navPlaceholder?.querySelector('.nav');
+      if (navPlaceholder && nav) {
+        const feishuSubmissionUrl = 'https://teamyuna.feishu.cn/share/base/shrcnKeN9nByWlCO0GRnSj7n2Nb';
+        const temp = document.createElement('div');
+        temp.innerHTML = `
+        <aside class="top-banner" role="region" aria-label="协会公告">
+          <div class="top-banner__track is-step-0" id="top-banner-track">
+            <a class="top-banner__item" href="${feishuSubmissionUrl}" target="_blank" rel="noopener noreferrer">
+              <span class="top-banner__text">面试前个人作品提交通道 · 点击跳转</span>
+              <span class="top-banner__icon" aria-hidden="true">↗</span>
+            </a>
+            <a class="top-banner__item" href="/html/recruitment-questions.html">
+              <span class="top-banner__text">2026招新题组已公布 · 点击查看</span>
+            </a>
+            <a class="top-banner__item" href="${feishuSubmissionUrl}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <span class="top-banner__text">面试前个人作品提交通道 · 点击跳转</span>
+              <span class="top-banner__icon" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </aside>`.trim();
+        navPlaceholder.insertBefore(temp.firstElementChild, nav);
+        initTopBannerTicker();
+      }
+    }
   }
 }
 
@@ -387,7 +444,7 @@ function initTopBannerTicker() {
   }
 
   function tick() {
-    if (isPaused || isTabHidden) return;
+    if (isPaused || isTabHidden || !document.contains(track)) return;
 
     currentIndex++;
     goToStep(currentIndex, true);
@@ -403,7 +460,8 @@ function initTopBannerTicker() {
     }
   }
 
-  setInterval(tick, 4500);
+  stopTopBannerTicker();
+  topBannerTickerInterval = setInterval(tick, 4500);
 
   banner.addEventListener('mouseenter', () => {
     isPaused = true;

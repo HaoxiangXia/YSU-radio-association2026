@@ -194,6 +194,7 @@ test("负责人可查看招新设置与录取发布页面并导出申请数据",
 
   await expect(page.locator("#cycle")).toHaveValue("e2e-cycle");
   await expect(page.locator("#cross-border-notice")).toHaveValue(/中国香港/);
+  await expect(page.locator("#banner-enabled")).toBeChecked();
   await expect(page.locator("#admissions-status")).toContainText("录取查询当前已开放");
   await expect(page.locator("#publish-button")).toBeDisabled();
 
@@ -222,8 +223,44 @@ test("负责人可查看招新设置与录取发布页面并导出申请数据",
     await expectMinimumTouchTarget(page.locator("#reload-config-button"));
     await expectMinimumTouchTarget(page.locator("#download-template-button"));
     await expectMinimumTouchTarget(page.locator("#export-csv-button"));
+    await expectMinimumTouchTarget(page.locator("#save-config-button"));
     await expect(page.locator("#cycle")).toHaveCSS("font-size", "16px");
   }
+  await expectHealthyLayout(page, problems);
+});
+
+test("负责人可切换顶部横幅显示并在公开页面即时生效", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/html/admission.html");
+  await expect(page.locator(".top-banner")).toBeVisible();
+
+  await page.goto("/html/admin-login.html");
+  await page.locator("#admin-username").fill("officer");
+  await page.locator("#admin-password").fill("test-password");
+  await page.locator("#login-btn").click();
+  await page.waitForURL("**/html/membership-applications.html");
+  await page.goto("/html/recruitment-operations.html");
+
+  await expect(page.locator("#banner-enabled")).toBeChecked();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("label[for='banner-enabled']").click();
+  await expect(page.locator("#banner-enabled")).not.toBeChecked();
+  await page.locator("#save-config-button").click();
+  await expect(page.locator("#config-feedback")).toContainText("保存成功");
+
+  await page.goto("/html/admission.html");
+  await expect(page.locator(".top-banner")).toHaveCount(0);
+
+  await page.goto("/html/recruitment-operations.html");
+  await expect(page.locator("#banner-enabled")).not.toBeChecked();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("label[for='banner-enabled']").click();
+  await expect(page.locator("#banner-enabled")).toBeChecked();
+  await page.locator("#save-config-button").click();
+  await expect(page.locator("#config-feedback")).toContainText("保存成功");
+
+  await page.goto("/html/admission.html");
+  await expect(page.locator(".top-banner")).toBeVisible();
   await expectHealthyLayout(page, problems);
 });
 

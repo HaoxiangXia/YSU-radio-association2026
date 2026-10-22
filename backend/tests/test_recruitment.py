@@ -29,6 +29,7 @@ def test_public_config_excludes_private_fields(default_client):
     body = response.json()
     assert body["application"]["status"] == "open"
     assert body["admissionQuery"]["enabled"] is True
+    assert body["banner"]["enabled"] is True
     assert "crossBorderNotice" not in body["application"]
     assert "retentionUntil" not in body["application"]
     assert "path" not in json.dumps(body).lower()
@@ -105,6 +106,7 @@ def test_officer_can_atomically_update_business_config(default_client, config_co
     updated = config_copy()
     updated["application"]["privacyNotice"] = "更新后的个人信息处理说明"
     updated["contact"]["channelText"] = "更新后的联系说明"
+    updated["banner"]["enabled"] = False
 
     response = client.put(
         "/api/recruitment/manage/config",
@@ -117,4 +119,14 @@ def test_officer_can_atomically_update_business_config(default_client, config_co
     assert "application.privacyNotice" in response.json()["changedFields"]
     assert public.json()["application"]["privacyNotice"] == "更新后的个人信息处理说明"
     assert persisted["contact"]["channelText"] == "更新后的联系说明"
+    assert "banner.enabled" in response.json()["changedFields"]
+    assert public.json()["banner"]["enabled"] is False
+    assert persisted["banner"]["enabled"] is False
     assert list(state["config_path"].parent.glob("*.previous.*"))
+
+
+def test_banner_config_defaults_to_true_when_omitted(config_copy):
+    raw = config_copy()
+    raw.pop("banner", None)
+    config = RecruitmentConfig.model_validate(raw)
+    assert config.banner.enabled is True

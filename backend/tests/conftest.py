@@ -52,6 +52,9 @@ def make_config(
         "admissionQuery": {
             "enabled": admission_enabled,
         },
+        "banner": {
+            "enabled": True,
+        },
         "contact": {
             "label": "测试联系方式",
             "qq": "10000",

@@ -10,18 +10,30 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
   heroCompact
 >
   <style is:global>
-/* 招新设置页：分区卡片、开关与状态提示 */
+/* 招新设置页：扁平、单层卡片设计，杜绝卡片套卡片；兼顾桌面端清晰层级与移动端舒适排版 */
 .site-page.recruitment-operations-page {
   --page-accent: #2563eb;
+  --page-accent-dark: #1d4ed8;
   --page-accent-soft: rgba(37, 99, 235, 0.08);
+  --page-border: #e2e8f0;
+  --page-border-hairline: #f1f5f9;
+  --page-text-main: #0f172a;
+  --page-text-sub: #334155;
+  --page-text-muted: #64748b;
+  background-color: #f8fafc;
+}
+
+.site-page.recruitment-operations-page .page-container.subpage-content::before {
+  content: none;
 }
 
 .operations-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  max-width: 100%;
 }
 
-/* 顶部工具条 */
+/* 顶部导航与快捷操作工具栏 */
 .operations-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -36,67 +48,224 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
   gap: 0.75rem;
 }
 
-/* 卡片 */
-.operations-card {
-  padding: clamp(1.25rem, 3vw, 2rem);
-  border-top: 3px solid var(--page-accent);
+.btn-nav-back {
+  background: #ffffff !important;
+  color: var(--page-text-sub) !important;
+  border: 1px solid var(--page-border) !important;
 }
 
+.btn-nav-back:hover {
+  background: #f8fafc !important;
+  color: var(--page-accent) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 按钮通用体系（主按钮、次级线框按钮） */
+.site-page.recruitment-operations-page .btn-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  min-height: 44px;
+  border-radius: 8px;
+  background: var(--page-accent);
+  color: #ffffff;
+  border: 1px solid var(--page-accent);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  box-shadow: none;
+}
+
+.site-page.recruitment-operations-page .btn-solid:hover:not(:disabled) {
+  background: var(--page-accent-dark);
+  border-color: var(--page-accent-dark);
+}
+
+.site-page.recruitment-operations-page .btn-solid:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.site-page.recruitment-operations-page .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  min-height: 44px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--page-text-sub);
+  border: 1px solid #cbd5e1;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: none;
+}
+
+.site-page.recruitment-operations-page .btn-outline:hover:not(:disabled) {
+  background: #f8fafc;
+  color: var(--page-accent);
+  border-color: var(--page-accent);
+}
+
+.site-page.recruitment-operations-page .btn-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 单层卡片：仅外层为卡片，内部不嵌套子卡片 */
+.operations-card {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--page-border);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+/* 卡片标题区 */
 .operations-heading {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.35rem;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--page-border-hairline);
+}
+
+.operations-heading__title-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .operations-heading h2 {
   margin: 0;
-  font-size: 1.25rem;
-  color: #14213d;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--page-text-main);
+  position: relative;
+  padding-left: 0.75rem;
+  line-height: 1.4;
+}
+
+.operations-heading h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3.5px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: var(--page-accent);
+  transform: translateY(-50%);
 }
 
 .operations-heading__sub {
-  margin: 0 0 1.25rem;
-  color: #64748b;
-  font-size: 0.88rem;
+  margin: 0.2rem 0 0;
+  color: var(--page-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }
 
-/* 表单分区 */
+.operations-heading__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 表单分段（纯空白与细分割线，无嵌套卡片底色与边框） */
 .operations-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.operations-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.1rem 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--page-border-hairline);
+}
+
+.operations-section:first-of-type {
+  padding-top: 0;
+  border-top: none;
+}
+
+.operations-section__header {
+  grid-column: 1 / -1;
+  margin-bottom: 0.15rem;
+}
+
+.operations-section__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--page-text-main);
+}
+
+.operations-section__desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--page-text-muted);
 }
 
 .operations-field--wide {
   grid-column: 1 / -1;
 }
 
-.operations-group {
-  grid-column: 1 / -1;
-  margin: 0.35rem 0 0;
-  padding-top: 1.1rem;
-  border-top: 1px dashed #e2e8f0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.1rem 1.25rem;
-}
-
-.operations-group__title {
-  grid-column: 1 / -1;
-  margin: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--page-accent);
-  text-transform: uppercase;
+.form-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
 }
 
 .site-page.recruitment-operations-page .form-label {
+  display: block;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--page-text-sub);
+  margin-bottom: 0.35rem;
+}
+
+.form-group-header .form-label {
+  margin-bottom: 0;
+}
+
+.form-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  background: #eff6ff;
+  color: var(--page-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* 输入框通用 */
+.site-page.recruitment-operations-page .form-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  min-height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--page-text-main);
+  font-size: 16px; /* 移动端禁止 iOS Safari 聚焦时视口自动缩放 */
+  line-height: 1.5;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
 }
 
 .site-page.recruitment-operations-page .form-input:focus {
@@ -105,161 +274,225 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
   outline: none;
 }
 
-/* 开关 */
-.operations-toggle {
+.site-page.recruitment-operations-page textarea.form-input {
+  min-height: auto;
+  resize: vertical;
+}
+
+/* 开关行（平铺列表式行结构，非嵌套卡片） */
+.operations-toggle-row {
+  grid-column: 1 / -1;
   display: flex;
-  gap: 0.8rem;
-  align-items: flex-start;
-  padding: 1rem 1.1rem;
-  border: 1px solid #dbe4f0;
-  border-radius: 10px;
-  background: #f8fafc;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--page-border-hairline);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  min-height: 48px;
 }
 
-.operations-toggle:hover {
-  border-color: rgba(37, 99, 235, 0.35);
+.operations-toggle-row:last-child {
+  border-bottom: none;
 }
 
-.operations-toggle input {
+.operations-toggle-row input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+  width: 0;
+  height: 0;
 }
 
-.operations-toggle__track {
+.operations-toggle-row__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.operations-toggle-row__label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--page-text-main);
+}
+
+.operations-toggle-row__desc {
+  margin: 0.2rem 0 0;
+  color: var(--page-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.operations-toggle-switch {
   flex: 0 0 auto;
-  width: 2.6rem;
-  height: 1.45rem;
-  margin-top: 0.1rem;
+  width: 2.75rem;
+  height: 1.55rem;
   border-radius: 999px;
   background: #cbd5e1;
   position: relative;
-  transition: background 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
-.operations-toggle__track::after {
+.operations-toggle-switch::after {
   content: '';
   position: absolute;
   top: 0.175rem;
   left: 0.2rem;
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   border-radius: 50%;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
   transition: transform 0.2s ease;
 }
 
-.operations-toggle input:checked + .operations-toggle__track {
+.operations-toggle-row input:checked + .operations-toggle-switch {
   background: var(--page-accent);
 }
 
-.operations-toggle input:checked + .operations-toggle__track::after {
-  transform: translateX(1.15rem);
+.operations-toggle-row input:checked + .operations-toggle-switch::after {
+  transform: translateX(1.2rem);
 }
 
-.operations-toggle input:focus-visible + .operations-toggle__track {
+.operations-toggle-row input:focus-visible + .operations-toggle-switch {
   outline: 3px solid var(--page-accent-soft);
   outline-offset: 2px;
 }
 
-.operations-toggle__text strong {
-  color: #1e293b;
+/* 申请时间并排区域（直接平铺，无嵌套虚线框） */
+.operations-dates-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1.25rem;
+  padding: 0.25rem 0 0.5rem;
 }
 
 .operations-help {
   margin-top: 0.35rem;
-  color: #64748b;
-  font-size: 0.82rem;
-  line-height: 1.55;
+  color: var(--page-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
-/* 反馈与状态 */
-.operations-feedback {
-  min-height: 1.5rem;
-  margin: 0.85rem 0 0;
-  color: #166534;
-  font-size: 0.9rem;
-}
-
-.operations-feedback.is-error {
-  color: #b91c1c;
-}
-
-.admissions-status {
+/* 表单底部操作区 */
+.operations-form-footer {
+  grid-column: 1 / -1;
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0 0 1.1rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-left: 3px solid var(--page-accent);
-  border-radius: 10px;
-  background: #f8fafc;
-  color: #475569;
-  font-size: 0.92rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--page-border);
 }
 
-/* 录取名单操作区 */
-.operations-actions {
+.operations-form-footer__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
 }
 
-.operations-actions .form-input[type='file'] {
-  flex: 1 1 16rem;
-  padding: 0.55rem 0.75rem;
+.btn-save {
+  padding: 0.75rem 2rem !important;
+  font-size: 1rem !important;
 }
 
-/* 预览 */
+/* 状态提示 */
+.operations-feedback {
+  min-height: 1.5rem;
+  margin: 0;
+  color: #166534;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+}
+
+.operations-feedback.is-error {
+  color: #b91c1c;
+}
+
+/* 录取名单管理区（直接平铺，无嵌套步骤卡片） */
+.admissions-status-line {
+  margin: 0 0 1.25rem;
+  padding: 0.65rem 0.875rem;
+  border-left: 3px solid var(--page-accent);
+  background: #f8fafc;
+  border-radius: 0 6px 6px 0;
+}
+
+.admissions-status {
+  margin: 0;
+  color: var(--page-text-sub);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.admissions-controls-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.admissions-file-input {
+  flex: 1 1 14rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* 预览表格与错误 */
 #preview-result {
   margin-top: 1.25rem;
   padding-top: 1.25rem;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--page-border);
 }
 
 .preview-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
   margin: 0 0 1rem;
 }
 
 .preview-summary span {
   padding: 0.35rem 0.8rem;
+  border: 1px solid #dbeafe;
   border-radius: 999px;
-  background: var(--page-accent-soft);
-  color: var(--color-primary-dark);
-  font-size: 0.82rem;
+  background: #eff6ff;
+  color: var(--page-accent-dark);
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
 .preview-table-wrap {
   overflow-x: auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border: 1px solid var(--page-border);
+  border-radius: 8px;
+  background: #ffffff;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .preview-table {
   width: 100%;
-  min-width: 38rem;
+  min-width: 24rem;
   border-collapse: collapse;
 }
 
 .preview-table th,
 .preview-table td {
   padding: 0.65rem 0.85rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--page-border);
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .preview-table thead th {
-  background: #f1f5f9;
+  background: #f8fafc;
   color: #334155;
   font-weight: 600;
 }
@@ -272,261 +505,310 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
   margin: 0.75rem 0;
   padding-left: 1.2rem;
   color: #b91c1c;
-  font-size: 0.88rem;
+  font-size: 0.875rem;
 }
 
-#preview-result .operations-actions {
+.preview-publish-actions {
   margin-top: 1rem;
+  display: flex;
   justify-content: flex-end;
 }
 
-@media (max-width: 720px) {
-  .operations-form-grid,
-  .operations-group {
-    grid-template-columns: 1fr;
+/* 数据导出直接行排版（无嵌套卡片） */
+.export-content-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.export-content-row p {
+  flex: 1 1 20rem;
+  margin: 0;
+  color: var(--page-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* 手机端响应式优化 (<= 768px) */
+@media (max-width: 768px) {
+  .operations-grid {
+    gap: 1rem;
   }
+
+  .operations-card {
+    padding: 1.125rem 1rem;
+  }
+
+  .operations-heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
+  }
+
+  .operations-heading__title-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .operations-heading h2 {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .operations-heading__sub {
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+    line-height: 1.35;
+  }
+
+  .operations-heading__actions {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .operations-heading__actions button {
+    width: auto;
+    min-height: 44px;
+    padding: 0.4rem 0.875rem;
+    font-size: 0.875rem;
+  }
+  .operations-form-grid,
+  .operations-section,
+  .operations-dates-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
   .operations-field--wide,
-  .operations-group__title {
+  .operations-section__header {
     grid-column: auto;
   }
-  .operations-actions > *,
-  .operations-toolbar .btn-solid {
+
+  .operations-toolbar .btn-solid,
+  .operations-form-footer__actions button,
+  .admissions-controls-group > *,
+  .export-content-row button {
     width: 100%;
-    min-height: 2.75rem;
+    min-height: 44px;
   }
-  .operations-heading button {
-    min-height: 2.75rem;
-    padding: 0.65rem 0.9rem;
+
+  .preview-publish-actions {
+    justify-content: stretch;
   }
-  .operations-card .form-input {
-    font-size: 1rem;
+
+  .preview-publish-actions button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .preview-table {
+    min-width: 18rem;
   }
 }
-
-/* ===== 扁平化风格覆写（与入会申请管理页一致） ===== */
-
-/* 页面背景：纯白 */
-.site-page.recruitment-operations-page {
-  background: #ffffff;
-}
-
-/* 去掉内容容器顶部装饰条 */
-.site-page.recruitment-operations-page .page-container.subpage-content::before {
-  content: none;
-}
-
-/* 卡片：纯白、1px 细边、小圆角、无阴影无渐变 */
-.site-page.recruitment-operations-page .card {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
-  box-shadow: none;
-}
-
-/* 去掉卡片顶部 3px accent 条 */
-.site-page.recruitment-operations-page .operations-card {
-  border-top: 1px solid #e5e7eb;
-}
-
-/* 分区标题：蓝色竖条 */
-.site-page.recruitment-operations-page .operations-heading h2 {
-  position: relative;
-  padding-left: 0.75rem;
-}
-
-.site-page.recruitment-operations-page .operations-heading h2::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 3px;
-  height: 1em;
-  background: var(--color-primary);
-  transform: translateY(-50%);
-}
-
-/* 按钮：纯色实心，去掉渐变与投影 */
-.site-page.recruitment-operations-page .btn-solid {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  box-shadow: none;
-}
-
-.site-page.recruitment-operations-page .btn-solid:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-  box-shadow: none;
-}
-
-/* 输入聚焦：保留蓝色描边，去掉光晕 */
-.site-page.recruitment-operations-page .form-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: none;
-}
-
-/* 开关容器：白底细边，去掉灰底 */
-.site-page.recruitment-operations-page .operations-toggle {
-  border-color: #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-/* 状态条：去掉左侧 3px 色条与灰底，统一 1px 细边 */
-.site-page.recruitment-operations-page .admissions-status {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-/* 预览统计 chip：白底细边 */
-.site-page.recruitment-operations-page .preview-summary span {
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #334155;
-}
-
-/* 预览表格：白表头、小圆角 */
-.site-page.recruitment-operations-page .preview-table-wrap {
-  border-color: #e5e7eb;
-  border-radius: 8px;
-}
-
-.site-page.recruitment-operations-page .preview-table thead th {
-  background: #ffffff;
-  border-bottom-color: #e5e7eb;
-}
-
-/* ===== 扁平化覆写结束 ===== */
   </style>
 
   <div class="operations-toolbar" aria-label="负责人页面导航">
     <div class="operations-toolbar__group">
-      <a class="btn-solid" href="/html/membership-applications.html">← 返回入会申请管理</a>
+      <a class="btn-solid btn-nav-back" href="/html/membership-applications.html">← 返回入会申请管理</a>
     </div>
     <!-- 退出登录按钮由 common.js 移入导航栏最右端 -->
     <button class="btn-solid" type="button" id="logout-button">退出登录</button>
   </div>
 
+  <!-- 招新业务设置（单层卡片） -->
   <section class="card operations-card" aria-labelledby="config-heading">
     <div class="operations-heading">
-      <h2 id="config-heading">招新业务设置</h2>
-      <button class="btn-solid" type="button" id="reload-config-button">重新读取</button>
+      <div class="operations-heading__title-wrap">
+        <h2 id="config-heading">招新业务设置</h2>
+        <p class="operations-heading__sub">保存后立即生效，请仔细核对。</p>
+      </div>
+      <div class="operations-heading__actions">
+        <button class="btn-outline" type="button" id="reload-config-button">重新读取</button>
+      </div>
     </div>
-    <p class="operations-heading__sub">所有修改保存后立即生效，请先核对再提交。</p>
+
     <form id="config-form" class="operations-form-grid">
-      <div class="operations-group">
-        <h3 class="operations-group__title">基本信息</h3>
+      <!-- Section 1: 核心开关与展示控制 -->
+      <div class="operations-section">
+        <div class="operations-section__header">
+          <h3 class="operations-section__title">核心开关与展示控制</h3>
+          <p class="operations-section__desc">控制学生端报名、录取结果查询和全站顶部横幅的开放与展示状态。</p>
+        </div>
+
+        <label class="operations-toggle-row" for="application-enabled">
+          <span class="operations-toggle-row__content">
+            <span class="operations-toggle-row__label">开放入会申请</span>
+            <span class="operations-toggle-row__desc">学生端申请表单总开关。需开关开启且当前时间处于起止时间内方可提交。</span>
+          </span>
+          <input id="application-enabled" name="applicationEnabled" type="checkbox">
+          <span class="operations-toggle-switch" aria-hidden="true"></span>
+        </label>
+
+        <div class="operations-dates-row">
+          <div>
+            <label class="form-label" for="starts-at">申请开始时间</label>
+            <input class="form-input" id="starts-at" name="startsAt" type="datetime-local">
+          </div>
+          <div>
+            <label class="form-label" for="ends-at">申请截止时间</label>
+            <input class="form-input" id="ends-at" name="endsAt" type="datetime-local">
+          </div>
+        </div>
+
+        <label class="operations-toggle-row" for="admission-enabled">
+          <span class="operations-toggle-row__content">
+            <span class="operations-toggle-row__label">开放录取查询</span>
+            <span class="operations-toggle-row__desc">允许学生输入学号查询录取结果。发布新名单前必须先关闭本开关。</span>
+          </span>
+          <input id="admission-enabled" name="admissionEnabled" type="checkbox">
+          <span class="operations-toggle-switch" aria-hidden="true"></span>
+        </label>
+
+        <label class="operations-toggle-row" for="banner-enabled">
+          <span class="operations-toggle-row__content">
+            <span class="operations-toggle-row__label">显示顶部横幅</span>
+            <span class="operations-toggle-row__desc">在全站页面顶部展示招新公告横幅（作品提交通道与招新题组发布通知）。</span>
+          </span>
+          <input id="banner-enabled" name="bannerEnabled" type="checkbox">
+          <span class="operations-toggle-switch" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <!-- Section 2: 招新周期与基础信息 -->
+      <div class="operations-section">
+        <div class="operations-section__header">
+          <h3 class="operations-section__title">招新周期与基础信息</h3>
+        </div>
         <div>
           <label class="form-label" for="cycle">招新周期</label>
-          <input class="form-input" id="cycle" name="cycle" maxlength="50" required>
+          <input class="form-input" id="cycle" name="cycle" maxlength="50" required placeholder="如：2026">
         </div>
         <div>
           <label class="form-label" for="retention-until">资料保留至</label>
           <input class="form-input" id="retention-until" name="retentionUntil" type="date">
         </div>
-      </div>
-
-      <div class="operations-group">
-        <h3 class="operations-group__title">开放安排</h3>
-        <label class="operations-toggle operations-field--wide" for="application-enabled">
-          <input id="application-enabled" name="applicationEnabled" type="checkbox">
-          <span class="operations-toggle__track" aria-hidden="true"></span>
-          <span class="operations-toggle__text"><strong>开放入会申请</strong><br><span class="operations-help">只有开关开启且当前时间处于起止时间内时，学生才能提交。</span></span>
-        </label>
-        <div>
-          <label class="form-label" for="starts-at">开始时间</label>
-          <input class="form-input" id="starts-at" name="startsAt" type="datetime-local">
-        </div>
-        <div>
-          <label class="form-label" for="ends-at">截止时间</label>
-          <input class="form-input" id="ends-at" name="endsAt" type="datetime-local">
-        </div>
-        <label class="operations-toggle operations-field--wide" for="admission-enabled">
-          <input id="admission-enabled" name="admissionEnabled" type="checkbox">
-          <span class="operations-toggle__track" aria-hidden="true"></span>
-          <span class="operations-toggle__text"><strong>开放录取查询</strong><br><span class="operations-help">必须先关闭查询、发布并复核新名单，再重新开放。</span></span>
-        </label>
-      </div>
-
-      <div class="operations-group">
-        <h3 class="operations-group__title">告知文案</h3>
         <div class="operations-field--wide">
-          <label class="form-label" for="privacy-notice">个人信息处理说明</label>
-          <textarea class="form-input" id="privacy-notice" name="privacyNotice" rows="4" maxlength="1500" required></textarea>
-        </div>
-        <div class="operations-field--wide">
-          <label class="form-label" for="cross-border-notice">香港服务器存储说明</label>
-          <textarea class="form-input" id="cross-border-notice" name="crossBorderNotice" rows="4" maxlength="1500" required></textarea>
-          <p class="operations-help">正式开放前必须由负责人确认这段告知文字；学生会在申请页单独勾选同意。</p>
+          <label class="form-label" for="icp-number">网站 ICP 备案号（可留空）</label>
+          <input class="form-input" id="icp-number" name="icpNumber" maxlength="100" placeholder="如：冀ICP备xxxxxxxx号">
         </div>
       </div>
 
-      <div class="operations-group">
-        <h3 class="operations-group__title">联系方式</h3>
+      <!-- Section 3: 咨询与联系方式 -->
+      <div class="operations-section">
+        <div class="operations-section__header">
+          <h3 class="operations-section__title">咨询与联系方式</h3>
+          <p class="operations-section__desc">展示在入会申请表单下方及网站公共页脚中。</p>
+        </div>
         <div>
           <label class="form-label" for="contact-label">联系方式标题</label>
-          <input class="form-input" id="contact-label" name="contactLabel" maxlength="100" required>
+          <input class="form-input" id="contact-label" name="contactLabel" maxlength="100" required placeholder="如：招新通知方式">
         </div>
         <div>
-          <label class="form-label" for="contact-qq">QQ群号（可留空）</label>
-          <input class="form-input" id="contact-qq" name="contactQq" maxlength="30" inputmode="numeric">
+          <label class="form-label" for="contact-qq">QQ 群号（可留空）</label>
+          <input class="form-input" id="contact-qq" name="contactQq" maxlength="30" inputmode="numeric" placeholder="如：836660390">
         </div>
-        <div>
-          <label class="form-label" for="contact-qq-link">QQ群链接（可留空）</label>
+        <div class="operations-field--wide">
+          <label class="form-label" for="contact-qq-link">QQ 群加群链接（可留空）</label>
           <input class="form-input" id="contact-qq-link" name="contactQqLink" maxlength="500" type="url" placeholder="https://qm.qq.com/q/...">
         </div>
         <div class="operations-field--wide">
-          <label class="form-label" for="contact-channel">联系说明</label>
-          <textarea class="form-input" id="contact-channel" name="contactChannel" rows="3" maxlength="500" required></textarea>
+          <label class="form-label" for="contact-channel">联系补充说明</label>
+          <textarea class="form-input" id="contact-channel" name="contactChannel" rows="2" maxlength="500" required placeholder="如：请加入协会招新 QQ 群获取后续面试与录取通知。"></textarea>
         </div>
       </div>
 
-      <div class="operations-group">
-        <h3 class="operations-group__title">表单选项</h3>
-        <div>
-          <label class="form-label" for="colleges">学院选项（每行一项）</label>
-          <textarea class="form-input" id="colleges" name="colleges" rows="10" required></textarea>
-        </div>
-        <div>
-          <label class="form-label" for="grades">年级选项（每行一项）</label>
-          <textarea class="form-input" id="grades" name="grades" rows="10" required></textarea>
+      <!-- Section 4: 法律与告知文案 -->
+      <div class="operations-section">
+        <div class="operations-section__header">
+          <h3 class="operations-section__title">法律与告知文案</h3>
+          <p class="operations-section__desc">学生提交入会申请前需明确确认知晓的重要声明。</p>
         </div>
         <div class="operations-field--wide">
-          <label class="form-label" for="icp-number">备案号（没有则留空）</label>
-          <input class="form-input" id="icp-number" name="icpNumber" maxlength="100">
+          <label class="form-label" for="privacy-notice">个人信息处理说明</label>
+          <textarea class="form-input" id="privacy-notice" name="privacyNotice" rows="3" maxlength="1500" required></textarea>
+        </div>
+        <div class="operations-field--wide">
+          <label class="form-label" for="cross-border-notice">香港服务器存储说明</label>
+          <textarea class="form-input" id="cross-border-notice" name="crossBorderNotice" rows="3" maxlength="1500" required></textarea>
+          <p class="operations-help">正式开放前必须由负责人确认此告知文字；学生会在申请页单独勾选同意。</p>
         </div>
       </div>
 
-      <div class="operations-field--wide operations-actions">
-        <button class="btn-solid" type="submit" id="save-config-button">检查并保存设置</button>
+      <!-- Section 5: 申请表单选项配置 -->
+      <div class="operations-section">
+        <div class="operations-section__header">
+          <h3 class="operations-section__title">申请表单选项配置</h3>
+          <p class="operations-section__desc">配置学生端报名时可选的学院与年级下拉列表，每行一项。</p>
+        </div>
+        <div>
+          <div class="form-group-header">
+            <label class="form-label" for="colleges">学院选项（每行一项）</label>
+            <span class="form-badge" id="colleges-count">0 项</span>
+          </div>
+          <textarea class="form-input" id="colleges" name="colleges" rows="6" required></textarea>
+        </div>
+        <div>
+          <div class="form-group-header">
+            <label class="form-label" for="grades">年级选项（每行一项）</label>
+            <span class="form-badge" id="grades-count">0 项</span>
+          </div>
+          <textarea class="form-input" id="grades" name="grades" rows="6" required></textarea>
+        </div>
+      </div>
+
+      <div class="operations-form-footer">
+        <div class="operations-form-footer__actions">
+          <button class="btn-solid btn-save" type="submit" id="save-config-button">检查并保存设置</button>
+        </div>
+        <p class="operations-feedback" id="config-feedback" role="status"></p>
       </div>
     </form>
-    <p class="operations-feedback" id="config-feedback" role="status"></p>
   </section>
 
+  <!-- 入会申请数据导出（单层卡片） -->
   <section class="card operations-card" aria-labelledby="export-heading">
     <div class="operations-heading">
-      <h2 id="export-heading">入会申请数据导出</h2>
+      <div class="operations-heading__title-wrap">
+        <h2 id="export-heading">入会申请数据导出</h2>
+        <p class="operations-heading__sub">导出申请数据为 CSV 文件用于离线分析。</p>
+      </div>
     </div>
-    <p class="operations-help">导出当前入会申请数据为 CSV 文件，用于离线查看或分析。不包含录取名单数据；录取名单请使用下方「下载 Excel 模板」。</p>
-    <div class="operations-actions">
-      <button class="btn-solid" type="button" id="export-csv-button">导出 CSV</button>
+    <div class="export-content-row">
+      <p>生成的 CSV 文件包含姓名、学号、学院、年级、手机、QQ、申请说明与提交时间等完整字段，支持使用 Excel 或 WPS 直接打开。</p>
+      <button class="btn-outline" type="button" id="export-csv-button">导出 CSV 文件</button>
     </div>
     <p class="operations-feedback" id="export-feedback" role="status"></p>
   </section>
 
+  <!-- 录取名单发布与管理（单层卡片） -->
   <section class="card operations-card" aria-labelledby="admissions-heading">
     <div class="operations-heading">
-      <h2 id="admissions-heading">录取名单</h2>
-      <button class="btn-solid" type="button" id="reload-admissions-button">刷新状态</button>
+      <div class="operations-heading__title-wrap">
+        <h2 id="admissions-heading">录取名单管理</h2>
+        <p class="operations-heading__sub">发布前须先关闭录取查询。</p>
+      </div>
+      <div class="operations-heading__actions">
+        <button class="btn-outline" type="button" id="reload-admissions-button">刷新状态</button>
+      </div>
     </div>
-    <p class="admissions-status" id="admissions-status">正在读取录取名单状态。</p>
-    <div class="operations-actions">
-      <button class="btn-solid" type="button" id="download-template-button">下载 Excel 模板</button>
-      <input class="form-input" id="admissions-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+    <div class="admissions-status-line">
+      <p class="admissions-status" id="admissions-status">正在读取录取名单状态。</p>
+    </div>
+
+    <div class="admissions-controls-group">
+      <button class="btn-outline" type="button" id="download-template-button">下载 Excel 模板</button>
+      <input class="form-input admissions-file-input" id="admissions-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
       <button class="btn-solid" type="button" id="preview-button">校验并预览</button>
     </div>
-    <p class="operations-help">只接受 2 MiB 以内的 .xlsx，工作表名为“录取名单”，仅包含“姓名、学号”两列；最多 2000 条，学号为 12 位数字且不能重复。名单中所有同学均视为已录取。预览不会替换正式名单；文件不得包含公式、宏或外部链接。</p>
+    <p class="operations-help">只接受 2 MiB 以内的 .xlsx 文件，工作表名为“录取名单”，仅含“姓名、学号”两列，最多 2000 条。名单中所有同学均视为已录取。</p>
+
     <div id="preview-result" hidden>
       <div class="preview-summary" id="preview-summary"></div>
       <ul class="preview-errors" id="preview-errors"></ul>
@@ -536,20 +818,21 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
           <tbody id="preview-body"></tbody>
         </table>
       </div>
-      <div class="operations-actions">
+      <div class="preview-publish-actions">
         <button class="btn-solid" type="button" id="publish-button" disabled>确认发布此名单</button>
       </div>
     </div>
     <p class="operations-feedback" id="admissions-feedback" role="status"></p>
   </section>
 
-
   <!-- CSV 导出提示弹窗 -->
   <div id="csv-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="csv-modal-title">
-    <div class="modal">
-      <h3 id="csv-modal-title">导出 CSV</h3>
+    <div class="modal-card">
+      <h3 id="csv-modal-title">入会申请数据导出</h3>
       <p id="csv-modal-message">正在生成 CSV…</p>
-      <button type="button" class="btn-solid btn-sm" id="csv-modal-close" style="display:none">确定</button>
+      <div class="modal-actions">
+        <button class="btn-solid" type="button" id="csv-modal-close">确定</button>
+      </div>
     </div>
   </div>
 
@@ -562,7 +845,6 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
     }
 
     async function logout() {
-      // 服务端吊销会话后跳转；请求失败也照常跳回登录页
       try {
         await fetch('/api/recruitment-officers/logout', { method: 'POST' });
       } catch (error) {}
@@ -586,6 +868,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
 
     function setFeedback(id, message = '', isError = false) {
       const element = document.getElementById(id);
+      if (!element) return;
       element.textContent = message;
       element.classList.toggle('is-error', isError);
     }
@@ -605,6 +888,17 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       return [...new Set(value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))];
     }
 
+    function updateOptionCounts() {
+      const form = document.getElementById('config-form');
+      if (!form) return;
+      const collegesCount = lines(form.elements.colleges.value).length;
+      const gradesCount = lines(form.elements.grades.value).length;
+      const cEl = document.getElementById('colleges-count');
+      const gEl = document.getElementById('grades-count');
+      if (cEl) cEl.textContent = `共 ${collegesCount} 所`;
+      if (gEl) gEl.textContent = `共 ${gradesCount} 个`;
+    }
+
     function fillConfig(config) {
       const form = document.getElementById('config-form');
       form.elements.cycle.value = config.cycle;
@@ -615,6 +909,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       form.elements.privacyNotice.value = config.application.privacyNotice;
       form.elements.crossBorderNotice.value = config.application.crossBorderNotice;
       form.elements.admissionEnabled.checked = config.admissionQuery.enabled === true;
+      form.elements.bannerEnabled.checked = config.banner?.enabled !== false;
       form.elements.contactLabel.value = config.contact.label;
       form.elements.contactQq.value = config.contact.qq || '';
       form.elements.contactQqLink.value = config.contact.qqLink || '';
@@ -623,6 +918,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       form.elements.grades.value = config.options.grades.join('\n');
       form.elements.icpNumber.value = config.site.icpNumber || '';
       admissionQueryEnabled = config.admissionQuery.enabled === true;
+      updateOptionCounts();
     }
 
     async function loadConfig() {
@@ -652,6 +948,9 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
         admissionQuery: {
           enabled: form.elements.admissionEnabled.checked,
         },
+        banner: {
+          enabled: form.elements.bannerEnabled.checked,
+        },
         contact: {
           label: form.elements.contactLabel.value.trim(),
           qq: form.elements.contactQq.value.trim(),
@@ -673,6 +972,7 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
         `招新周期：${config.cycle}`,
         `入会申请：${config.application.enabled ? '开启' : '关闭'}`,
         `录取查询：${config.admissionQuery.enabled ? '开启' : '关闭'}`,
+        `顶部横幅：${config.banner.enabled ? '显示' : '隐藏'}`,
         `学院/年级选项：${config.options.colleges.length}/${config.options.grades.length}`,
       ].join('\n');
       if (!window.confirm(`请确认保存以下设置：\n\n${summary}`)) return;
@@ -892,6 +1192,9 @@ import SubpageLayout from '../../layouts/SubpageLayout.astro';
       document.getElementById('csv-modal-close').addEventListener('click', () => {
         document.getElementById('csv-modal').classList.remove('open');
       });
+      document.getElementById('colleges').addEventListener('input', updateOptionCounts);
+      document.getElementById('grades').addEventListener('input', updateOptionCounts);
+
       await loadConfig();
       await loadAdmissionsStatus();
     })();

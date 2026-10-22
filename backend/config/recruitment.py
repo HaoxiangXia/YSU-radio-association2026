@@ -76,6 +76,9 @@ class AdmissionQueryConfig(StrictConfigModel):
     enabled: StrictBool = False
 
 
+class BannerConfig(StrictConfigModel):
+    enabled: StrictBool = True
+
 class ContactConfig(StrictConfigModel):
     label: str = Field(min_length=1, max_length=100)
     qq: str = Field(default="", max_length=30)
@@ -106,6 +109,7 @@ class RecruitmentConfig(StrictConfigModel):
     cycle: str = Field(min_length=1, max_length=50)
     application: ApplicationConfig
     admission_query: AdmissionQueryConfig = Field(alias="admissionQuery")
+    banner: BannerConfig = Field(default_factory=BannerConfig)
     contact: ContactConfig
     options: OptionsConfig
     site: SiteConfig
@@ -277,6 +281,9 @@ def get_public_recruitment_config(
         },
         "admissionQuery": {
             "enabled": config.admission_query.enabled,
+        },
+        "banner": {
+            "enabled": config.banner.enabled,
         },
         "contact": config.contact.model_dump(by_alias=True),
         "options": config.options.model_dump(by_alias=True),

@@ -11,6 +11,9 @@
   "admissionQuery": {
     "enabled": false
   },
+  "banner": {
+    "enabled": true
+  },
   "contact": {
     "label": "招新通知方式",
     "qq": "836660390",
