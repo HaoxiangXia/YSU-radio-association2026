@@ -10,30 +10,88 @@ import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseSc
   mainClass="training-content"
 >
   <style is:global>
-.cta-card {
-  border-color: rgba(37, 99, 235, 0.2);
-  background: #ffffff;
+/* 培训教学页：极简纯净单层卡片排版，手机端优先流式条目设计 */
+.site-page.training-page {
+  --page-accent: #2563eb;
+  --page-accent-dark: #1d4ed8;
+  --page-border: #e2e8f0;
+  --page-border-hairline: #f1f5f9;
+  --page-text-main: #0f172a;
+  --page-text-sub: #334155;
+  --page-text-muted: #64748b;
+  background-color: #f8fafc;
 }
 
-/* 时间线 */
+.site-page.training-page .page-container.subpage-content::before {
+  content: none;
+}
+
+.training-content {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 100%;
+}
+
+/* 单层卡片：无嵌套卡片 */
+.training-section {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--page-border);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+/* 卡片标题 */
+.training-section__heading {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--page-border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.training-section__heading .card-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--page-text-main);
+  position: relative;
+  padding-left: 0.75rem;
+  line-height: 1.35;
+}
+
+.training-section__heading .card-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3.5px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: var(--page-accent);
+  transform: translateY(-50%);
+}
+
+/* 时间线：收紧边距，去多重发光光晕 */
 .timeline {
   position: relative;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #93c5fd;
+  left: 0.35rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1.5px;
+  background: #cbd5e1;
 }
 
 .timeline-item {
   position: relative;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.35rem;
 }
 
 .timeline-item:last-child {
@@ -43,133 +101,270 @@ import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseSc
 .timeline-item::before {
   content: '';
   position: absolute;
-  left: -2rem;
-  top: 0.375rem;
-  width: 10px;
-  height: 10px;
-  background: var(--color-primary);
-  border: 3px solid #eff6ff;
+  left: -1.5rem;
+  top: 0.35rem;
+  width: 7px;
+  height: 7px;
+  background: var(--page-accent);
+  border: 2px solid #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
-  transform: translateX(-4px);
+  box-shadow: 0 0 0 1px #cbd5e1;
+  box-sizing: content-box;
 }
 
 .timeline-date {
   font-size: 0.75rem;
-  color: var(--color-primary);
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  color: var(--page-accent);
+  margin-bottom: 0.15rem;
 }
 
 .timeline-title {
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
+  color: var(--page-text-main);
+  margin-bottom: 0.2rem;
 }
 
 .timeline-desc {
+  font-size: 0.85rem;
+  color: var(--page-text-muted);
+  line-height: 1.5;
+}
+
+/* 课程表：桌面端干净表格，移动端自适应流式排版 */
+.schedule-table-wrap {
+  width: 100%;
+}
+
+.schedule-table-wrap .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule-table-wrap thead th {
+  background: #f8fafc;
+  color: var(--page-text-sub);
+  font-weight: 600;
   font-size: 0.875rem;
-  color: #6b7280;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid var(--page-border);
 }
 
-.site-page .timeline::before {
-  background: var(--site-blue);
-}
-
-.site-page .timeline-item::before {
-  box-shadow:
-    0 0 0 4px #eff6ff,
-    0 0 0 5px rgba(37, 99, 235, 0.18);
-}
-
-.site-page.training-page {
-  --page-accent: #087f8c;
-  --page-accent-soft: rgba(8, 127, 140, 0.09);
-}
-
-/* 培训页：编号分区、学习路径与档案 */
-.site-page.training-page .training-section {
-  border-color: rgba(8, 127, 140, 0.16);
-}
-
-.site-page.training-page .training-section__heading {
-  margin-bottom: 1rem;
-}
-
-.site-page.training-page .training-section__heading .card-title {
-  margin-bottom: 0;
-  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
-}
-
-.site-page.training-page .training-roadmap .timeline-item {
-  padding: 0.2rem 0 1.55rem 2rem;
-}
-
-.site-page.training-page .training-roadmap .timeline-date {
-  color: var(--page-accent);
-  font-size: 0.72rem;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-}
-
-.site-page.training-page .training-roadmap .timeline-title {
-  color: var(--site-ink);
-  font-size: 1rem;
-}
-
-.site-page.training-page .training-archive-item {
-  display: block;
-  margin-bottom: 0.85rem;
-  padding: 1rem 1.15rem;
-  border-left: 2px solid rgba(8, 127, 140, 0.38);
-  box-shadow: none;
-}
-
-.site-page.training-page .training-archive-item:last-child {
-  margin-bottom: 0;
-}
-
-.site-page.training-page .training-archive-item__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.25rem;
-  color: var(--site-muted);
-  font-size: 0.76rem;
-}
-
-.site-page.training-page .training-archive-item__meta span {
-  display: inline-flex;
-  gap: 0.42rem;
-}
-
-.site-page.training-page .training-archive-item__meta strong {
-  color: var(--page-accent);
-  font-weight: 700;
-}
-
-.site-page.training-page .training-cta {
-  overflow: hidden;
-  border-color: rgba(37, 99, 235, 0.18);
-  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 52%, #ecfeff 100%);
-  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.08);
-}
-
-.site-page.training-page .training-cta .card-title {
-  color: #102a5a;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-}
-
-.site-page.training-page .training-cta p {
-  color: #526b8e;
-}
-
-.col-session {
+.schedule-table-wrap thead th.col-session {
   width: 5rem;
+}
+
+.schedule-table-wrap thead th.col-instructor {
+  width: 6.5rem;
+  text-align: right;
+}
+
+.schedule-table-wrap tbody td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--page-border-hairline);
+  font-size: 0.875rem;
+}
+
+.schedule-table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.schedule-table-wrap tbody tr:hover td {
+  background: #fcfdfe;
+}
+
+.col-session-text {
+  font-weight: 600;
+  color: var(--page-text-main);
+}
+
+.col-content-text {
+  color: var(--page-text-sub);
+  line-height: 1.45;
+}
+
+.col-instructor-text {
+  color: var(--page-text-muted);
+  text-align: right;
+}
+
+/* 往期培训：学期原生切换器（Segmented Tabs） */
+.archive-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.archive-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--page-text-sub);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.archive-tab:hover {
+  color: var(--page-text-main);
+}
+
+.archive-tab.active {
+  background: #ffffff;
+  color: var(--page-accent);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.tab-badge {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.18);
+  color: inherit;
+}
+
+.archive-panel[hidden] {
+  display: none !important;
+}
+
+/* 手机端专项排版优化 (<= 768px) */
+@media (max-width: 768px) {
+  .training-content {
+    gap: 1rem;
+  }
+
+  .training-section {
+    padding: 1.125rem 1rem;
+  }
+
+  .training-section__heading {
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .training-section__heading .card-title {
+    font-size: 1.05rem;
+  }
+
+  /* 时间线紧凑化 */
+  .timeline {
+    padding-left: 1.25rem;
+  }
+
+  .timeline-item {
+    padding-bottom: 1.15rem;
+  }
+
+  .timeline-item::before {
+    left: -1.25rem;
+  }
+
+  /* 课程列表：手机端将 Table 结构展平为清晰无挤压流式行 */
+  .schedule-table-wrap .data-table,
+  .schedule-table-wrap thead,
+  .schedule-table-wrap tbody,
+  .schedule-table-wrap tr,
+  .schedule-table-wrap th,
+  .schedule-table-wrap td {
+    display: block;
+  }
+
+  .schedule-table-wrap thead {
+    display: none;
+  }
+
+  .schedule-table-wrap tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--page-border-hairline);
+  }
+
+  .schedule-table-wrap tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .schedule-table-wrap .col-session {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .col-session-text {
+    display: inline-block;
+    padding: 0.125rem 0.45rem;
+    background: #eff6ff;
+    color: var(--page-accent);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .schedule-table-wrap .col-content {
+    flex: 1 1 11rem;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .col-content-text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--page-text-main);
+    line-height: 1.45;
+  }
+
+  .schedule-table-wrap .col-instructor {
+    flex: 0 0 100%;
+    padding: 0 0 0 2.75rem !important;
+    border: none !important;
+    text-align: left !important;
+  }
+
+  .col-instructor-text {
+    font-size: 0.8125rem;
+    color: var(--page-text-muted);
+  }
+
+  .col-instructor-text::before {
+    content: '主讲人：';
+    color: #94a3b8;
+  }
+
+  /* 切换标签占满宽度 */
+  .archive-tabs {
+    width: 100%;
+  }
+
+  .archive-tab {
+    flex: 1;
+    min-height: 44px;
+  }
 }
   </style>
 
   <!-- 培训时间线 -->
-  <section class="card card-section mb-6 training-section training-roadmap">
+  <section class="card training-section training-roadmap">
     <div class="training-section__heading">
       <h2 class="card-title">培训时间线</h2>
     </div>
@@ -185,25 +380,25 @@ import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseSc
   </section>
 
   <!-- 课程安排 -->
-  <section class="card card-section mb-6 training-section training-schedule">
+  <section class="card training-section training-schedule">
     <div class="training-section__heading">
       <h2 class="card-title">2026-2027学年课程安排</h2>
     </div>
-    <div class="overflow-x-auto">
+    <div class="schedule-table-wrap">
       <table class="data-table">
         <thead>
           <tr>
             <th class="col-session">节次</th>
-            <th>教学内容</th>
-            <th>主讲人</th>
+            <th class="col-content">教学内容</th>
+            <th class="col-instructor">主讲人</th>
           </tr>
         </thead>
         <tbody id="course-schedule-2026">
           {courseSchedule2026.map((item) => (
             <tr>
-              <td class="font-medium text-gray-800">{item.session}</td>
-              <td class="text-gray-600">{item.content}</td>
-              <td class="text-gray-600">{item.instructor}</td>
+              <td class="col-session"><span class="col-session-text">{item.session}</span></td>
+              <td class="col-content"><span class="col-content-text">{item.content}</span></td>
+              <td class="col-instructor"><span class="col-instructor-text">{item.instructor}</span></td>
             </tr>
           ))}
         </tbody>
@@ -212,47 +407,78 @@ import { trainingTimeline, courseSchedule2026, courseScheduleSemester1, courseSc
   </section>
 
   <!-- 往期培训 -->
-  <section class="card card-section mb-6 training-section training-archive">
+  <section class="card training-section training-archive">
     <div class="training-section__heading">
       <h2 class="card-title">往期培训</h2>
     </div>
-    <h3 class="font-bold text-gray-800 mb-2">第一学期</h3>
-    <div class="overflow-x-auto mb-4">
+
+    <div class="archive-tabs" role="tablist" aria-label="往期学期切换">
+      <button type="button" class="archive-tab active" role="tab" aria-selected="true" data-target="semester-1">
+        第一学期
+        <span class="tab-badge">12节</span>
+      </button>
+      <button type="button" class="archive-tab" role="tab" aria-selected="false" data-target="semester-2">
+        第二学期
+        <span class="tab-badge">6节</span>
+      </button>
+    </div>
+
+    <!-- 第一学期面板 -->
+    <div class="archive-panel schedule-table-wrap" id="semester-1" role="tabpanel">
       <table class="data-table">
         <thead>
           <tr>
             <th class="col-session">节次</th>
-            <th>课程内容</th>
+            <th class="col-content">课程内容</th>
           </tr>
         </thead>
         <tbody id="course-schedule-1">
           {courseScheduleSemester1.map((item) => (
             <tr>
-              <td class="font-medium text-gray-800">{item.session}</td>
-              <td class="text-gray-600">{item.content}</td>
+              <td class="col-session"><span class="col-session-text">{item.session}</span></td>
+              <td class="col-content"><span class="col-content-text">{item.content}</span></td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-    <h3 class="font-bold text-gray-800 mb-2">第二学期</h3>
-    <div class="overflow-x-auto">
+
+    <!-- 第二学期面板 -->
+    <div class="archive-panel schedule-table-wrap" id="semester-2" role="tabpanel" hidden>
       <table class="data-table">
         <thead>
           <tr>
             <th class="col-session">节次</th>
-            <th>课程内容</th>
+            <th class="col-content">课程内容</th>
           </tr>
         </thead>
         <tbody id="course-schedule-2">
           {courseScheduleSemester2.map((item) => (
             <tr>
-              <td class="font-medium text-gray-800">{item.session}</td>
-              <td class="text-gray-600">{item.content}</td>
+              <td class="col-session"><span class="col-session-text">{item.session}</span></td>
+              <td class="col-content"><span class="col-content-text">{item.content}</span></td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   </section>
+
+  <script>
+    const tabs = document.querySelectorAll('.archive-tab');
+    const panels = document.querySelectorAll('.archive-panel');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.getAttribute('data-target');
+        tabs.forEach((t) => {
+          const isCurrent = t === tab;
+          t.classList.toggle('active', isCurrent);
+          t.setAttribute('aria-selected', String(isCurrent));
+        });
+        panels.forEach((p) => {
+          p.hidden = p.id !== targetId;
+        });
+      });
+    });
+  </script>
 </SubpageLayout>

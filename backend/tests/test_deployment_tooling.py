@@ -86,10 +86,10 @@ def test_static_cache_control_headers(default_client):
     assert resp_css.headers.get("cache-control") == "public, max-age=86400"
 
     # 3. Astro 产物（/_astro/*）：带内容哈希，长缓存 1 年 immutable
-    resp_astro = client.get("/_astro/trainings.Bw9Z62AP.css")
+    astro_file = next((REPOSITORY_ROOT / "public" / "_astro").glob("*.css")).name
+    resp_astro = client.get(f"/_astro/{astro_file}")
     assert resp_astro.status_code == 200
     assert resp_astro.headers.get("cache-control") == "public, max-age=31536000, immutable"
-
 @pytest.mark.skipif(os.name == "nt", reason="CI 在 Linux 上执行 Bash 语法检查")
 def test_bash_scripts_parse():
     if not shutil.which("bash"):

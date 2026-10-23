@@ -1,0 +1,1 @@
+var e=document.querySelectorAll(`.archive-tab`),t=document.querySelectorAll(`.archive-panel`);e.forEach(n=>{n.addEventListener(`click`,()=>{let r=n.getAttribute(`data-target`);e.forEach(e=>{let t=e===n;e.classList.toggle(`active`,t),e.setAttribute(`aria-selected`,String(t))}),t.forEach(e=>{e.hidden=e.id!==r})})});
